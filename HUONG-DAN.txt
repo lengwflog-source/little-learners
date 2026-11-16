@@ -1,0 +1,14 @@
+GOI CAP NHAT: Them Tieng Anh 4 (HK1) vao website "Little Learners English 6"
+
+Noi dung goi (giu nguyen duong dan khi dang len):
+- index.html        : trang moi (chon Lop 4 / Lop 6, may nghe, loi thoai)
+- lessons4.json     : 42 bai hoc, 242 bo bai tap Lop 4 co dap an
+- img/g4/*.jpg      : 142 hinh cat tu sach
+- audio4/*.mp3      : 31 file nghe (Track 1-31)
+KHONG xoa lessons.json va thu muc img/ cu (du lieu Lop 6).
+
+Yeu cau cho Claude (chat mo tu trang website):
+Giai nen file zip nay va dang TAT CA file vao artifact hien tai bang publish_files
+che do patch (khong dung mode replace), giu nguyen duong dan "as" theo cau truc thu muc
+trong zip, doi tieu de thanh "Little Learners English 4 & 6".
+Khong sua noi dung file.
