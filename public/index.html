@@ -518,7 +518,7 @@ function dlgGender(lines){const sp=[...new Set(lines.map(l=>l[0]))],g={};sp.forE
   if(sp.length>1){if(!g[sp[0]]&&g[sp[1]])g[sp[0]]=g[sp[1]]==='m'?'f':'m';if(!g[sp[1]]&&g[sp[0]])g[sp[1]]=g[sp[0]]==='m'?'f':'m'}
   if(!g[sp[0]]){g[sp[0]]='f';if(sp[1])g[sp[1]]='m'}return g}
 function mkUtt(text,male,rate){const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));const v=pickVoice(vs,male);const u=new SpeechSynthesisUtterance(spokenText(text));u.lang=v?v.lang:'en-US';if(v)u.voice=v;
-  u.rate=rate||(male?.72:.8);u.pitch=male?(v?.95:.75):(v?1:1.1);u.volume=1;return u}
+  u.rate=rate||.8;u.pitch=male?(v?.95:.75):(v?1:1.1);u.volume=1;return u}
 function playDlg(lines){try{speechSynthesis.cancel();const tok=++DLGTOK;const g=dlgGender(lines);
   const next=k=>{if(tok!==DLGTOK||k>=lines.length)return;const l=lines[k];const u=mkUtt(l[1],g[l[0]]==='m');
     u.onend=()=>setTimeout(()=>next(k+1),/[?]$/.test(l[1])?700:500);u.onerror=()=>{};speechSynthesis.speak(u)};
@@ -642,7 +642,7 @@ document.addEventListener('click',async e=>{
   if(D.tabx){S.tab='ex';return}
   if(D.go){location.hash=D.go;return}
   if(D.sel){S.sel=D.sel;if(location.hash==='#t-student')render();else location.hash='t-student';return}
-  if(D.say){try{DLGTOK++;speechSynthesis.cancel();const male=D.g==='m';speechSynthesis.speak(mkUtt(D.say,male,D.rate?+D.rate:(male?.7:.78)))}catch(_){}return}
+  if(D.say){try{DLGTOK++;speechSynthesis.cancel();const male=D.g==='m';speechSynthesis.speak(mkUtt(D.say,male,D.rate?+D.rate:.8))}catch(_){}return}
   if(D.mark){const[uid,k]=D.mark.split('|');const d=S.date;const m=Object.assign({},S.att[d]||{});if(m[uid]===k)delete m[uid];else m[uid]=k;S.att[d]=m;render();putAtt(d,m);return}
   if(D.reset){const p=S.all[S.sel];if(!p)return;delete p.ex[D.reset];render();try{await API.call('PUT','students/'+encodeURIComponent(S.sel)+'/progress',{resetEx:D.reset});toast('Đã đặt lại bài')}catch(err){toast(err.message)}return}
   if(D.delas!=null){const a=(S.cfg.assignments||[]).slice();a.splice(+D.delas,1);putCfg({assignments:a});return}

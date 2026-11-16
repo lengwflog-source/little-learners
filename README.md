@@ -46,6 +46,7 @@ Tên miền riêng: *Domain management → Add a domain*.
 
 ## Cấp A1+ (English File Elementary)
 - Nội dung nằm ở `public/ef/lessons.json`: 12 Unit và 6 bài tổng hợp Revise and Check, mỗi bài gồm từ vựng, ngữ pháp, nghe, phát âm, nói và bài kiểm tra cuối.
+- Mỗi Unit có khoảng 46–48 từ vựng (gồm cả từ khó lấy theo chủ đề Vocabulary Bank của sách, có phiên âm, nghĩa và câu ví dụ), hiển thị đầy đủ ở tab Từ vựng. Unit test cuối mỗi Unit và mỗi bài Revise có 40 câu, trong đó khoảng 17–20 câu là nghe (chọn đáp án, gõ lại câu/từ, nghe hội thoại).
 - Đây là bài tập tự soạn, bám theo chủ điểm từ vựng, ngữ pháp và phát âm của từng Unit trong sách. Không chép nội dung sách.
 - **Thu âm:** học sinh bấm Thu âm, đọc to rồi nghe lại và so với giọng mẫu. Bản thu chỉ nằm trong trình duyệt của học sinh, không được gửi lên máy chủ. Cần dùng HTTPS (Netlify mặc định có) và cho phép micro.
 - **Nghe:** giọng mẫu là giọng đọc có sẵn của trình duyệt (Chrome, Safari, Edge). Chất lượng phụ thuộc máy. Muốn dùng giọng thật, thay bằng file mp3 là việc có thể làm thêm.
