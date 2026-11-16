@@ -6,7 +6,7 @@ Không cần cơ sở dữ liệu ngoài: dữ liệu nằm trong **Netlify Blob
 ## Cấu trúc
 - `public/` – giao diện (index.html)
 - `public/lessons.json` + `public/img/` – Tiếng Anh lớp 6 (26 bài, 272 bộ bài tập, 2.191 câu)
-- `public/lop2/lessons.json` + `public/lop2/img/` – Tiếng Anh lớp 2 (20 Unit, 139 bộ bài tập, 765 câu có hình)
+- `public/lop2/lessons.json` – Tiếng Anh lớp 2 (16 Unit + 4 Review, mỗi bài đủ 16 mục, 300 bộ bài tập). Hình minh họa dùng emoji và hình vẽ đơn giản, phần Listen dùng giọng đọc của trình duyệt.
 - `netlify/functions/api.mjs` – đăng nhập, tiến trình, điểm danh, giao bài, quản lý học sinh
 - `netlify.toml`, `package.json` – cấu hình Netlify
 
@@ -41,4 +41,4 @@ Tên miền riêng: *Domain management → Add a domain*.
 - Giáo viên có nút **Lớp 6 | Lớp 2** ở đầu trang để chuyển khối (tiến độ, học sinh, giao bài đều theo khối đang chọn).
 - Khi thêm học sinh, ghi `Họ tên; lớp; khối` (khối là 2 hoặc 6). Học sinh đã có khối chỉ thấy khối của mình. Bỏ trống khối thì học sinh tự chuyển được. Đổi khối trong trang chi tiết học sinh.
 - Muốn thêm khối khác, thêm thư mục `public/lopX/` cùng cấu trúc (lessons.json + img/) rồi nhờ tôi nối vào giao diện.
-- Đáp án lớp 2 do soạn theo hình và đã được kiểm tra chéo; một vài câu "khác âm" trong file gốc có nhiều hơn một đáp án hợp lý (đã ghi chú giải thích trong bài). Sửa trong `public/lop2/lessons.json` (trường `a`).
+- Bài lớp 2 được tạo tự động từ danh sách từ vựng và mẫu câu của từng Unit (file `public/lop2/lessons.json`); đã chạy thử toàn bộ 300 bài để chắc chắn đáp án chấm đúng. Muốn sửa từ vựng hay câu, sửa trực tiếp trong file này.
