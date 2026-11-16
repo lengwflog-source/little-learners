@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#5a8a5c">
-<title>Little Learners · Tiếng Anh 6</title>
+<title>MR.LONG's ENGLISH HOUSE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
@@ -49,7 +49,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--surface);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding-block:10px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
-.brand b{font-family:var(--display);font-size:1.15rem;line-height:1.1;display:block}
+.brand b{font-family:var(--display);font-size:1.05rem;line-height:1.1;display:block;letter-spacing:.01em}
 .brand span{font-size:.7rem;color:var(--muted);display:block;line-height:1.1}
 .nav{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
 .nav a{padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.92rem;white-space:nowrap;color:var(--muted)}
@@ -142,6 +142,18 @@ section.blk{padding-block:34px}
 .hint{color:var(--muted);font-size:.88rem}
 .ordrow,.mrow{display:flex;gap:10px;align-items:center;margin:8px 0 0 40px;flex-wrap:wrap}.ordrow span,.mrow span{flex:1;min-width:160px}
 .mright{margin:8px 0 0 40px;display:grid;gap:4px;font-size:.94rem}
+.mright:has(img){display:flex;flex-wrap:wrap;gap:10px 16px}
+.mright:has(img)>div{display:flex;align-items:center;gap:6px}
+.mright img{max-height:96px;max-width:150px;border-radius:10px;background:#fff;border:1px solid var(--line)}
+.seg button.gsw.on{background:var(--primary);color:var(--primary-ink)}
+body.g2{font-size:18px}
+body.g2 .instr{font-size:1.3rem}
+body.g2 .opt{padding:12px 16px;font-size:1.05rem;border-radius:16px}
+body.g2 .item{padding:20px 0}
+body.g2 .item img{max-height:160px}
+body.g2 .blank,body.g2 .txt,body.g2 .sel-in{font-size:1.1rem}
+body.g2 .btn{font-size:1.05rem;padding:13px 26px}
+body.g2 .num{background:var(--butter);width:32px;height:32px;font-size:.95rem}
 .actbar{position:sticky;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px));margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .result{display:flex;align-items:center;gap:14px;background:var(--mint);border-radius:18px;padding:14px 18px;margin-top:16px}
 .result b{font-family:var(--display);font-size:1.8rem}
@@ -184,7 +196,7 @@ const fmtT=t=>{if(!t)return '—';const d=new Date(t);return pad(d.getDate())+'/
 const pct=x=>x==null?'—':Math.round(x*100)+'%';
 const L2='ABCDEFGHIJ';
 
-const S={lessons:[],by:{},exL:{},db:null,user:null,uid:null,isT:false,local:false,ready:false,
+const S={lessons:[],allL:[],grade:6,by:{},exL:{},db:null,user:null,uid:null,isT:false,local:false,ready:false,
   prof:null,profLoaded:false,cfg:{classes:[],assignments:[],announcement:'',checkin:null},all:{},att:{},sel:null,tab:'vocab',cls:'',date:today(),msg:'',fail:''};
 let X=null; // current exercise state
 let saving=false,dirty=false,saveT=null,pending=false;
@@ -204,10 +216,21 @@ const ICONS={
  5:`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M3 40 17 16l8 12 6-8 14 20Z"/><circle cx="36" cy="10" r="4"/></svg>`,
  6:`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M24 8v4M17 12h14M13 14h22a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H13a4 4 0 0 1-4-4V18a4 4 0 0 1 4-4ZM24 36v8M20 44h8"/><path d="M19 22c1 6 9 6 10 0"/></svg>`,
  0:`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M12 5h18l8 8v30H12Z"/><path d="M30 5v8h8M18 22h14M18 29h14M18 36h8"/></svg>`};
-const DISC={4:'var(--peach)',5:'var(--mint)',6:'var(--butter)',0:'var(--sky)'};
+ICONS[101]=`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M24 5l5.6 11.6 12.6 1.8-9.1 8.9 2.1 12.5L24 33.8 12.8 39.8l2.1-12.5-9.1-8.9 12.6-1.8z"/></svg>`;
+ICONS[102]=`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M24 14c-5-4-14-2-14 8 0 9 6 18 11 18 1.5 0 2-1 3-1s1.5 1 3 1c5 0 11-9 11-18 0-10-9-12-14-8z"/><path d="M24 14c0-4 2-7 6-8"/></svg>`;
+ICONS[103]=`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><circle cx="24" cy="24" r="8"/><path d="M24 5v6M24 37v6M5 24h6M37 24h6M10.6 10.6l4.2 4.2M33.2 33.2l4.2 4.2M37.4 10.6l-4.2 4.2M14.8 33.2l-4.2 4.2"/></svg>`;
+ICONS[104]=`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M6 10h14c2 0 4 1 4 4v26c0-3-2-4-4-4H6zM42 10H28c-2 0-4 1-4 4v26c0-3 2-4 4-4h14z"/></svg>`;
+const DISC={4:'var(--peach)',5:'var(--mint)',6:'var(--butter)',0:'var(--sky)',101:'var(--peach)',102:'var(--mint)',103:'var(--butter)',104:'var(--sky)'};
+const IB=()=>X&&X.L&&X.L.grade===2?'lop2/img/':'img/';
+function setGrade(g){S.grade=g;S.lessons=S.allL.filter(L=>L.grade===g);try{localStorage.setItem('ll-grade',String(g))}catch(e){}}
+function initGrade(){let g=6;try{g=Number(localStorage.getItem('ll-grade'))||6}catch(e){}
+  if(S.user&&!S.isT&&S.user.grade)g=Number(S.user.grade);
+  if(!S.allL.some(L=>L.grade===g))g=6;setGrade(g)}
+const gradeSw=()=>{if(!S.allL.some(L=>L.grade===2)||(!S.isT&&S.user&&S.user.grade))return'';
+  return`<div class="seg" role="group" aria-label="Chọn khối">${[6,2].map(g=>`<button class="gsw ${S.grade===g?'on':''}" data-grade="${g}">Lớp ${g}</button>`).join('')}</div>`};
 
 /* ---------- data helpers ---------- */
-const lessonUnits=()=>{const g=[];S.lessons.forEach(L=>{let u=g.find(x=>x.key===L.unit);if(!u){u={key:L.unit,title:L.unit?'Unit '+L.unit:'Đề ôn tập HK1',sub:L.unit?L.unitTitle:'Ôn luyện cuối kì',lessons:[]};g.push(u)}u.lessons.push(L)});return g};
+const lessonUnits=()=>{const g=[];S.lessons.forEach(L=>{let u=g.find(x=>x.key===L.unit);if(!u){u={key:L.unit,title:L.grade===2?L.unitTitle:(L.unit?'Unit '+L.unit:'Đề ôn tập HK1'),sub:L.grade===2?'Bài tập có hình':(L.unit?L.unitTitle:'Ôn luyện cuối kì'),lessons:[]};g.push(u)}u.lessons.push(L)});return g};
 const exArr=p=>(p&&p.ex)||{};
 function lessonStat(p,L){const ex=exArr(p);let done=0,sum=0,cnt=0;for(const E of L.exercises){const r=ex[E.id];if(r){done++;if(r.n>0){sum+=r.c/r.n;cnt++}}}const total=L.exercises.length;return{done,total,pct:total?done/total:0,avg:cnt?sum/cnt:null}}
 function overall(p){let done=0,total=0,sum=0,cnt=0;const ex=exArr(p);for(const L of S.lessons)for(const E of L.exercises){total++;const r=ex[E.id];if(r){done++;if(r.n>0){sum+=r.c/r.n;cnt++}}}return{done,total,pct:total?done/total:0,avg:cnt?sum/cnt:null}}
@@ -216,8 +239,8 @@ const exTitle=E=>E.title;
 function nextEx(p){const ex=exArr(p);let last=null,lt=0;for(const id in ex){if(ex[id].t>lt){lt=ex[id].t;last=id}}
   const order=[];S.lessons.forEach(L=>L.exercises.forEach(E=>order.push(E.id)));
   let start=last?order.indexOf(last)+1:0;for(let k=0;k<order.length;k++){const id=order[(start+k)%order.length];if(!ex[id])return id}return null}
-function visibleStudents(){return Object.entries(S.all).map(([uid,p])=>({uid,p})).filter(x=>!S.cls||x.p.cls===S.cls).sort((a,b)=>(a.p.name||'').localeCompare(b.p.name||'','vi'))}
-function myAssignments(){const c=S.prof&&S.prof.cls;return(S.cfg.assignments||[]).filter(a=>!a.cls||a.cls===c)}
+function visibleStudents(){return Object.entries(S.all).map(([uid,p])=>({uid,p})).filter(x=>!S.cls||x.p.cls===S.cls).filter(x=>!x.p.grade||Number(x.p.grade)===S.grade).sort((a,b)=>(a.p.name||'').localeCompare(b.p.name||'','vi'))}
+function myAssignments(){const c=S.prof&&S.prof.cls;return(S.cfg.assignments||[]).filter(a=>!a.cls||a.cls===c).filter(a=>{const L=S.by[(a.lessons||[])[0]];return !L||L.grade===S.grade})}
 function assignStat(p,a){let done=0,total=0;const ex=exArr(p);for(const id of a.lessons||[]){const L=S.by[id];if(!L)continue;for(const E of L.exercises){total++;if(ex[E.id])done++}}return{done,total,pct:total?done/total:0}}
 
 /* ---------- grading ---------- */
@@ -236,7 +259,7 @@ function gradeItem(it,a){switch(it.t){
 function gradeEx(E,ans){let c=0,n=0;const res=E.items.map((it,i)=>{const g=gradeItem(it,ans[i]);if(g){n+=g.length;c+=g.filter(Boolean).length}return g});return{res,c,n}}
 function solText(it){switch(it.t){
   case'mcq':return it.opts[it.a];
-  case'tf':return it.a==='T'?'True':it.a==='F'?'False':'Not given';
+  case'tf':return it.tick?(it.a==='T'?'✔ Đúng':'✘ Sai'):it.a==='T'?'True':it.a==='F'?'False':'Not given';
   case'text':return it.a[0];
   case'fill':return it.a.map(v=>v[0]).join(' · ');
   case'order':return it.steps.map((_,k)=>(k+1)+'→'+(it.a.indexOf(k)+1)).join('  ');
@@ -276,7 +299,7 @@ function applyMe(d){S.user=d.user;S.isT=d.user.role==='teacher';S.uid=d.user.use
   S.cfg=Object.assign({classes:[],assignments:[],announcement:'',checkin:null},d.config||{});
   if(!S.isT){S.prof=Object.assign({ex:{},lv:{},ci:{},days:[]},d.progress||{},{name:d.user.name,cls:d.user.cls});if(!S.prof.ex)S.prof.ex={};S.att={};Object.entries(d.mine||{}).forEach(([dt,c])=>{S.att[dt]={[S.uid]:c}})}}
 async function loadTeacher(){const[st,at]=await Promise.all([API.call('GET','students'),API.call('GET','attendance')]);
-  S.all={};st.students.forEach(x=>{S.all[x.username]=Object.assign({ex:{},lv:{},ci:{},days:[]},x.progress||{},{name:x.name,cls:x.cls})});S.att=at.dates||{}}
+  S.all={};st.students.forEach(x=>{S.all[x.username]=Object.assign({ex:{},lv:{},ci:{},days:[]},x.progress||{},{name:x.name,cls:x.cls,grade:x.grade||''})});S.att=at.dates||{}}
 async function poll(){if(!S.user||document.hidden||saving||dirty)return;
   try{if(S.isT){await loadTeacher();const c=await API.call('GET','config');S.cfg=Object.assign({},S.cfg,c.config)}
     else{const d=await API.call('GET','me');S.cfg=Object.assign({},S.cfg,d.config);S.att={};Object.entries(d.mine||{}).forEach(([dt,c])=>{S.att[dt]={[S.uid]:c}});if(d.progress&&d.progress.ci)S.prof.ci=d.progress.ci}
@@ -284,12 +307,13 @@ async function poll(){if(!S.user||document.hidden||saving||dirty)return;
 
 async function init(){
   render();
-  try{const r=await fetch('lessons.json');S.lessons=await r.json()}catch(e){$('#app').innerHTML='<div class="wrap"><div class="banner err">Không tải được dữ liệu bài học. Hãy tải lại trang.</div></div>';return}
-  S.lessons.forEach(L=>{S.by[L.id]=L;L.exercises.forEach(E=>{S.exL[E.id]=L.id})});
+  try{const r=await fetch('lessons.json');S.allL=await r.json();S.allL.forEach(L=>{L.grade=6;L.label=(L.unit?'Unit '+L.unit+' · ':'')+L.title})}catch(e){$('#app').innerHTML='<div class="wrap"><div class="banner err">Không tải được dữ liệu bài học. Hãy tải lại trang.</div></div>';return}
+  try{const r=await fetch('lop2/lessons.json');if(r.ok){const t=(await r.text()).split('{{IMG}}').join('lop2/img/');const g2=JSON.parse(t);g2.forEach(L=>{L.grade=2;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(g2)}}catch(e){}
+  S.allL.forEach(L=>{S.by[L.id]=L;L.exercises.forEach(E=>{S.exL[E.id]=L.id})});
   API.tok=lsGet(TK);
   if(API.tok){try{applyMe(await API.call('GET','me'));if(S.isT)await loadTeacher()}catch(e){if(e.status===401){API.tok=null;lsSet(TK,null)}else S.fail=e.message}}
   if(!S.user){try{const st=await API.call('GET','status');S.needSetup=st.setup;S.needCode=st.needsCode}catch(e){S.fail=e.message}}
-  S.ready=true;render();
+  initGrade();S.ready=true;render();
   setInterval(poll,30000);
 }
 
@@ -300,9 +324,10 @@ const hdr=()=>{const r=route(),I=(h,t,on)=>`<a href="#${h}" class="${on?'on':''}
   const nav=S.isT?I('t-home','Tổng quan',r==='t-home')+I('t-students','Học sinh',r.startsWith('t-student'))+I('t-attendance','Điểm danh',r==='t-attendance')+I('t-assign','Giao bài',r==='t-assign')+I('lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')):
     I('home','Trang chủ',r==='home')+I('lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-'))+I('progress','Tiến độ',r==='progress');
   const nm=S.user?S.user.name:'';
-  return`<header class="top"><div class="wrap"><a class="brand" href="#${S.isT?'t-home':'home'}">${LOGO}<div><b>Little Learners</b><span>Tiếng Anh 6 · Global Success</span></div></a>${S.ready&&S.user?`<nav class="nav" aria-label="Menu chính">${nav}</nav><div class="who"><span class="avatar" aria-hidden="true">${esc((nm[0]||'?').toUpperCase())}</span><span>${esc(nm)}</span><a class="btn ghost sm" href="#profile">Tài khoản</a></div>`:''}</div></div></header>`};
+  return`<header class="top"><div class="wrap"><a class="brand" href="#${S.isT?'t-home':'home'}">${LOGO}<div><b>MR.LONG's ENGLISH HOUSE</b><span>${S.grade===2?'Tiếng Anh 2':'Tiếng Anh 6 · Global Success'}</span></div></a>${S.ready&&S.user?`<nav class="nav" aria-label="Menu chính">${nav}</nav><div class="who">${gradeSw()}<span class="avatar" aria-hidden="true">${esc((nm[0]||'?').toUpperCase())}</span><span>${esc(nm)}</span><a class="btn ghost sm" href="#profile">Tài khoản</a></div>`:''}</div></div></header>`};
 
 function render(){
+  document.body.classList.toggle('g2',S.grade===2);
   const r=route();let body='';
   if(!S.ready||!S.lessons.length)body=`<div class="wrap" style="padding-block:40px"><div class="sk"></div><div class="grid g3" style="margin-top:16px"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></div>`;
   else if(!S.user)body=loginView();
@@ -321,14 +346,14 @@ function render(){
     else body=S.isT?teacherHome():homeView();
   }
   const keepY=scrollY;
-  $('#app').innerHTML=hdr()+(S.fail&&S.ready?`<div class="wrap"><div class="banner err">${esc(S.fail)}</div></div>`:'')+body+`<footer><div class="wrap">Little Learners · Tiếng Anh 6 · Học kì 1</div></footer>`;
+  $('#app').innerHTML=hdr()+(S.fail&&S.ready?`<div class="wrap"><div class="banner err">${esc(S.fail)}</div></div>`:'')+body+`<footer><div class="wrap">MR.LONG's ENGLISH HOUSE · ${S.grade===2?'Tiếng Anh 2':'Tiếng Anh 6 · Học kì 1'}</div></footer>`;
   if(r.startsWith('ex-')===false)scrollTo(0,keepY);
 }
 
 /* ---------- views: student ---------- */
 function ringHtml(p,t){const v=Math.round((p||0)*100);return`<div class="ring" style="--p:${v}" aria-label="${v}%"><i>${t==null?v+'%':t}</i></div>`}
 function loginView(){const setup=S.needSetup;
-  return`<section class="hero"><div class="wrap"><div><div class="eyebrow">Học · Luyện · Tiến bộ</div><h1>Chào mừng đến<br><span>Little Learners</span></h1><p class="lead">Làm bài tập tiếng Anh lớp 6, lưu tiến trình và theo dõi bài học cùng giáo viên.</p></div>${ART}</div>${WAVE}</section>
+  return`<section class="hero"><div class="wrap"><div><div class="eyebrow">Học · Luyện · Tiến bộ</div><h1>Chào mừng đến<br><span>MR.LONG's ENGLISH HOUSE</span></h1><p class="lead">Làm bài tập tiếng Anh lớp 6, lưu tiến trình và theo dõi bài học cùng giáo viên.</p></div>${ART}</div>${WAVE}</section>
   <div class="wrap"><div class="card welcome">${setup?`<h3>Tạo tài khoản giáo viên</h3><p class="muted small" style="margin:6px 0 16px">Đây là lần chạy đầu tiên. Tài khoản này quản lý toàn bộ lớp học.</p>
   <div class="field"><label for="lg-name">Họ và tên</label><input id="lg-name" autocomplete="name" placeholder="Cô Lan"></div>
   <div class="field"><label for="lg-user">Tên đăng nhập</label><input id="lg-user" autocomplete="username" autocapitalize="off" placeholder="colan"></div>
@@ -363,7 +388,7 @@ function homeView(){const p=S.prof,o=overall(p),st=streak(p),nx=nextEx(p),ass=my
   <section class="blk" style="padding-top:0"><div class="sechead"><h2>Chương trình học</h2></div><div class="grid g4">${lessonUnits().map(u=>{const tot=u.lessons.reduce((a,L)=>a+L.exercises.length,0),dn=u.lessons.reduce((a,L)=>a+lessonStat(p,L).done,0);return`<a class="card unit" href="#lessons"><span class="disc" style="background:${DISC[u.key]||DISC[0]}">${ICONS[u.key]||ICONS[0]}</span><b>${u.title}</b><small>${esc(u.sub)}</small><div class="bar"><i style="width:${tot?dn/tot*100:0}%"></i></div><small>${dn}/${tot} bộ bài</small></a>`}).join('')}</div></section></div>`}
 
 function lessonsView(){const p=S.isT?null:S.prof;
-  return`<div class="wrap" style="padding-block:28px"><div class="sechead"><div><div class="eyebrow">Thư viện</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Bài học</h1></div></div>${lessonUnits().map(u=>`<h2 style="margin:26px 0 14px;font-size:1.5rem">${u.title}${u.key?` · <span class="muted" style="font-weight:400">${esc(u.sub)}</span>`:''}</h2><div class="grid g2">${u.lessons.map(L=>{const s=lessonStat(p,L);return`<a class="card lcard" href="#lesson-${L.id}">${p?ringHtml(s.pct):`<div class="ring" style="--p:0"><i>${L.exercises.length}</i></div>`}<div class="t"><b>${esc(L.title)}</b><span class="muted small">${L.vocab.length?L.vocab.length+' từ vựng · ':''}${L.exercises.length} bộ bài tập${s.avg!=null?' · TB '+pct(s.avg):''}</span></div>${L.kind==='practice'?'<span class="chip sky">Luyện tập</span>':L.kind==='test'?'<span class="chip warn">Đề thi</span>':''}</a>`}).join('')}</div>`).join('')}</div>`}
+  return`<div class="wrap" style="padding-block:28px"><div class="sechead"><div><div class="eyebrow">Thư viện</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Bài học</h1></div></div>${lessonUnits().map(u=>`<h2 style="margin:26px 0 14px;font-size:1.5rem">${u.title}${u.key?` · <span class="muted" style="font-weight:400">${esc(u.sub)}</span>`:''}</h2><div class="grid g2">${u.lessons.map(L=>{const s=lessonStat(p,L);return`<a class="card lcard" href="#lesson-${L.id}">${p?ringHtml(s.pct):`<div class="ring" style="--p:0"><i>${L.exercises.length}</i></div>`}<div class="t"><b>${esc(L.title)}${L.sub?' · '+esc(L.sub):''}</b><span class="muted small">${L.vocab.length?L.vocab.length+' từ vựng · ':''}${L.exercises.length} bộ bài tập${s.avg!=null?' · TB '+pct(s.avg):''}</span></div>${L.kind==='practice'?'<span class="chip sky">Luyện tập</span>':L.kind==='test'?'<span class="chip warn">Đề thi</span>':''}</a>`}).join('')}</div>`).join('')}</div>`}
 
 function lessonView(id){const L=S.by[id];if(!L)return`<div class="wrap" style="padding-block:40px"><p>Không tìm thấy bài học. <a href="#lessons">Quay lại</a></p></div>`;
   const p=S.isT?null:S.prof;const ex=exArr(p);
@@ -374,7 +399,7 @@ function lessonView(id){const L=S.by[id];if(!L)return`<div class="wrap" style="p
   if(tab==='vocab')c=`<div class="vocab">${L.vocab.map(v=>`<div class="vrow"><div><button class="say" data-say="${esc(v.en)}" aria-label="Nghe phát âm" title="Nghe">♪</button><b>${esc(v.en)}</b></div><span class="ipa">${esc(v.ipa||'')} ${v.pos?`<span class="chip">${esc(v.pos)}</span>`:''}</span><span>${esc(v.vi||'')}</span></div>`).join('')}</div>`;
   else if(tab==='gram')c=L.grammar.map(g=>`<div class="prose" style="margin-bottom:14px">${g.title?`<h3>${esc(g.title)}</h3>`:''}${g.html}</div>`).join('');
   else c=`<div class="grid g2">${L.exercises.map(E=>{const r=ex[E.id];const s=r?(r.n?Math.round(r.c/r.n*100):100):null;return`<a class="card lcard" href="#ex-${E.id}"><div class="t"><b>${esc(exTitle(E))}</b><span class="muted small">${esc((E.instruction||'').replace(/<[^>]+>/g,'').slice(0,90))}</span></div>${r?`<span class="chip ${s>=80?'good':s>=50?'warn':'bad'}">${r.n?s+'%':'Đã xem'}</span>`:`<span class="chip">${E.items.length} câu</span>`}</a>`}).join('')}</div>`;
-  return`<div class="wrap" style="padding-block:28px"><div class="crumb"><a href="#lessons">Bài học</a> / ${L.unit?'Unit '+L.unit+' · ':''}${esc(L.title)}</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">${esc(L.title)}</h1><p class="muted">${L.unit?esc(L.unitTitle):'Đề ôn tập HK1'}</p>
+  return`<div class="wrap" style="padding-block:28px"><div class="crumb"><a href="#lessons">Bài học</a> / ${esc(L.label)}</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">${esc(L.title)}</h1><p class="muted">${L.grade===2?esc(L.sub||''):(L.unit?esc(L.unitTitle):'Đề ôn tập HK1')}</p>
   <div class="tabs" role="tablist">${tabs.map(t=>`<button role="tab" class="${t[0]===tab?'on':''}" data-tab="${t[0]}">${t[1]} <span class="small">(${t[2]})</span></button>`).join('')}</div>${c}</div>`}
 
 /* ---------- exercise ---------- */
@@ -386,7 +411,7 @@ function exView(id){if(!X||X.E.id!==id)startEx(id);if(!X)return`<div class="wrap
   return`<div class="wrap" style="padding-block:24px 0"><div class="ex"><div class="crumb"><a href="#lessons">Bài học</a> / <a href="#lesson-${L.id}" data-tabx="ex">${esc(L.title)}</a> / ${esc(exTitle(E))}</div>
   <h2>${esc(exTitle(E))}</h2><p class="instr">${E.instruction||''}</p>
   ${E.box?`<div class="boxw">${E.box.map(w=>`<span>${esc(w)}</span>`).join('')}</div>`:''}
-  ${E.img?`<div class="pics">${E.img.map(i=>`<img src="img/${esc(i)}" alt="Hình minh họa" loading="lazy">`).join('')}</div>`:''}
+  ${E.img?`<div class="pics">${E.img.map(i=>`<img src="${IB()}${esc(i)}" alt="Hình minh họa" loading="lazy">`).join('')}</div>`:''}
   ${E.passage?`<div class="passage">${E.passage}</div>`:''}
   ${E.items.map((it,i)=>itemHtml(it,i,reveal,g&&g.res[i])).join('')}
   ${X.checked&&g?`<div class="result"><b>${g.c}/${g.n}</b><div><b style="font-size:1.05rem;font-family:var(--body)">${g.n?(g.c/g.n>=.9?'Xuất sắc!':g.c/g.n>=.7?'Làm tốt lắm!':g.c/g.n>=.5?'Khá rồi, thử lại để cao hơn nhé.':'Đọc lại bài và thử lần nữa nhé.'):'Đã hoàn thành'}</b><div class="small muted">Điểm đã được lưu${S.isT?' (chế độ xem của giáo viên không lưu)':''}.</div></div></div>`:''}
@@ -400,10 +425,10 @@ function qText(it,i,done,res){const q=it.q||'';let k=0;
   return q}
 function itemHtml(it,i,done,res){const a=X.ans[i];const ok=res?res.every(Boolean):null;
   const noq=!it.q&&!it.img&&['match','cat','order'].includes(it.t);
-  const head=noq?'':`<div class="q"><span class="num">${i+1}</span><div>${it.img?`<img src="img/${esc(it.img)}" alt="" loading="lazy" style="display:block;margin-bottom:8px">`:''}${qText(it,i,done,res)}${it.hint&&it.t!=='text'?` <span class="hint">${esc(it.hint)}</span>`:''}</div></div>`;
+  const head=noq?'':`<div class="q"><span class="num">${i+1}</span><div>${it.img?`<img src="${IB()}${esc(it.img)}" alt="" loading="lazy" style="display:block;margin-bottom:8px">`:''}${qText(it,i,done,res)}${it.hint&&it.t!=='text'?` <span class="hint">${esc(it.hint)}</span>`:''}</div></div>`;
   let body='';
   if(it.t==='mcq')body=`<div class="opts">${it.opts.map((o,j)=>`<label class="opt ${a===j&&!done?'sel':''} ${done&&j===it.a?'ok':''} ${done&&a===j&&j!==it.a?'bad':''}"><input type="radio" name="q${i}" data-i="${i}" value="${j}" ${a===j?'checked':''} ${done?'disabled':''}><span class="L">${L2[j]}</span><span>${o}</span></label>`).join('')}</div>`;
-  else if(it.t==='tf'){const o=it.ng?[['T','True'],['F','False'],['NG','Not given']]:[['T','True'],['F','False']];body=`<div class="tfs">${o.map(([v,t])=>`<label class="opt ${a===v&&!done?'sel':''} ${done&&v===it.a?'ok':''} ${done&&a===v&&v!==it.a?'bad':''}"><input type="radio" name="q${i}" data-i="${i}" value="${v}" ${a===v?'checked':''} ${done?'disabled':''}><span>${t}</span></label>`).join('')}</div>`}
+  else if(it.t==='tf'){const o=it.tick?[['T','✔ Đúng'],['F','✘ Sai']]:it.ng?[['T','True'],['F','False'],['NG','Not given']]:[['T','True'],['F','False']];body=`<div class="tfs">${o.map(([v,t])=>`<label class="opt ${a===v&&!done?'sel':''} ${done&&v===it.a?'ok':''} ${done&&a===v&&v!==it.a?'bad':''}"><input type="radio" name="q${i}" data-i="${i}" value="${v}" ${a===v?'checked':''} ${done?'disabled':''}><span>${t}</span></label>`).join('')}</div>`}
   else if(it.t==='text')body=`<textarea class="txt ${done?(ok?'ok-in':'bad-in'):''}" rows="2" data-i="${i}" placeholder="${esc(it.hint||'Viết câu trả lời của bạn…')}" ${done?'disabled':''}>${esc(a||'')}</textarea>`;
   else if(it.t==='open')body=`<textarea class="txt" rows="3" data-i="${i}" placeholder="Viết câu trả lời của bạn…" ${done?'':''}>${esc(a||'')}</textarea>${done?`<div class="sol">Gợi ý: ${esc(it.sample||'')}</div>`:''}`;
   else if(it.t==='order')body=`<div>${it.steps.map((s,k)=>`<div class="ordrow"><select class="sel-in ${done&&res?(res[k]?'ok-in':'bad-in'):''}" data-i="${i}" data-k="${k}" ${done?'disabled':''}><option value="">–</option>${it.steps.map((_,n)=>`<option value="${n+1}" ${Number((a||[])[k])===n+1?'selected':''}>${n+1}</option>`).join('')}</select><span>${s}</span></div>`).join('')}</div>`;
@@ -427,7 +452,7 @@ function progressView(){const p=S.prof,o=overall(p),td=today();
   const stat={P:['Có mặt','good'],L:['Muộn','warn'],E:['Có phép','sky'],A:['Vắng','bad']};
   return`<div class="wrap" style="padding-block:28px"><div class="eyebrow">Của tôi</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Tiến độ học tập</h1>
   <div class="grid g4" style="margin-block:20px"><div class="card kpi"><b>${pct(o.pct)}</b><span>Hoàn thành (${o.done}/${o.total} bộ bài)</span></div><div class="card kpi"><b>${pct(o.avg)}</b><span>Điểm trung bình</span></div><div class="card kpi"><b>${streak(p)}</b><span>Ngày học liên tiếp</span></div><div class="card kpi"><b>${dates.filter(d=>(S.att[d]&&S.att[d][S.uid]!=='A')||(p.ci&&p.ci[d])).length}</b><span>Buổi có mặt</span></div></div>
-  <h2 style="margin-block:24px 12px;font-size:1.5rem">Theo từng bài</h2><div class="tw"><table class="t"><thead><tr><th>Bài</th><th>Hoàn thành</th><th>Điểm TB</th><th></th></tr></thead><tbody>${S.lessons.map(L=>{const s=lessonStat(p,L);return`<tr class="click" data-go="lesson-${L.id}"><td><b>${L.unit?'Unit '+L.unit+' · ':''}${esc(L.title)}</b></td><td style="min-width:150px"><div class="row"><div class="bar"><i style="width:${s.pct*100}%"></i></div><span class="small muted">${s.done}/${s.total}</span></div></td><td>${pct(s.avg)}</td><td><a class="chip" href="#lesson-${L.id}">Mở</a></td></tr>`}).join('')}</tbody></table></div>
+  <h2 style="margin-block:24px 12px;font-size:1.5rem">Theo từng bài</h2><div class="tw"><table class="t"><thead><tr><th>Bài</th><th>Hoàn thành</th><th>Điểm TB</th><th></th></tr></thead><tbody>${S.lessons.map(L=>{const s=lessonStat(p,L);return`<tr class="click" data-go="lesson-${L.id}"><td><b>${esc(L.label)}</b></td><td style="min-width:150px"><div class="row"><div class="bar"><i style="width:${s.pct*100}%"></i></div><span class="small muted">${s.done}/${s.total}</span></div></td><td>${pct(s.avg)}</td><td><a class="chip" href="#lesson-${L.id}">Mở</a></td></tr>`}).join('')}</tbody></table></div>
   <h2 style="margin-block:28px 12px;font-size:1.5rem">Điểm danh</h2>${dates.length?`<div class="grid g4">${dates.slice(0,12).map(d=>{const m=S.att[d]&&S.att[d][S.uid];const s=stat[m]||(p.ci&&p.ci[d]?stat.P:null);return`<div class="card kpi" style="padding:14px 16px"><b style="font-size:1.1rem">${fmtD(d)}</b>${s?`<span class="chip ${s[1]}" style="width:fit-content">${s[0]}</span>`:''}</div>`}).join('')}</div>`:'<p class="muted">Chưa có dữ liệu điểm danh.</p>'}</div>`}
 
 /* ---------- teacher ---------- */
@@ -450,17 +475,17 @@ function credsCard(){const c=S.creds;if(!c||!c.length)return'';
 function studentsView(){const st=visibleStudents(),td=today();
   return`<div class="wrap" style="padding-block:28px"><div class="sechead"><div><div class="eyebrow">Quản lý</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Học sinh</h1></div><div class="row">${clsSel()}<button class="btn ghost sm" data-act="exportp">Xuất CSV</button></div></div>
   ${credsCard()}
-  <details class="card" style="margin-bottom:16px" ${st.length?'':'open'}><summary style="cursor:pointer;font-weight:800">Thêm học sinh</summary><p class="muted small" style="margin:10px 0">Mỗi dòng một học sinh theo dạng <b>Họ tên; lớp</b>. Hệ thống tự tạo tên đăng nhập và mật khẩu.</p>
-  <div class="field"><textarea id="stu-list" rows="5" placeholder="Nguyễn Văn An; 6A&#10;Trần Thị Bình; 6A" aria-label="Danh sách học sinh"></textarea></div><button class="btn" data-act="addstu">Tạo tài khoản</button></details>
+  <details class="card" style="margin-bottom:16px" ${st.length?'':'open'}><summary style="cursor:pointer;font-weight:800">Thêm học sinh</summary><p class="muted small" style="margin:10px 0">Mỗi dòng một học sinh theo dạng <b>Họ tên; lớp; khối</b> (khối là 2 hoặc 6, có thể bỏ trống nếu muốn học sinh tự chọn). Hệ thống tự tạo tên đăng nhập và mật khẩu.</p>
+  <div class="field"><textarea id="stu-list" rows="5" placeholder="Nguyễn Văn An; 6A; 6&#10;Lê Bảo Châu; 2A; 2" aria-label="Danh sách học sinh"></textarea></div><button class="btn" data-act="addstu">Tạo tài khoản</button></details>
   ${st.length?`<div class="tw"><table class="t"><thead><tr><th>Họ tên</th><th>Lớp</th><th>Hoàn thành</th><th>Điểm TB</th><th>Hoạt động</th><th>Hôm nay</th></tr></thead><tbody>${st.map(x=>{const o=overall(x.p),a=attOf(x.uid,td);return`<tr class="click" data-sel="${esc(x.uid)}"><td><b>${esc(x.p.name||'')}</b><div class="small muted">${esc(x.uid)}</div></td><td>${esc(x.p.cls||'')}</td><td style="min-width:150px"><div class="row"><div class="bar"><i style="width:${o.pct*100}%"></i></div><span class="small">${pct(o.pct)}</span></div></td><td>${pct(o.avg)}</td><td class="small muted">${fmtT(x.p.last)}</td><td>${a?`<span class="chip ${a==='P'?'good':a==='L'?'warn':a==='E'?'sky':'bad'}">${{P:'Có mặt',L:'Muộn',E:'Có phép',A:'Vắng'}[a]}</span>`:'<span class="muted">—</span>'}</td></tr>`}).join('')}</tbody></table></div>`:'<div class="card"><p class="muted">Chưa có học sinh nào. Mở mục "Thêm học sinh" ở trên để tạo tài khoản.</p></div>'}</div>`}
 
 function studentDetail(){const p=S.all[S.sel];if(!p)return`<div class="wrap" style="padding:40px 16px"><p>Không tìm thấy học sinh. <a href="#t-students">Quay lại</a></p></div>`;const o=overall(p);const ex=exArr(p);
   const days=Object.keys(S.att).sort();const cnt={P:0,L:0,E:0,A:0};days.forEach(d=>{const a=attOf(S.sel,d);if(a)cnt[a]++});const cl=S.cfg.classes||[];
   return`<div class="wrap" style="padding-block:28px"><div class="crumb"><a href="#t-students">Học sinh</a> / ${esc(p.name||'')}</div><div class="sechead"><div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">${esc(p.name||'')}</h1><p class="muted">Tên đăng nhập <b>${esc(S.sel)}</b> · lớp ${esc(p.cls||'—')} · hoạt động cuối ${fmtT(p.last)}</p></div><div class="row"><button class="btn ghost sm" data-act="newpw">Cấp mật khẩu mới</button><button class="btn danger sm" data-act="delstu" id="delbtn">Xóa học sinh</button></div></div>
   ${S.newpw&&S.newpw.username===S.sel?`<div class="banner">Mật khẩu mới của <b>${esc(S.sel)}</b>: <b style="font-size:1.1rem;letter-spacing:.08em">${esc(S.newpw.password)}</b>. Hãy gửi cho học sinh ngay, mật khẩu này không hiện lại.</div>`:''}
-  ${cl.length?`<div class="row" style="margin-block:8px"><label class="small muted" for="stu-cls">Chuyển lớp:</label><select id="stu-cls" class="sel-in"><option value="">(chưa xếp lớp)</option>${cl.map(c=>`<option ${c===p.cls?'selected':''}>${esc(c)}</option>`).join('')}</select><button class="btn ghost sm" data-act="savecls">Lưu lớp</button></div>`:''}
+  <div class="row" style="margin-block:8px">${cl.length?`<label class="small muted" for="stu-cls">Lớp:</label><select id="stu-cls" class="sel-in"><option value="">(chưa xếp lớp)</option>${cl.map(c=>`<option ${c===p.cls?'selected':''}>${esc(c)}</option>`).join('')}</select>`:''}<label class="small muted" for="stu-grade">Khối:</label><select id="stu-grade" class="sel-in"><option value="">(tự chọn)</option><option value="2" ${String(p.grade)==='2'?'selected':''}>Lớp 2</option><option value="6" ${String(p.grade)==='6'?'selected':''}>Lớp 6</option></select><button class="btn ghost sm" data-act="savecls">Lưu</button></div>
   <div class="grid g4" style="margin-block:16px"><div class="card kpi"><b>${pct(o.pct)}</b><span>Hoàn thành</span></div><div class="card kpi"><b>${pct(o.avg)}</b><span>Điểm trung bình</span></div><div class="card kpi"><b>${streak(p)}</b><span>Ngày học liên tiếp</span></div><div class="card kpi"><b>${cnt.P+cnt.L}/${days.length}</b><span>Buổi có mặt (vắng ${cnt.A}, phép ${cnt.E})</span></div></div>
-  ${S.lessons.map(L=>{const s=lessonStat(p,L);return`<details class="card" style="margin-bottom:10px;padding:14px 18px"><summary style="cursor:pointer;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="flex:1;min-width:140px">${L.unit?'Unit '+L.unit+' · ':''}${esc(L.title)}</b><span class="small muted">${s.done}/${s.total} bộ</span><span class="chip ${s.avg==null?'':s.avg>=.8?'good':s.avg>=.5?'warn':'bad'}">${pct(s.avg)}</span></summary><div style="margin-top:10px">${L.exercises.map(E=>{const r=ex[E.id];return`<div class="row" style="padding:6px 0;border-top:1px solid var(--line)"><span>${esc(exTitle(E))}</span><span class="sp"></span>${r?`<span class="small muted">${fmtT(r.t)}</span><span class="chip ${r.n&&r.c/r.n>=.8?'good':r.n&&r.c/r.n>=.5?'warn':'bad'}">${r.n?r.c+'/'+r.n:'Đã xem'}</span><button class="btn ghost sm" data-reset="${E.id}">Đặt lại</button>`:'<span class="chip">Chưa làm</span>'}</div>`}).join('')}</div></details>`}).join('')}</div>`}
+  ${S.lessons.map(L=>{const s=lessonStat(p,L);return`<details class="card" style="margin-bottom:10px;padding:14px 18px"><summary style="cursor:pointer;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="flex:1;min-width:140px">${esc(L.label)}</b><span class="small muted">${s.done}/${s.total} bộ</span><span class="chip ${s.avg==null?'':s.avg>=.8?'good':s.avg>=.5?'warn':'bad'}">${pct(s.avg)}</span></summary><div style="margin-top:10px">${L.exercises.map(E=>{const r=ex[E.id];return`<div class="row" style="padding:6px 0;border-top:1px solid var(--line)"><span>${esc(exTitle(E))}</span><span class="sp"></span>${r?`<span class="small muted">${fmtT(r.t)}</span><span class="chip ${r.n&&r.c/r.n>=.8?'good':r.n&&r.c/r.n>=.5?'warn':'bad'}">${r.n?r.c+'/'+r.n:'Đã xem'}</span><button class="btn ghost sm" data-reset="${E.id}">Đặt lại</button>`:'<span class="chip">Chưa làm</span>'}</div>`}).join('')}</div></details>`}).join('')}</div>`}
 
 function attendanceView(){const d=S.date,st=visibleStudents(),code=S.cfg.checkin&&S.cfg.checkin.date===d?S.cfg.checkin.code:null;
   const sum={P:0,L:0,E:0,A:0,'':0};st.forEach(x=>sum[attOf(x.uid,d)||'']++);
@@ -473,7 +498,7 @@ function assignView(){const cl=S.cfg.classes||[],as=S.cfg.assignments||[];
   return`<div class="wrap" style="padding-block:28px"><div class="eyebrow">Giao bài</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Bài tập &amp; thông báo</h1>
   <div class="grid g2" style="margin-top:20px;align-items:start">
   <div class="card"><h3 style="margin-bottom:14px">Giao bài mới</h3><div class="field"><label for="as-t">Tiêu đề</label><input id="as-t" placeholder="Ôn tập Unit 4"></div>
-   <div class="field"><label>Chọn bài học</label><div class="checks">${S.lessons.map(L=>`<label><input type="checkbox" name="as-l" value="${L.id}">${L.unit?'U'+L.unit+' · ':''}${esc(L.title)}</label>`).join('')}</div></div>
+   <div class="field"><label>Chọn bài học</label><div class="checks">${S.lessons.map(L=>`<label><input type="checkbox" name="as-l" value="${L.id}">${esc(L.label)}</label>`).join('')}</div></div>
    <div class="grid g2" style="gap:12px"><div class="field"><label for="as-c">Lớp</label><select id="as-c"><option value="">Tất cả lớp</option>${cl.map(c=>`<option>${esc(c)}</option>`).join('')}</select></div><div class="field"><label for="as-d">Hạn nộp</label><input type="date" id="as-d"></div></div>
    <button class="btn" data-act="addas">Giao bài</button></div>
   <div style="display:grid;gap:16px"><div class="card"><h3 style="margin-bottom:12px">Đã giao (${as.length})</h3>${as.length?as.map((a,i)=>{const st=Object.values(S.all).filter(p=>!a.cls||p.cls===a.cls);const pr=st.length?st.reduce((x,p)=>x+assignStat(p,a).pct,0)/st.length:0;return`<div style="padding:8px 0;border-top:1px solid var(--line)"><div class="row"><b>${esc(a.title)}</b><span class="sp"></span><button class="btn danger sm" data-delas="${i}">Xóa</button></div><div class="small muted">${a.cls?'Lớp '+esc(a.cls):'Tất cả lớp'}${a.due?' · hạn '+fmtD(a.due):''} · ${(a.lessons||[]).length} bài · ${st.length} học sinh</div><div class="bar" style="margin-top:6px"><i style="width:${pr*100}%"></i></div></div>`}).join(''):'<p class="muted">Chưa giao bài nào.</p>'}</div>
@@ -488,8 +513,9 @@ async function putAtt(d,m){try{await API.call('PUT','attendance/'+d,{marks:m})}c
 
 /* ---------- events ---------- */
 document.addEventListener('click',async e=>{
-  const t=e.target.closest('[data-act],[data-tab],[data-go],[data-sel],[data-mark],[data-say],[data-reset],[data-delas],[data-delcls],[data-tabx]');if(!t)return;
+  const t=e.target.closest('[data-grade],[data-act],[data-tab],[data-go],[data-sel],[data-mark],[data-say],[data-reset],[data-delas],[data-delcls],[data-tabx]');if(!t)return;
   const D=t.dataset;
+  if(D.grade){setGrade(+D.grade);X=null;S.tab='vocab';S.cls='';const h=S.isT?'t-home':'home';if(location.hash.slice(1)!==h)location.hash=h;render();scrollTo(0,0);return}
   if(D.tab){S.tab=D.tab;render();return}
   if(D.tabx){S.tab='ex';return}
   if(D.go){location.hash=D.go;return}
@@ -503,7 +529,7 @@ document.addEventListener('click',async e=>{
   if(act==='login'||act==='setup'){const u=($('#lg-user').value||'').trim().toLowerCase(),pw=$('#lg-pass').value||'';const er=$('#lg-err');er.textContent='';t.disabled=true;
     try{const body=act==='login'?{username:u,password:pw}:{name:$('#lg-name').value,username:u,password:pw,code:$('#lg-code')?$('#lg-code').value:''};
       const r=await API.call('POST',act==='login'?'login':'setup',body);API.tok=r.token;lsSet(TK,r.token);S.fail='';
-      applyMe(await API.call('GET','me'));if(S.isT)await loadTeacher();S.needSetup=false;location.hash='';render();scrollTo(0,0)}
+      applyMe(await API.call('GET','me'));if(S.isT)await loadTeacher();initGrade();S.needSetup=false;location.hash='';render();scrollTo(0,0)}
     catch(err){er.textContent=err.message;t.disabled=false}return}
   if(act==='logout'){logout();return}
   if(act==='chpw'){try{await API.call('POST','password',{old:$('#pw-old').value,password:$('#pw-new').value});$('#pw-old').value='';$('#pw-new').value='';toast('Đã đổi mật khẩu')}catch(err){toast(err.message)}return}
@@ -518,12 +544,12 @@ document.addEventListener('click',async e=>{
     putCfg({assignments:(S.cfg.assignments||[]).concat([{id:Date.now().toString(36),title:ti,lessons:ls,cls:$('#as-c').value,due:$('#as-d').value||''}])});toast('Đã giao bài')}
   else if(act==='saveann'){putCfg({announcement:($('#ann').value||'').trim()});toast('Đã lưu thông báo')}
   else if(act==='addcls'){const v=($('#newcls').value||'').trim();if(v&&!(S.cfg.classes||[]).includes(v))putCfg({classes:(S.cfg.classes||[]).concat([v])})}
-  else if(act==='addstu'){const list=($('#stu-list').value||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const[n,c]=l.split(/[;\t]/);return{name:(n||'').trim(),cls:(c||'').trim()}});if(!list.length){toast('Nhập ít nhất một học sinh');return}
+  else if(act==='addstu'){const list=($('#stu-list').value||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const[n,c,g]=l.split(/[;\t]/);return{name:(n||'').trim(),cls:(c||'').trim(),grade:(g||'').trim()}});if(!list.length){toast('Nhập ít nhất một học sinh');return}
     t.disabled=true;try{const r=await API.call('POST','students',{list});S.creds=r.created;await loadTeacher();render();scrollTo(0,0)}catch(err){toast(err.message);t.disabled=false}}
   else if(act==='closec'){S.creds=null;render()}
   else if(act==='exportc'){dl('tai-khoan-hoc-sinh.csv',csv([['Họ tên','Lớp','Tên đăng nhập','Mật khẩu']].concat((S.creds||[]).map(x=>[x.name,x.cls,x.username,x.password]))))}
   else if(act==='newpw'){try{S.newpw=await API.call('POST','students/'+encodeURIComponent(S.sel)+'/password',{});render()}catch(err){toast(err.message)}}
-  else if(act==='savecls'){const v=$('#stu-cls').value;try{await API.call('PATCH','students/'+encodeURIComponent(S.sel),{cls:v});S.all[S.sel].cls=v;toast('Đã đổi lớp');render()}catch(err){toast(err.message)}}
+  else if(act==='savecls'){const v=$('#stu-cls')?$('#stu-cls').value:(S.all[S.sel].cls||'');const g=$('#stu-grade').value;try{await API.call('PATCH','students/'+encodeURIComponent(S.sel),{cls:v,grade:g});S.all[S.sel].cls=v;S.all[S.sel].grade=g;toast('Đã lưu');render()}catch(err){toast(err.message)}}
   else if(act==='delstu'){if(t.dataset.sure){try{await API.call('DELETE','students/'+encodeURIComponent(S.sel));delete S.all[S.sel];location.hash='t-students';toast('Đã xóa học sinh')}catch(err){toast(err.message)}}else{t.dataset.sure='1';t.textContent='Bấm lần nữa để xóa'}}
   else if(act==='exportp'){const st=visibleStudents();const rows=[['Họ tên','Tên đăng nhập','Lớp','Bộ bài đã làm','Tổng số bộ bài','% hoàn thành','Điểm TB (%)','Hoạt động cuối'].concat(S.lessons.map(L=>(L.unit?'U'+L.unit+' ':'')+L.title+' (TB %)'))];
     st.forEach(x=>{const o=overall(x.p);rows.push([x.p.name,x.uid,x.p.cls,o.done,o.total,Math.round(o.pct*100),o.avg==null?'':Math.round(o.avg*100),x.p.last?new Date(x.p.last).toLocaleString('vi-VN'):''].concat(S.lessons.map(L=>{const s=lessonStat(x.p,L);return s.avg==null?'':Math.round(s.avg*100)})))});dl('tien-do-hoc-sinh.csv',csv(rows))}

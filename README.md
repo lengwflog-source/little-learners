@@ -4,7 +4,9 @@ Website độc lập cho học sinh và giáo viên: đăng nhập, làm bài t�
 Không cần cơ sở dữ liệu ngoài: dữ liệu nằm trong **Netlify Blobs** (có sẵn trong Netlify), API chạy bằng **Netlify Functions**.
 
 ## Cấu trúc
-- `public/` – giao diện (index.html), nội dung bài (lessons.json, 26 bài / 272 bộ bài tập / 2.191 câu) và ảnh (img/)
+- `public/` – giao diện (index.html)
+- `public/lessons.json` + `public/img/` – Tiếng Anh lớp 6 (26 bài, 272 bộ bài tập, 2.191 câu)
+- `public/lop2/lessons.json` + `public/lop2/img/` – Tiếng Anh lớp 2 (20 Unit, 139 bộ bài tập, 765 câu có hình)
 - `netlify/functions/api.mjs` – đăng nhập, tiến trình, điểm danh, giao bài, quản lý học sinh
 - `netlify.toml`, `package.json` – cấu hình Netlify
 
@@ -34,3 +36,9 @@ Tên miền riêng: *Domain management → Add a domain*.
 - Đáp án của 2.191 câu được soạn tự động từ file Word (không có đáp án gốc) nên cần giáo viên rà soát. Sửa trực tiếp trong `public/lessons.json` (mỗi câu có trường `a` là đáp án).
 - Hai hình định dạng .wmf trong đề ôn không hiển thị được.
 - Giới hạn gói miễn phí của Netlify áp dụng cho Functions và Blobs; một lớp học thông thường nằm trong giới hạn này.
+
+## Lớp 2 và chọn khối
+- Giáo viên có nút **Lớp 6 | Lớp 2** ở đầu trang để chuyển khối (tiến độ, học sinh, giao bài đều theo khối đang chọn).
+- Khi thêm học sinh, ghi `Họ tên; lớp; khối` (khối là 2 hoặc 6). Học sinh đã có khối chỉ thấy khối của mình. Bỏ trống khối thì học sinh tự chuyển được. Đổi khối trong trang chi tiết học sinh.
+- Muốn thêm khối khác, thêm thư mục `public/lopX/` cùng cấu trúc (lessons.json + img/) rồi nhờ tôi nối vào giao diện.
+- Đáp án lớp 2 do soạn theo hình và đã được kiểm tra chéo; một vài câu "khác âm" trong file gốc có nhiều hơn một đáp án hợp lý (đã ghi chú giải thích trong bài). Sửa trong `public/lop2/lessons.json` (trường `a`).

@@ -64,7 +64,8 @@ async function auth(req) {
 }
 
 /* ---------- helpers ---------- */
-const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "" });
+const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "" });
+const cleanGrade = (g) => (["2", "6"].includes(String(g)) ? String(g) : "");
 const strip = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
 function baseUsername(name) {
   const parts = strip(name).toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/).filter(Boolean);
@@ -229,7 +230,7 @@ async function route(req) {
     const prog = Object.fromEntries(await listAll(DB.progress()));
     const students = (await listAll(DB.users()))
       .map(([, u]) => u).filter((u) => u && u.role === "student")
-      .map((u) => ({ username: u.username, name: u.name, cls: u.cls || "", progress: prog[u.username] || {} }));
+      .map((u) => ({ username: u.username, name: u.name, cls: u.cls || "", grade: u.grade || "", progress: prog[u.username] || {} }));
     return J(200, { students });
   }
   if (a === "students" && !b && m === "POST") {
@@ -239,9 +240,9 @@ async function route(req) {
       const name = str(it.name, 60);
       if (name.length < 2) continue;
       const username = await freeUsername(name), password = genPw();
-      const u = { username, role: "student", name, cls: str(it.cls, 20), ...(await hashPw(password)), created: Date.now() };
+      const u = { username, role: "student", name, cls: str(it.cls, 20), grade: cleanGrade(it.grade), ...(await hashPw(password)), created: Date.now() };
       await DB.users().setJSON(username, u);
-      created.push({ username, password, name, cls: u.cls });
+      created.push({ username, password, name, cls: u.cls, grade: u.grade });
     }
     return J(200, { created });
   }
@@ -251,6 +252,7 @@ async function route(req) {
     if (!u || u.role !== "student") return fail(404, "Không tìm thấy học sinh.");
     if (!c && m === "PATCH") {
       if (typeof body.cls === "string") u.cls = str(body.cls, 20);
+      if (body.grade !== undefined) u.grade = cleanGrade(body.grade);
       if (typeof body.name === "string" && str(body.name, 60).length >= 2) u.name = str(body.name, 60);
       await users.setJSON(b, u);
       return J(200, { ok: true });
