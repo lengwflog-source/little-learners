@@ -3,13 +3,14 @@
 import { getStore } from "@netlify/blobs";
 import crypto from "node:crypto";
 import { REC_MS, fkey, purgeUser } from "../lib/rec.mjs";
+import { aiStore, jobSig, cleanFb, AI_KEEP_MS, MAX_PER_DAY } from "../lib/ai.mjs";
 
 export const config = { path: "/api/*" };
 
 const TZ = process.env.TZ_NAME || "Asia/Ho_Chi_Minh";
 const store = (name) => getStore({ name, consistency: "strong" });
 const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config"), recmeta: () => store("recmeta"), recfiles: () => store("recfiles") };
-const MAX_AUDIO = 2 * 1024 * 1024, MAX_RECS = 150;
+const MAX_AUDIO = 4 * 1024 * 1024, MAX_RECS = 150;
 const isEx = (v) => typeof v === "string" && /^[a-z0-9-]{3,40}$/.test(v);
 const isIdx = (v) => /^\d{1,3}$/.test(String(v));
 
@@ -69,7 +70,7 @@ async function auth(req) {
 
 /* ---------- helpers ---------- */
 const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "" });
-const cleanGrade = (g) => (["2", "3", "6"].includes(String(g)) ? String(g) : "");
+const cleanGrade = (g) => (["2", "3", "6", "9"].includes(String(g)) ? String(g) : "");
 const strip = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
 function baseUsername(name) {
   const parts = strip(name).toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/).filter(Boolean);
@@ -219,7 +220,7 @@ async function route(req) {
     if (!isEx(exId) || !isIdx(idx)) return fail(400, "Bài không hợp lệ.");
     const buf = Buffer.from(await req.arrayBuffer());
     if (!buf.length) return fail(400, "Bản thu rỗng.");
-    if (buf.length > MAX_AUDIO) return fail(413, "Bản thu quá dài (tối đa khoảng 40 giây).");
+    if (buf.length > MAX_AUDIO) return fail(413, "Bản thu quá dài. Hãy thu ngắn hơn rồi thử lại.");
     const mime = (req.headers.get("content-type") || "audio/webm").split(";")[0].trim();
     if (!/^audio\/(webm|ogg|mp4|mpeg|wav|x-m4a|aac)$/.test(mime)) return fail(400, "Định dạng âm thanh không được hỗ trợ.");
     let label = ""; try { label = decodeURIComponent(req.headers.get("x-label") || ""); } catch {}
@@ -257,6 +258,49 @@ async function route(req) {
     const data = await DB.recfiles().get(fkey(who, key), { type: "arrayBuffer" });
     if (!data) return fail(404, "Không tìm thấy bản thu.");
     return new Response(data, { status: 200, headers: { "content-type": mt.mime || "audio/webm", "cache-control": "private, no-store" } });
+  }
+
+  /* IELTS AI feedback (student) */
+  if (a === "ai" && b === "submit" && m === "POST") {
+    if (teacher) return fail(403, "Chỉ học viên mới nộp bài để AI chấm.");
+    const kind = body.kind === "sp" ? "sp" : body.kind === "wr" ? "wr" : "";
+    const exId = str(body.exId, 40), idx = Number(body.idx);
+    if (!kind || !isEx(exId) || !isIdx(idx)) return fail(400, "Bài không hợp lệ.");
+    const text = String(body.text || "").replace(/\r/g, "").trim().slice(0, kind === "wr" ? 5000 : 3500);
+    const wc = (text.match(/[A-Za-z0-9\u00C0-\u024F'’-]+/g) || []).length;
+    if (kind === "wr" && wc < 20) return fail(400, "Bài viết còn quá ngắn (cần ít nhất 20 từ) để chấm.");
+    if (kind === "sp" && wc < 5) return fail(400, "Chưa nhận dạng được lời nói. Hãy nói to, rõ và thử lại (dùng Chrome hoặc Safari).");
+    const store = aiStore();
+    const doc = (await store.get(user.username, { type: "json" })) || {};
+    const now = Date.now(), day = today();
+    for (const k of Object.keys(doc)) if (k !== "_day" && now - (doc[k].t || 0) > AI_KEEP_MS) delete doc[k];
+    const d0 = doc._day && doc._day.date === day ? doc._day : { date: day, n: 0 };
+    if (d0.n >= MAX_PER_DAY) return fail(429, "Hôm nay bạn đã dùng hết " + MAX_PER_DAY + " lượt chấm AI. Hãy quay lại vào ngày mai nhé.");
+    const key = exId + ":" + idx;
+    if (doc[key] && doc[key].status === "pending" && now - doc[key].t < 5 * 60000) return fail(409, "Bài này đang được chấm, vui lòng đợi.");
+    d0.n++; doc._day = d0;
+    doc[key] = { kind, status: "pending", t: now, text, wc, prompt: str(body.prompt, 1500), task: Number(body.task) === 1 ? 1 : 2, minWords: Math.min(400, Math.max(0, Number(body.minWords) || 0)), part: str(body.part, 20), secs: Math.min(600, Math.max(0, Number(body.secs) || 0)), seen: true, fb: null };
+    await store.setJSON(user.username, doc);
+    let ok = false;
+    try {
+      const r = await fetch(new URL(req.url).origin + "/.netlify/functions/ai-grade-background", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ who: user.username, key, sig: await jobSig(user.username + "|" + key) }) });
+      ok = r.ok || r.status === 202;
+    } catch {}
+    if (!ok) { doc[key].status = "error"; doc[key].err = "Không gọi được máy chủ chấm bài. Hãy thử lại."; await store.setJSON(user.username, doc); }
+    return J(200, { key, entry: doc[key] });
+  }
+  if (a === "ai" && b === "mine" && m === "GET") {
+    if (teacher) return J(200, { ai: {} });
+    const doc = (await aiStore().get(user.username, { type: "json" })) || {};
+    delete doc._day;
+    for (const e of Object.values(doc)) delete e.ai;
+    return J(200, { ai: doc });
+  }
+  if (a === "ai" && b === "seen" && m === "PUT") {
+    if (teacher) return J(200, { ok: true });
+    const store = aiStore(), doc = await store.get(user.username, { type: "json" });
+    if (doc && doc[str(body.key, 60)]) { doc[str(body.key, 60)].seen = true; await store.setJSON(user.username, doc); }
+    return J(200, { ok: true });
   }
 
   /* teacher only */
@@ -297,6 +341,48 @@ async function route(req) {
       if (Object.keys(meta).length) await DB.recmeta().setJSON(who, meta); else await DB.recmeta().delete(who);
     }
     return J(200, { ok: true });
+  }
+
+  if (a === "ai" && b === "list" && m === "GET") {
+    const store = aiStore();
+    const { blobs } = await store.list();
+    const items = [];
+    for (const bl of blobs) {
+      const doc = await store.get(bl.key, { type: "json" });
+      const u = doc && (await DB.users().get(bl.key, { type: "json" }));
+      if (!doc || !u) continue;
+      for (const [key, e] of Object.entries(doc)) if (key !== "_day") items.push({ user: bl.key, name: u.name, cls: u.cls || "", grade: u.grade || "", key, ...e });
+    }
+    items.sort((x, y) => y.t - x.t);
+    return J(200, { items: items.slice(0, 400) });
+  }
+  if (a === "ai" && b === "edit" && m === "PUT") {
+    const [, , who, exId, idx] = parts;
+    if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
+    const store = aiStore(), doc = await store.get(who, { type: "json" }), key = exId + ":" + Number(idx);
+    const e = doc && doc[key];
+    if (!e || !e.fb) return fail(404, "Chưa có nhận xét AI để sửa.");
+    const f = body.fb || {};
+    const fb = cleanFb(e.kind, f, e.text);
+    // teacher may also add corrections whose quote is in the text; keep teacher comments even if AI-empty
+    fb.summary = str(f.summary, 1200); fb.improved = str(f.improved, 4000);
+    e.fb = fb; e.edited = true; e.editedAt = Date.now(); e.seen = false;
+    await store.setJSON(who, doc);
+    return J(200, { ok: true, entry: e });
+  }
+  if (a === "ai" && b === "regrade" && m === "POST") {
+    const [, , who, exId, idx] = parts;
+    if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
+    const store = aiStore(), doc = await store.get(who, { type: "json" }), key = exId + ":" + Number(idx);
+    if (!doc || !doc[key]) return fail(404, "Không tìm thấy bài.");
+    doc[key].status = "pending"; doc[key].t = Date.now(); doc[key].err = "";
+    await store.setJSON(who, doc);
+    let ok = false;
+    try {
+      const r = await fetch(new URL(req.url).origin + "/.netlify/functions/ai-grade-background", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ who, key, sig: await jobSig(who + "|" + key) }) });
+      ok = r.ok || r.status === 202;
+    } catch {}
+    return ok ? J(200, { ok: true }) : fail(502, "Không gọi được máy chủ chấm bài.");
   }
 
   if (a === "config" && m === "PUT") {

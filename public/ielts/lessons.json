@@ -1,0 +1,6175 @@
+[
+{
+"id": "ie-u01",
+"unit": 901,
+"unitTitle": "Unit 1 · Relationships",
+"title": "Unit 1",
+"sub": "Các mối quan hệ · Relationships",
+"kind": "lesson",
+"vocab": [
+{
+"en": "relative",
+"pos": "n",
+"vi": "họ hàng",
+"ex": "I have many relatives in the north of Vietnam."
+},
+{
+"en": "neighbour",
+"pos": "n",
+"vi": "hàng xóm",
+"ex": "Our neighbour often brings us fruit from her garden."
+},
+{
+"en": "colleague",
+"pos": "n",
+"vi": "đồng nghiệp",
+"ex": "My colleague helped me to finish the report."
+},
+{
+"en": "stranger",
+"pos": "n",
+"vi": "người lạ",
+"ex": "Do not open the door to a stranger."
+},
+{
+"en": "generous",
+"pos": "adj",
+"vi": "hào phóng",
+"ex": "He is generous and always shares his lunch."
+},
+{
+"en": "reliable",
+"pos": "adj",
+"vi": "đáng tin cậy",
+"ex": "She is a reliable friend; she never forgets a promise."
+},
+{
+"en": "selfish",
+"pos": "adj",
+"vi": "ích kỷ",
+"ex": "It is selfish to take the biggest piece of cake."
+},
+{
+"en": "shy",
+"pos": "adj",
+"vi": "nhút nhát",
+"ex": "My brother is shy and rarely speaks in class."
+},
+{
+"en": "classmate",
+"pos": "n",
+"vi": "bạn cùng lớp",
+"ex": "My classmate sits next to me in English lessons."
+},
+{
+"en": "celebrate",
+"pos": "v",
+"vi": "ăn mừng, tổ chức",
+"ex": "We celebrate New Year with a big family meal."
+},
+{
+"en": "engaged",
+"pos": "adj",
+"vi": "đã đính hôn",
+"ex": "My cousin got engaged last month."
+},
+{
+"en": "anniversary",
+"pos": "n",
+"vi": "ngày kỷ niệm",
+"ex": "My parents' wedding anniversary is in June."
+},
+{
+"en": "congratulate",
+"pos": "v",
+"vi": "chúc mừng",
+"ex": "I called her to congratulate her on her new job."
+},
+{
+"en": "get-together",
+"pos": "n",
+"vi": "buổi họp mặt",
+"ex": "We have a family get-together every Sunday."
+}
+],
+"grammar": [
+{
+"title": "Present simple: câu khẳng định, phủ định, nghi vấn",
+"html": "<p><b>Khẳng định:</b> I/you/we/they + V; he/she/it + V-s/es.<br><b>Phủ định:</b> don't / doesn't + V (nguyên mẫu).<br><b>Nghi vấn:</b> Do/Does + chủ ngữ + V?</p><p><b>Trạng từ tần suất</b> (always, usually, often, sometimes, rarely, never) đứng <i>trước</i> động từ thường và <i>sau</i> to be: <i>She always visits… / She is always…</i></p><p><b>Bị động hiện tại đơn:</b> am/is/are + V3: <i>Rice is grown in the south.</i></p>"
+}
+],
+"exercises": [
+{
+"id": "ie-u01-1",
+"title": "1 · Vocabulary: Match",
+"instruction": "Nối từ với nghĩa tiếng Anh đúng. Match each word with its definition.",
+"items": [
+{
+"t": "match",
+"left": [
+"relative",
+"neighbour",
+"colleague",
+"stranger",
+"generous",
+"reliable",
+"selfish"
+],
+"right": [
+"a person you do not know",
+"happy to give money, help or time to other people",
+"a person you work with",
+"someone you can trust to do what they promise",
+"a person who lives near you",
+"a member of your family",
+"caring only about yourself"
+],
+"a": [
+5,
+4,
+2,
+0,
+1,
+3,
+6
+]
+}
+]
+},
+{
+"id": "ie-u01-2",
+"title": "2 · Vocabulary: Complete the sentences",
+"instruction": "Hoàn thành câu bằng các từ trong khung. Complete the sentences with the words in the box.",
+"items": [
+{
+"t": "fill",
+"q": "I have many ___s in the north of Vietnam.",
+"a": [
+[
+"relative"
+]
+]
+},
+{
+"t": "fill",
+"q": "Our ___ often brings us fruit from her garden.",
+"a": [
+[
+"neighbour"
+]
+]
+},
+{
+"t": "fill",
+"q": "My ___ helped me to finish the report.",
+"a": [
+[
+"colleague"
+]
+]
+},
+{
+"t": "fill",
+"q": "Do not open the door to a ___.",
+"a": [
+[
+"stranger"
+]
+]
+},
+{
+"t": "fill",
+"q": "He is ___ and always shares his lunch.",
+"a": [
+[
+"generous"
+]
+]
+},
+{
+"t": "fill",
+"q": "She is a ___ friend; she never forgets a promise.",
+"a": [
+[
+"reliable"
+]
+]
+},
+{
+"t": "fill",
+"q": "It is ___ to take the biggest piece of cake.",
+"a": [
+[
+"selfish"
+]
+]
+}
+],
+"box": [
+"relative",
+"reliable",
+"generous",
+"colleague",
+"stranger",
+"neighbour",
+"selfish"
+]
+},
+{
+"id": "ie-u01-3",
+"title": "3 · Vocabulary: Choose the word",
+"instruction": "Chọn từ đúng để hoàn thành câu. Choose the correct word.",
+"items": [
+{
+"t": "mcq",
+"q": "My brother is ___ and rarely speaks in class.",
+"opts": [
+"selfish",
+"generous",
+"shy"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "My ___ sits next to me in English lessons.",
+"opts": [
+"classmate",
+"relative",
+"stranger"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "We ___ New Year with a big family meal.",
+"opts": [
+"celebrate",
+"anniversary",
+"congratulate"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "My cousin got ___ last month.",
+"opts": [
+"reliable",
+"engaged",
+"generous"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "My parents' wedding ___ is in June.",
+"opts": [
+"stranger",
+"anniversary",
+"relative"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "I called her to ___ her on her new job.",
+"opts": [
+"congratulate",
+"get-together",
+"stranger"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "We have a family ___ every Sunday.",
+"opts": [
+"get-together",
+"relative",
+"stranger"
+],
+"a": 0
+}
+]
+},
+{
+"id": "ie-u01-4",
+"title": "4 · Grammar: Choose the answer",
+"instruction": "Chọn đáp án đúng. Choose the correct answer.",
+"items": [
+{
+"t": "mcq",
+"q": "My sister ___ in Hue.",
+"opts": [
+"live",
+"lives",
+"living"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "We ___ see our cousins very often because they live abroad.",
+"opts": [
+"don't",
+"doesn't",
+"aren't"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "___ your brother play football at the weekend?",
+"opts": [
+"Do",
+"Does",
+"Is"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "My dad ___ cooks dinner. He can't cook at all.",
+"opts": [
+"always",
+"never",
+"usually"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "How ___ do you meet your friends?",
+"opts": [
+"often",
+"many",
+"long"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Tea ___ in many parts of Asia.",
+"opts": [
+"grows",
+"is grown",
+"are grown"
+],
+"a": 1
+}
+]
+},
+{
+"id": "ie-u01-5",
+"title": "5 · Grammar: Complete the sentences",
+"instruction": "Viết dạng đúng của từ trong ngoặc. Write the correct form.",
+"items": [
+{
+"t": "fill",
+"q": "My cousin ___ (not / live) near us.",
+"a": [
+[
+"doesn't live",
+"does not live"
+]
+]
+},
+{
+"t": "fill",
+"q": "___ (you / see) your grandparents every week?",
+"a": [
+[
+"Do you see"
+]
+]
+},
+{
+"t": "fill",
+"q": "They ___ (not / have) any brothers or sisters.",
+"a": [
+[
+"don't have",
+"do not have"
+]
+]
+},
+{
+"t": "fill",
+"q": "She ___ (be) very friendly.",
+"a": [
+[
+"is"
+]
+]
+},
+{
+"t": "fill",
+"q": "How often ___ (your uncle / visit) you?",
+"a": [
+[
+"does your uncle visit"
+]
+]
+},
+{
+"t": "fill",
+"q": "Rice ___ (grow) in the south of Vietnam.",
+"a": [
+[
+"is grown"
+]
+]
+}
+]
+},
+{
+"id": "ie-u01-6",
+"title": "6 · Reading",
+"instruction": "Đọc bài và trả lời câu hỏi. Read the passage and answer the questions.",
+"items": [
+{
+"t": "note",
+"html": "<p><b>Questions 1–5:</b> Do the statements agree with the passage? Choose <b>True</b>, <b>False</b> or <b>Not given</b>.</p>"
+},
+{
+"t": "tf",
+"q": "Linh knew many people when she arrived in the city.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "A classmate invited Linh to a get-together.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "All the students at the get-together came from big cities.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Linh now meets her friends at the English club every day.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Linh's parents visit her every month.",
+"a": "NG",
+"ng": true
+},
+{
+"t": "note",
+"html": "<p><b>Choose the correct answer.</b></p>"
+},
+{
+"t": "mcq",
+"q": "How did Linh feel at the beginning?",
+"opts": [
+"excited and confident",
+"lonely",
+"angry with her classmates"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "What did the students talk about at the get-together?",
+"opts": [
+"their exams",
+"their families and food",
+"their holidays"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "Linh says that a good friend is someone who…",
+"opts": [
+"lives nearby",
+"is reliable and listens",
+"gives presents"
+],
+"a": 1
+},
+{
+"t": "note",
+"html": "<p><b>Answer the questions.</b> Use no more than THREE words.</p>"
+},
+{
+"t": "text",
+"q": "Where did Linh move to study?",
+"a": [
+"Ho Chi Minh City",
+"HCMC"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "Which club did Linh join?",
+"a": [
+"English club",
+"the English club",
+"the university English club"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "How often does she meet her new friends?",
+"a": [
+"twice a week",
+"two times a week"
+],
+"hint": "Viết câu trả lời ngắn…"
+}
+],
+"passage": "<h3>Making friends in a new city</h3><p>Moving to a new city can be exciting, but it can also feel lonely. When Linh moved from a small village to Ho Chi Minh City to study, she did not know anyone. For the first month, she spent most evenings alone in her room.</p><p>Then a classmate invited her to a weekend get-together. At first, Linh felt shy, but the other students were friendly and asked her many questions. She discovered that two of them also came from villages. They talked about missing their families and about the dishes they loved to cook.</p><p>After that evening, Linh joined the university English club. Now she meets her new friends twice a week. She says that a good friend is someone who is reliable and listens carefully. &quot;I am still homesick sometimes,&quot; she admits, &quot;but I do not feel alone any more.&quot;</p>",
+"band": "R"
+},
+{
+"id": "ie-u01-7",
+"title": "7 · Listening",
+"instruction": "Bấm Nghe cả hội thoại (nghe được nhiều lần) rồi trả lời. Listen to the conversation and answer.",
+"items": [
+{
+"t": "dlg",
+"lines": [
+[
+"Hana",
+"Hi Leo, are you free on Saturday? It's my grandmother's seventieth birthday."
+],
+[
+"Leo",
+"Happy birthday to her! What are you planning?"
+],
+[
+"Hana",
+"A family get-together at our house. About twenty relatives are coming."
+],
+[
+"Leo",
+"Twenty! That's a lot. Who is cooking?"
+],
+[
+"Hana",
+"My aunt is making the main dish, and my cousins are bringing dessert."
+],
+[
+"Leo",
+"What time does it start?"
+],
+[
+"Hana",
+"At six o'clock. Would you like to come? My grandmother loves meeting my friends."
+],
+[
+"Leo",
+"I'd love to, but I have football practice until seven. Can I come later?"
+],
+[
+"Hana",
+"Of course. Come at half past seven. We always sing songs after dinner."
+],
+[
+"Leo",
+"Great! I'll bring a cake."
+]
+],
+"hide": true
+},
+{
+"t": "mcq",
+"q": "Whose birthday is it?",
+"opts": [
+"Hana's",
+"Hana's grandmother's",
+"Leo's cousin's"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "Who is cooking the main dish?",
+"opts": [
+"Hana's mother",
+"Hana's aunt",
+"Leo"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "Why can't Leo come at six o'clock?",
+"opts": [
+"He is ill.",
+"He has football practice.",
+"He is cooking."
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "What will Leo bring?",
+"opts": [
+"a cake",
+"songs",
+"flowers"
+],
+"a": 0
+},
+{
+"t": "fill",
+"q": "How many relatives are coming? ___",
+"a": [
+[
+"twenty",
+"20"
+]
+]
+},
+{
+"t": "fill",
+"q": "The party is at Hana's ___.",
+"a": [
+[
+"house",
+"home"
+]
+]
+},
+{
+"t": "fill",
+"q": "Leo will come at ___.",
+"a": [
+[
+"half past seven",
+"7.30",
+"7:30",
+"seven thirty",
+"half past 7"
+]
+]
+},
+{
+"t": "fill",
+"q": "They always sing ___ after dinner.",
+"a": [
+[
+"songs"
+]
+]
+}
+],
+"band": "L"
+},
+{
+"id": "ie-u01-8",
+"title": "8 · Audio và Video của lớp",
+"instruction": "Nghe audio và xem video theo hướng dẫn của giáo viên. Bài này không chấm điểm.",
+"items": [
+{
+"t": "note",
+"html": "<p>Các file nghe và video bên dưới do giáo viên cung cấp cho Unit này. Hãy nghe, xem và ghi chú ý chính vào vở.</p>"
+}
+],
+"media": [
+{
+"t": "audio",
+"title": "Track 1.1",
+"src": "ielts/AUDIO/UNIT 1/Track 1.1.mp3"
+},
+{
+"t": "audio",
+"title": "Track 1.2",
+"src": "ielts/AUDIO/UNIT 1/Track 1.2.mp3"
+},
+{
+"t": "audio",
+"title": "Track 1.3",
+"src": "ielts/AUDIO/UNIT 1/Track 1.3.mp3"
+},
+{
+"t": "audio",
+"title": "Track 1.4",
+"src": "ielts/AUDIO/UNIT 1/Track 1.4.mp3"
+},
+{
+"t": "audio",
+"title": "Track 1.5",
+"src": "ielts/AUDIO/UNIT 1/Track 1.5.mp3"
+},
+{
+"t": "audio",
+"title": "Track 1.6",
+"src": "ielts/AUDIO/UNIT 1/Track 1.6.mp3"
+},
+{
+"t": "video",
+"title": "Unit 1 · Video 1",
+"src": "ielts/VIDEO/UNIT 1/Unit 1_Video 1.mp4"
+},
+{
+"t": "video",
+"title": "Unit 1 · Video 2",
+"src": "ielts/VIDEO/UNIT 1/Unit 1_Video 2.mp4"
+}
+]
+},
+{
+"id": "ie-u01-9",
+"title": "9 · Writing (AI chấm)",
+"instruction": "Viết bài, nộp để AI chấm theo 4 tiêu chí IELTS. Write your answer and submit it for AI feedback.",
+"items": [
+{
+"t": "wr",
+"task": 1,
+"minWords": 150,
+"prompt": "You have a new neighbour who has just moved in next door. Write a letter to your neighbour. In your letter:\n• introduce yourself and your family\n• invite your neighbour to a meal at your home\n• explain what the area is like.\nWrite at least 150 words. You do NOT need to write any addresses.",
+"hint": "Bắt đầu bằng \"Dear …,\" và kết thúc bằng \"Best wishes,\" hoặc \"Yours sincerely,\"."
+}
+]
+},
+{
+"id": "ie-u01-10",
+"title": "10 · Speaking Part 1 (AI nhận xét)",
+"instruction": "Thu âm câu trả lời cho từng câu hỏi (khoảng 20–30 giây mỗi câu).",
+"items": [
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Do you have a large family or a small family?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "How often do you see your relatives?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Who do you spend most of your free time with?",
+"secs": 60
+}
+]
+},
+{
+"id": "ie-u01-11",
+"title": "11 · Speaking Part 2 (AI nhận xét)",
+"instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút. Prepare for one minute, then speak for one to two minutes.",
+"items": [
+{
+"t": "sp",
+"part": "Part 2",
+"prompt": "Describe a friend you have known for a long time.",
+"card": [
+"who this person is",
+"how you met",
+"what you do together",
+"and explain why this friendship is important to you"
+],
+"secs": 120
+}
+]
+}
+],
+"note": "Relationships"
+},
+{
+"id": "ie-u02",
+"unit": 902,
+"unitTitle": "Unit 2 · Places and Buildings",
+"title": "Unit 2",
+"sub": "Địa điểm và công trình · Places and Buildings",
+"kind": "lesson",
+"vocab": [
+{
+"en": "crowded",
+"pos": "adj",
+"vi": "đông đúc",
+"ex": "The market is crowded on Sunday mornings."
+},
+{
+"en": "quiet",
+"pos": "adj",
+"vi": "yên tĩnh",
+"ex": "I like this quiet street because I can sleep well."
+},
+{
+"en": "historic",
+"pos": "adj",
+"vi": "có tính lịch sử",
+"ex": "Hue has many historic buildings."
+},
+{
+"en": "modern",
+"pos": "adj",
+"vi": "hiện đại",
+"ex": "The airport is large and modern."
+},
+{
+"en": "suburbs",
+"pos": "n",
+"vi": "vùng ngoại ô",
+"ex": "We live in the suburbs, about ten kilometres from the centre."
+},
+{
+"en": "countryside",
+"pos": "n",
+"vi": "miền quê",
+"ex": "My grandparents live in the countryside."
+},
+{
+"en": "landmark",
+"pos": "n",
+"vi": "địa danh nổi tiếng",
+"ex": "The tall tower is a famous landmark in the city."
+},
+{
+"en": "tower block",
+"pos": "n",
+"vi": "tòa nhà cao tầng",
+"ex": "Many families live in a tower block near the river."
+},
+{
+"en": "library",
+"pos": "n",
+"vi": "thư viện",
+"ex": "I borrow two books from the library every week."
+},
+{
+"en": "museum",
+"pos": "n",
+"vi": "bảo tàng",
+"ex": "We visited the museum to learn about local history."
+},
+{
+"en": "neighbourhood",
+"pos": "n",
+"vi": "khu phố",
+"ex": "It is a friendly neighbourhood and everyone knows each other."
+},
+{
+"en": "facilities",
+"pos": "n",
+"vi": "cơ sở vật chất, tiện nghi",
+"ex": "The town has good sports facilities, including a swimming pool."
+},
+{
+"en": "pollution",
+"pos": "n",
+"vi": "ô nhiễm",
+"ex": "Traffic causes a lot of pollution in big cities."
+},
+{
+"en": "rent",
+"pos": "v",
+"vi": "thuê",
+"ex": "Many students rent a small flat near the university."
+}
+],
+"grammar": [
+{
+"title": "There is / There are, so sánh và quantifiers",
+"html": "<p><b>There is</b> + danh từ số ít/không đếm được; <b>There are</b> + danh từ số nhiều.<br><b>So sánh hơn:</b> tính từ ngắn + -er than (quieter than); tính từ dài: more + adj + than (more crowded than).<br><b>So sánh nhất:</b> the + adj-est / the most + adj.</p><p><b>Quantifiers:</b> many/a few/several + danh từ đếm được số nhiều; much/a little + danh từ không đếm được; a lot of dùng cho cả hai.</p>"
+}
+],
+"exercises": [
+{
+"id": "ie-u02-1",
+"title": "1 · Vocabulary: Match",
+"instruction": "Nối từ với nghĩa tiếng Anh đúng. Match each word with its definition.",
+"items": [
+{
+"t": "match",
+"left": [
+"crowded",
+"quiet",
+"historic",
+"modern",
+"suburbs",
+"countryside",
+"landmark"
+],
+"right": [
+"land outside towns and cities with fields and farms",
+"old and important in history",
+"full of people",
+"with very little noise",
+"new in style or design",
+"a famous building or place that people recognise",
+"the areas around the edge of a city where many people live"
+],
+"a": [
+2,
+3,
+1,
+4,
+6,
+0,
+5
+]
+}
+]
+},
+{
+"id": "ie-u02-2",
+"title": "2 · Vocabulary: Complete the sentences",
+"instruction": "Hoàn thành câu bằng các từ trong khung. Complete the sentences with the words in the box.",
+"items": [
+{
+"t": "fill",
+"q": "The market is ___ on Sunday mornings.",
+"a": [
+[
+"crowded"
+]
+]
+},
+{
+"t": "fill",
+"q": "I like this ___ street because I can sleep well.",
+"a": [
+[
+"quiet"
+]
+]
+},
+{
+"t": "fill",
+"q": "Hue has many ___ buildings.",
+"a": [
+[
+"historic"
+]
+]
+},
+{
+"t": "fill",
+"q": "The airport is large and ___.",
+"a": [
+[
+"modern"
+]
+]
+},
+{
+"t": "fill",
+"q": "We live in the ___, about ten kilometres from the centre.",
+"a": [
+[
+"suburbs"
+]
+]
+},
+{
+"t": "fill",
+"q": "My grandparents live in the ___.",
+"a": [
+[
+"countryside"
+]
+]
+},
+{
+"t": "fill",
+"q": "The tall tower is a famous ___ in the city.",
+"a": [
+[
+"landmark"
+]
+]
+}
+],
+"box": [
+"countryside",
+"suburbs",
+"landmark",
+"crowded",
+"quiet",
+"modern",
+"historic"
+]
+},
+{
+"id": "ie-u02-3",
+"title": "3 · Vocabulary: Choose the word",
+"instruction": "Chọn từ đúng để hoàn thành câu. Choose the correct word.",
+"items": [
+{
+"t": "mcq",
+"q": "Many families live in a ___ near the river.",
+"opts": [
+"suburbs",
+"countryside",
+"tower block"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "I borrow two books from the ___ every week.",
+"opts": [
+"library",
+"landmark",
+"suburbs"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "We visited the ___ to learn about local history.",
+"opts": [
+"suburbs",
+"museum",
+"countryside"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "It is a friendly ___ and everyone knows each other.",
+"opts": [
+"suburbs",
+"neighbourhood",
+"tower block"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "The town has good sports ___, including a swimming pool.",
+"opts": [
+"countryside",
+"suburbs",
+"facilities"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "Traffic causes a lot of ___ in big cities.",
+"opts": [
+"suburbs",
+"tower block",
+"pollution"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "Many students ___ a small flat near the university.",
+"opts": [
+"countryside",
+"rent",
+"tower block"
+],
+"a": 1
+}
+]
+},
+{
+"id": "ie-u02-4",
+"title": "4 · Grammar: Choose the answer",
+"instruction": "Chọn đáp án đúng. Choose the correct answer.",
+"items": [
+{
+"t": "mcq",
+"q": "___ a big park near my house.",
+"opts": [
+"There is",
+"There are",
+"It are"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "There ___ two supermarkets in our town.",
+"opts": [
+"is",
+"are",
+"has"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "My new flat is ___ than my old one.",
+"opts": [
+"quieter",
+"more quiet",
+"quietest"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "This is ___ building in the city.",
+"opts": [
+"the tallest",
+"taller",
+"the most tall"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "There isn't ___ traffic in the village.",
+"opts": [
+"many",
+"much",
+"a few"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "The city centre is ___ crowded than the suburbs.",
+"opts": [
+"more",
+"most",
+"much"
+],
+"a": 0
+}
+]
+},
+{
+"id": "ie-u02-5",
+"title": "5 · Grammar: Complete the sentences",
+"instruction": "Viết dạng đúng của từ trong ngoặc. Write the correct form.",
+"items": [
+{
+"t": "fill",
+"q": "There ___ (be) a lot of shops in the city centre.",
+"a": [
+[
+"are"
+]
+]
+},
+{
+"t": "fill",
+"q": "My town is ___ (small) than Hanoi.",
+"a": [
+[
+"smaller"
+]
+]
+},
+{
+"t": "fill",
+"q": "This is the ___ (old) temple in the area.",
+"a": [
+[
+"oldest"
+]
+]
+},
+{
+"t": "fill",
+"q": "There ___ (not / be) a cinema in our village.",
+"a": [
+[
+"isn't",
+"is not"
+]
+]
+},
+{
+"t": "fill",
+"q": "Is your street ___ (noisy) than mine?",
+"a": [
+[
+"noisier"
+]
+]
+},
+{
+"t": "fill",
+"q": "There are ___ (a few) trees in front of the school.",
+"a": [
+[
+"a few"
+]
+]
+}
+]
+},
+{
+"id": "ie-u02-6",
+"title": "6 · Reading",
+"instruction": "Đọc bài và trả lời câu hỏi. Read the passage and answer the questions.",
+"items": [
+{
+"t": "note",
+"html": "<p><b>Questions 1–5:</b> Do the statements agree with the passage? Choose <b>True</b>, <b>False</b> or <b>Not given</b>.</p>"
+},
+{
+"t": "tf",
+"q": "Dong Phu was a busy city ten years ago.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "There is a shopping centre in Dong Phu now.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "The old market is no longer popular.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Some older residents think the town is too noisy.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "The mayor plans to build a new airport.",
+"a": "NG",
+"ng": true
+},
+{
+"t": "note",
+"html": "<p><b>Choose the correct answer.</b></p>"
+},
+{
+"t": "mcq",
+"q": "Why did many young people leave Dong Phu in the past?",
+"opts": [
+"The town was too crowded.",
+"There were no factories or university.",
+"The shops were too expensive."
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "What connects Dong Phu to the coast?",
+"opts": [
+"a railway",
+"a new road",
+"a river"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "What has the mayor promised?",
+"opts": [
+"to close the market",
+"to build a park and plant trees",
+"to stop the traffic"
+],
+"a": 1
+},
+{
+"t": "note",
+"html": "<p><b>Answer the questions.</b> Use no more than THREE words.</p>"
+},
+{
+"t": "text",
+"q": "What did most people grow in the past?",
+"a": [
+"rice"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "How many modern hotels are there?",
+"a": [
+"three",
+"3"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "Which place is still the most popular?",
+"a": [
+"the old market",
+"old market",
+"the market"
+],
+"hint": "Viết câu trả lời ngắn…"
+}
+],
+"passage": "<h3>A town that changed</h3><p>Ten years ago, Dong Phu was a quiet farming town. Most people grew rice, and there were only two small shops on the main street. Young people often left to find work in the big cities, because the town had no factories and no university.</p><p>Today, the town looks very different. A new road connects Dong Phu to the coast, and a large shopping centre opened last year. Visitors can stay in one of three modern hotels or walk through the old market, which is still the most popular place in town.</p><p>Not everyone is happy about the changes. Some older residents say that the streets are now too crowded and that traffic causes noise and pollution. The mayor has promised to build a park and to plant more trees along the river, so that Dong Phu stays a pleasant place to live.</p>",
+"band": "R"
+},
+{
+"id": "ie-u02-7",
+"title": "7 · Listening",
+"instruction": "Bấm Nghe cả hội thoại (nghe được nhiều lần) rồi trả lời. Listen to the conversation and answer.",
+"items": [
+{
+"t": "dlg",
+"lines": [
+[
+"Mai",
+"Excuse me, could you tell me the way to the city museum?"
+],
+[
+"Tom",
+"Sure. Go straight along this road and turn left at the traffic lights."
+],
+[
+"Mai",
+"Is it far?"
+],
+[
+"Tom",
+"No, it's about ten minutes on foot. You'll pass a big library on your right."
+],
+[
+"Mai",
+"And is the museum open today?"
+],
+[
+"Tom",
+"Yes, it opens at nine and closes at five, but it's closed on Mondays."
+],
+[
+"Mai",
+"Today is Tuesday, so that's fine. How much is a ticket?"
+],
+[
+"Tom",
+"It's free for students. You just need to show your student card."
+],
+[
+"Mai",
+"That's great. Thank you very much!"
+],
+[
+"Tom",
+"You're welcome. Enjoy your visit."
+]
+],
+"hide": true
+},
+{
+"t": "mcq",
+"q": "Where does Mai want to go?",
+"opts": [
+"the library",
+"the city museum",
+"the station"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "Where should she turn left?",
+"opts": [
+"at the library",
+"at the traffic lights",
+"at the bank"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "When is the museum closed?",
+"opts": [
+"on Mondays",
+"on Tuesdays",
+"at weekends"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What must students show?",
+"opts": [
+"their passport",
+"their student card",
+"their ticket"
+],
+"a": 1
+},
+{
+"t": "fill",
+"q": "The museum is about ___ minutes away on foot.",
+"a": [
+[
+"ten",
+"10"
+]
+]
+},
+{
+"t": "fill",
+"q": "Mai will pass a big ___ on her right.",
+"a": [
+[
+"library"
+]
+]
+},
+{
+"t": "fill",
+"q": "The museum opens at ___.",
+"a": [
+[
+"nine",
+"9",
+"9.00",
+"9:00",
+"nine o'clock"
+]
+]
+},
+{
+"t": "fill",
+"q": "Tickets are ___ for students.",
+"a": [
+[
+"free"
+]
+]
+}
+],
+"band": "L"
+},
+{
+"id": "ie-u02-8",
+"title": "8 · Audio và Video của lớp",
+"instruction": "Nghe audio và xem video theo hướng dẫn của giáo viên. Bài này không chấm điểm.",
+"items": [
+{
+"t": "note",
+"html": "<p>Các file nghe và video bên dưới do giáo viên cung cấp cho Unit này. Hãy nghe, xem và ghi chú ý chính vào vở.</p>"
+}
+],
+"media": [
+{
+"t": "audio",
+"title": "Track 2.1",
+"src": "ielts/AUDIO/UNIT 2/Track 2.1.mp3"
+},
+{
+"t": "audio",
+"title": "Track 2.2",
+"src": "ielts/AUDIO/UNIT 2/Track 2.2.mp3"
+},
+{
+"t": "audio",
+"title": "Track 2.3",
+"src": "ielts/AUDIO/UNIT 2/Track 2.3.mp3"
+},
+{
+"t": "audio",
+"title": "Track 2.4",
+"src": "ielts/AUDIO/UNIT 2/Track 2.4.mp3"
+},
+{
+"t": "audio",
+"title": "Track 2.5",
+"src": "ielts/AUDIO/UNIT 2/Track 2.5.mp3"
+},
+{
+"t": "audio",
+"title": "Track 2.6",
+"src": "ielts/AUDIO/UNIT 2/Track 2.6.mp3"
+},
+{
+"t": "audio",
+"title": "Track 2.7",
+"src": "ielts/AUDIO/UNIT 2/Track 2.7.mp3"
+},
+{
+"t": "audio",
+"title": "Track 2.8",
+"src": "ielts/AUDIO/UNIT 2/Track 2.8.mp3"
+},
+{
+"t": "video",
+"title": "Unit 2 · Video 1",
+"src": "ielts/VIDEO/UNIT 2/Unit 2_Video 1.mp4"
+},
+{
+"t": "video",
+"title": "Unit 2 · Video 2",
+"src": "ielts/VIDEO/UNIT 2/Unit 2_Video 2.mp4"
+}
+]
+},
+{
+"id": "ie-u02-9",
+"title": "9 · Writing (AI chấm)",
+"instruction": "Viết bài, nộp để AI chấm theo 4 tiêu chí IELTS. Write your answer and submit it for AI feedback.",
+"items": [
+{
+"t": "wr",
+"task": 2,
+"minWords": 250,
+"prompt": "Some people prefer to live in a big city. Others prefer to live in the countryside.\nDiscuss both views and give your own opinion.\nWrite at least 250 words.",
+"hint": "Gợi ý bố cục: mở bài – ưu điểm thành phố – ưu điểm nông thôn – ý kiến của bạn – kết luận."
+}
+]
+},
+{
+"id": "ie-u02-10",
+"title": "10 · Speaking Part 1 (AI nhận xét)",
+"instruction": "Thu âm câu trả lời cho từng câu hỏi (khoảng 20–30 giây mỗi câu).",
+"items": [
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Where do you live now? Is it a quiet or a busy area?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "What do you like most about your neighbourhood?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Would you like to live in a different place in the future? Why?",
+"secs": 60
+}
+]
+},
+{
+"id": "ie-u02-11",
+"title": "11 · Speaking Part 2 (AI nhận xét)",
+"instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút. Prepare for one minute, then speak for one to two minutes.",
+"items": [
+{
+"t": "sp",
+"part": "Part 2",
+"prompt": "Describe a building or place in your town that you like.",
+"card": [
+"where it is",
+"what it looks like",
+"what people do there",
+"and explain why you like it"
+],
+"secs": 120
+}
+]
+}
+],
+"note": "Places and Buildings"
+},
+{
+"id": "ie-u03",
+"unit": 903,
+"unitTitle": "Unit 3 · Education and Employment",
+"title": "Unit 3",
+"sub": "Giáo dục và việc làm · Education and Employment",
+"kind": "lesson",
+"vocab": [
+{
+"en": "degree",
+"pos": "n",
+"vi": "bằng đại học",
+"ex": "She has a degree in engineering."
+},
+{
+"en": "qualification",
+"pos": "n",
+"vi": "bằng cấp, chứng chỉ",
+"ex": "You need a teaching qualification for this job."
+},
+{
+"en": "employer",
+"pos": "n",
+"vi": "nhà tuyển dụng",
+"ex": "The employer offers training to new workers."
+},
+{
+"en": "salary",
+"pos": "n",
+"vi": "tiền lương",
+"ex": "Her salary is higher than last year."
+},
+{
+"en": "interview",
+"pos": "n",
+"vi": "buổi phỏng vấn",
+"ex": "I have a job interview on Friday."
+},
+{
+"en": "apply",
+"pos": "v",
+"vi": "nộp đơn, ứng tuyển",
+"ex": "I want to apply for a job at the hospital."
+},
+{
+"en": "experience",
+"pos": "n",
+"vi": "kinh nghiệm",
+"ex": "He has five years of experience as a driver."
+},
+{
+"en": "career",
+"pos": "n",
+"vi": "sự nghiệp",
+"ex": "She wants a career in medicine."
+},
+{
+"en": "graduate",
+"pos": "v",
+"vi": "tốt nghiệp",
+"ex": "He will graduate from university next summer."
+},
+{
+"en": "scholarship",
+"pos": "n",
+"vi": "học bổng",
+"ex": "She won a scholarship to study abroad."
+},
+{
+"en": "deadline",
+"pos": "n",
+"vi": "hạn chót",
+"ex": "The deadline for the essay is Friday."
+},
+{
+"en": "timetable",
+"pos": "n",
+"vi": "thời khóa biểu",
+"ex": "Check the timetable for the time of your first class."
+},
+{
+"en": "full-time",
+"pos": "adj",
+"vi": "toàn thời gian",
+"ex": "He has a full-time job in a bank."
+},
+{
+"en": "employee",
+"pos": "n",
+"vi": "nhân viên",
+"ex": "The company has more than two hundred employees."
+}
+],
+"grammar": [
+{
+"title": "Past simple và Present perfect (for / since)",
+"html": "<p><b>Past simple</b> (V-ed / bất quy tắc) dùng cho hành động đã kết thúc tại thời điểm xác định: <i>She graduated in 2020.</i></p><p><b>Present perfect</b> (have/has + V3) dùng cho việc bắt đầu trong quá khứ và còn liên quan hiện tại, hoặc kinh nghiệm: <i>I have worked here for three years.</i></p><p><b>for</b> + khoảng thời gian (for five years); <b>since</b> + mốc thời gian (since 2018). <b>yet</b> trong câu phủ định/nghi vấn: <i>I haven't finished yet.</i></p>"
+}
+],
+"exercises": [
+{
+"id": "ie-u03-1",
+"title": "1 · Vocabulary: Match",
+"instruction": "Nối từ với nghĩa tiếng Anh đúng. Match each word with its definition.",
+"items": [
+{
+"t": "match",
+"left": [
+"degree",
+"qualification",
+"employer",
+"salary",
+"interview",
+"apply",
+"experience"
+],
+"right": [
+"a qualification you get from a university",
+"knowledge you get from doing a job",
+"to ask formally for a job or a place on a course",
+"an exam or course that you have passed",
+"a person or company that pays people to work",
+"a meeting where someone asks you questions to decide if you can have a job",
+"the money you receive every month for your job"
+],
+"a": [
+0,
+3,
+4,
+6,
+5,
+2,
+1
+]
+}
+]
+},
+{
+"id": "ie-u03-2",
+"title": "2 · Vocabulary: Complete the sentences",
+"instruction": "Hoàn thành câu bằng các từ trong khung. Complete the sentences with the words in the box.",
+"items": [
+{
+"t": "fill",
+"q": "She has a ___ in engineering.",
+"a": [
+[
+"degree"
+]
+]
+},
+{
+"t": "fill",
+"q": "You need a teaching ___ for this job.",
+"a": [
+[
+"qualification"
+]
+]
+},
+{
+"t": "fill",
+"q": "The ___ offers training to new workers.",
+"a": [
+[
+"employer"
+]
+]
+},
+{
+"t": "fill",
+"q": "Her ___ is higher than last year.",
+"a": [
+[
+"salary"
+]
+]
+},
+{
+"t": "fill",
+"q": "I have a job ___ on Friday.",
+"a": [
+[
+"interview"
+]
+]
+},
+{
+"t": "fill",
+"q": "I want to ___ for a job at the hospital.",
+"a": [
+[
+"apply"
+]
+]
+},
+{
+"t": "fill",
+"q": "He has five years of ___ as a driver.",
+"a": [
+[
+"experience"
+]
+]
+}
+],
+"box": [
+"employer",
+"qualification",
+"degree",
+"apply",
+"experience",
+"interview",
+"salary"
+]
+},
+{
+"id": "ie-u03-3",
+"title": "3 · Vocabulary: Choose the word",
+"instruction": "Chọn từ đúng để hoàn thành câu. Choose the correct word.",
+"items": [
+{
+"t": "mcq",
+"q": "She wants a ___ in medicine.",
+"opts": [
+"employer",
+"salary",
+"career"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "He will ___ from university next summer.",
+"opts": [
+"graduate",
+"qualification",
+"apply"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "She won a ___ to study abroad.",
+"opts": [
+"scholarship",
+"degree",
+"salary"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "The ___ for the essay is Friday.",
+"opts": [
+"salary",
+"qualification",
+"deadline"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "Check the ___ for the time of your first class.",
+"opts": [
+"qualification",
+"employer",
+"timetable"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "He has a ___ job in a bank.",
+"opts": [
+"full-time",
+"apply",
+"deadline"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "The company has more than two hundred ___s.",
+"opts": [
+"employee",
+"qualification",
+"degree"
+],
+"a": 0
+}
+]
+},
+{
+"id": "ie-u03-4",
+"title": "4 · Grammar: Choose the answer",
+"instruction": "Chọn đáp án đúng. Choose the correct answer.",
+"items": [
+{
+"t": "mcq",
+"q": "I ___ at a bank in 2019.",
+"opts": [
+"worked",
+"have worked",
+"work"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "She has worked here ___ five years.",
+"opts": [
+"for",
+"since",
+"ago"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "He has lived in Danang ___ 2018.",
+"opts": [
+"for",
+"since",
+"during"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "___ you ever had a part-time job?",
+"opts": [
+"Did",
+"Have",
+"Do"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "They ___ the exam yesterday.",
+"opts": [
+"took",
+"have taken",
+"take"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "I ___ my homework yet.",
+"opts": [
+"didn't finish",
+"haven't finished",
+"don't finish"
+],
+"a": 1
+}
+]
+},
+{
+"id": "ie-u03-5",
+"title": "5 · Grammar: Complete the sentences",
+"instruction": "Viết dạng đúng của từ trong ngoặc. Write the correct form.",
+"items": [
+{
+"t": "fill",
+"q": "She ___ (graduate) from university in 2020.",
+"a": [
+[
+"graduated"
+]
+]
+},
+{
+"t": "fill",
+"q": "I ___ (work) here since 2021.",
+"a": [
+[
+"have worked",
+"'ve worked"
+]
+]
+},
+{
+"t": "fill",
+"q": "How long ___ (you / study) English?",
+"a": [
+[
+"have you studied"
+]
+]
+},
+{
+"t": "fill",
+"q": "He ___ (not / apply) for the job yet.",
+"a": [
+[
+"hasn't applied",
+"has not applied"
+]
+]
+},
+{
+"t": "fill",
+"q": "We ___ (visit) the school last week.",
+"a": [
+[
+"visited"
+]
+]
+},
+{
+"t": "fill",
+"q": "My sister ___ (be) a teacher for ten years.",
+"a": [
+[
+"has been"
+]
+]
+}
+]
+},
+{
+"id": "ie-u03-6",
+"title": "6 · Reading",
+"instruction": "Đọc bài và trả lời câu hỏi. Read the passage and answer the questions.",
+"items": [
+{
+"t": "note",
+"html": "<p><b>Questions 1–5:</b> Do the statements agree with the passage? Choose <b>True</b>, <b>False</b> or <b>Not given</b>.</p>"
+},
+{
+"t": "tf",
+"q": "Minh studies full-time at a university.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Minh receives a salary.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "His colleagues were impatient with him.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Most apprentices find a full-time job within three months.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Minh wants to open his own factory.",
+"a": "NG",
+"ng": true
+},
+{
+"t": "note",
+"html": "<p><b>Choose the correct answer.</b></p>"
+},
+{
+"t": "mcq",
+"q": "How many days a week does Minh work at the factory?",
+"opts": [
+"two",
+"three",
+"five"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "How did Minh feel at first?",
+"opts": [
+"nervous",
+"bored",
+"proud"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What do some students dislike about the system?",
+"opts": [
+"the salary",
+"studying and working in the same week",
+"the technical college"
+],
+"a": 1
+},
+{
+"t": "note",
+"html": "<p><b>Answer the questions.</b> Use no more than THREE words.</p>"
+},
+{
+"t": "text",
+"q": "How old is Minh?",
+"a": [
+"nineteen",
+"19"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "Who showed Minh how to use the machines?",
+"a": [
+"his supervisor",
+"supervisor",
+"the supervisor"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "How long before he could repair simple engine problems?",
+"a": [
+"six months",
+"6 months"
+],
+"hint": "Viết câu trả lời ngắn…"
+}
+],
+"passage": "<h3>Learning while working</h3><p>In many countries, young people can combine study and work through apprenticeships. Minh, who is nineteen, spends three days a week at a car factory and two days at a technical college. He earns a small salary and does not have to pay for his course.</p><p>&quot;At first I was nervous because everything was new,&quot; Minh says. &quot;My supervisor showed me how to use the machines safely, and my colleagues were very patient.&quot; After six months, he could repair simple engine problems on his own.</p><p>Not every student likes this system. Some say it is tiring to study and work in the same week. Others worry that they will miss the social life of a university. However, studies show that most apprentices find a full-time job within three months of finishing their course, which is faster than many graduates.</p>",
+"band": "R"
+},
+{
+"id": "ie-u03-7",
+"title": "7 · Listening",
+"instruction": "Bấm Nghe cả hội thoại (nghe được nhiều lần) rồi trả lời. Listen to the conversation and answer.",
+"items": [
+{
+"t": "dlg",
+"lines": [
+[
+"Sara",
+"Good morning, Dan. Please sit down. Thank you for coming."
+],
+[
+"Dan",
+"Good morning. Thank you for inviting me."
+],
+[
+"Sara",
+"You are applying for the sales assistant job. Do you have any experience?"
+],
+[
+"Dan",
+"Yes. I worked in a shoe shop for two years while I was at college."
+],
+[
+"Sara",
+"Good. Why do you want to work here?"
+],
+[
+"Dan",
+"Your company is famous for its customer service, and I would like to learn from the team."
+],
+[
+"Sara",
+"The job is full-time, and you would work from Tuesday to Saturday. Is that a problem?"
+],
+[
+"Dan",
+"No, that's fine. I'm free every day."
+],
+[
+"Sara",
+"The salary is eight million dong a month. Can you start on the first of March?"
+],
+[
+"Dan",
+"Yes, I can. I would be very happy to start then."
+]
+],
+"hide": true
+},
+{
+"t": "mcq",
+"q": "What job is Dan applying for?",
+"opts": [
+"sales assistant",
+"teacher",
+"manager"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "How long did Dan work in the shoe shop?",
+"opts": [
+"six months",
+"two years",
+"five years"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "Which days would Dan work?",
+"opts": [
+"Monday to Friday",
+"Tuesday to Saturday",
+"Saturday and Sunday"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "Why does Dan want the job?",
+"opts": [
+"The company is close to his home.",
+"The company is famous for customer service.",
+"The pay is very high."
+],
+"a": 1
+},
+{
+"t": "fill",
+"q": "The job is ___.",
+"a": [
+[
+"full-time",
+"full time"
+]
+]
+},
+{
+"t": "fill",
+"q": "The salary is ___ million dong a month.",
+"a": [
+[
+"eight",
+"8"
+]
+]
+},
+{
+"t": "fill",
+"q": "Dan can start on the first of ___.",
+"a": [
+[
+"March"
+]
+]
+},
+{
+"t": "fill",
+"q": "Dan worked in a ___ shop.",
+"a": [
+[
+"shoe"
+]
+]
+}
+],
+"band": "L"
+},
+{
+"id": "ie-u03-8",
+"title": "8 · Audio và Video của lớp",
+"instruction": "Nghe audio và xem video theo hướng dẫn của giáo viên. Bài này không chấm điểm.",
+"items": [
+{
+"t": "note",
+"html": "<p>Các file nghe và video bên dưới do giáo viên cung cấp cho Unit này. Hãy nghe, xem và ghi chú ý chính vào vở.</p>"
+}
+],
+"media": [
+{
+"t": "audio",
+"title": "Track 3.1",
+"src": "ielts/AUDIO/UNIT 3/Track 3.1.mp3"
+},
+{
+"t": "audio",
+"title": "Track 3.2",
+"src": "ielts/AUDIO/UNIT 3/Track 3.2.mp3"
+},
+{
+"t": "video",
+"title": "Unit 3 · Video 1",
+"src": "ielts/VIDEO/UNIT 3/Unit 3_Video 1.mp4"
+},
+{
+"t": "video",
+"title": "Unit 3 · Video 2",
+"src": "ielts/VIDEO/UNIT 3/Unit 3_Video 2.mp4"
+}
+]
+},
+{
+"id": "ie-u03-9",
+"title": "9 · Writing (AI chấm)",
+"instruction": "Viết bài, nộp để AI chấm theo 4 tiêu chí IELTS. Write your answer and submit it for AI feedback.",
+"items": [
+{
+"t": "wr",
+"task": 1,
+"minWords": 150,
+"prompt": "You would like to apply for a part-time job at a language centre. Write a letter to the manager. In your letter:\n• say which job you are interested in and where you saw the advertisement\n• explain why you are suitable for the job\n• ask about the working hours and the salary.\nWrite at least 150 words. You do NOT need to write any addresses.",
+"hint": "Bắt đầu bằng \"Dear Sir or Madam,\" và kết thúc bằng \"Yours faithfully,\"."
+}
+]
+},
+{
+"id": "ie-u03-10",
+"title": "10 · Speaking Part 1 (AI nhận xét)",
+"instruction": "Thu âm câu trả lời cho từng câu hỏi (khoảng 20–30 giây mỗi câu).",
+"items": [
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Are you a student or do you have a job?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "What do you enjoy most about your studies or your work?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "What job would you like to do in the future?",
+"secs": 60
+}
+]
+},
+{
+"id": "ie-u03-11",
+"title": "11 · Speaking Part 2 (AI nhận xét)",
+"instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút. Prepare for one minute, then speak for one to two minutes.",
+"items": [
+{
+"t": "sp",
+"part": "Part 2",
+"prompt": "Describe a teacher who helped you to learn something.",
+"card": [
+"who the teacher was",
+"what you learned from this teacher",
+"how the teacher helped you",
+"and explain why this teacher was important to you"
+],
+"secs": 120
+}
+]
+}
+],
+"note": "Education and Employment"
+},
+{
+"id": "ie-u04",
+"unit": 904,
+"unitTitle": "Unit 4 · Food and Drink",
+"title": "Unit 4",
+"sub": "Đồ ăn và thức uống · Food and Drink",
+"kind": "lesson",
+"vocab": [
+{
+"en": "ingredient",
+"pos": "n",
+"vi": "nguyên liệu",
+"ex": "Rice is the main ingredient in this dish."
+},
+{
+"en": "recipe",
+"pos": "n",
+"vi": "công thức nấu ăn",
+"ex": "My grandmother gave me her recipe for fish soup."
+},
+{
+"en": "fresh",
+"pos": "adj",
+"vi": "tươi",
+"ex": "We buy fresh vegetables at the market every morning."
+},
+{
+"en": "spicy",
+"pos": "adj",
+"vi": "cay",
+"ex": "Be careful, this curry is very spicy."
+},
+{
+"en": "bland",
+"pos": "adj",
+"vi": "nhạt nhẽo",
+"ex": "The soup was bland, so I added some salt."
+},
+{
+"en": "nutritious",
+"pos": "adj",
+"vi": "bổ dưỡng",
+"ex": "Beans are cheap and very nutritious."
+},
+{
+"en": "snack",
+"pos": "n",
+"vi": "đồ ăn vặt",
+"ex": "I usually eat a banana as a snack in the afternoon."
+},
+{
+"en": "portion",
+"pos": "n",
+"vi": "khẩu phần",
+"ex": "The portions in this restaurant are very big."
+},
+{
+"en": "takeaway",
+"pos": "n",
+"vi": "đồ ăn mang đi",
+"ex": "We ordered a pizza takeaway because we were tired."
+},
+{
+"en": "appetite",
+"pos": "n",
+"vi": "cảm giác thèm ăn",
+"ex": "I have no appetite when I am ill."
+},
+{
+"en": "vegetarian",
+"pos": "n",
+"vi": "người ăn chay",
+"ex": "My sister is a vegetarian, so she never eats chicken."
+},
+{
+"en": "diet",
+"pos": "n",
+"vi": "chế độ ăn",
+"ex": "A healthy diet includes a lot of fruit and vegetables."
+},
+{
+"en": "boil",
+"pos": "v",
+"vi": "đun sôi, luộc",
+"ex": "Boil the eggs for ten minutes."
+},
+{
+"en": "fry",
+"pos": "v",
+"vi": "chiên, rán",
+"ex": "First, fry the onions until they are soft."
+}
+],
+"grammar": [
+{
+"title": "Danh từ đếm được / không đếm được và các từ chỉ số lượng",
+"html": "<p><b>Đếm được</b> (egg – eggs, apple – apples) và <b>không đếm được</b> (water, rice, sugar, milk).</p><p><b>some</b> dùng trong câu khẳng định và lời mời/đề nghị (<i>Would you like some tea?</i>); <b>any</b> dùng trong câu phủ định và nghi vấn.</p><p><b>many / a few</b> + đếm được số nhiều; <b>much / a little</b> + không đếm được. <b>How many…?</b> / <b>How much…?</b> để hỏi số lượng. <b>a lot of</b> dùng cho cả hai loại.</p>"
+}
+],
+"exercises": [
+{
+"id": "ie-u04-1",
+"title": "1 · Vocabulary: Match",
+"instruction": "Nối từ với nghĩa tiếng Anh đúng. Match each word with its definition.",
+"items": [
+{
+"t": "match",
+"left": [
+"ingredient",
+"recipe",
+"fresh",
+"spicy",
+"bland",
+"nutritious",
+"snack"
+],
+"right": [
+"recently made or picked, not old",
+"a small amount of food eaten between meals",
+"containing substances that are good for your body",
+"instructions for cooking a particular dish",
+"without much flavour",
+"one of the foods you use to make a dish",
+"having a strong, hot flavour"
+],
+"a": [
+5,
+3,
+0,
+6,
+4,
+2,
+1
+]
+}
+]
+},
+{
+"id": "ie-u04-2",
+"title": "2 · Vocabulary: Complete the sentences",
+"instruction": "Hoàn thành câu bằng các từ trong khung. Complete the sentences with the words in the box.",
+"items": [
+{
+"t": "fill",
+"q": "Rice is the main ___ in this dish.",
+"a": [
+[
+"ingredient"
+]
+]
+},
+{
+"t": "fill",
+"q": "My grandmother gave me her ___ for fish soup.",
+"a": [
+[
+"recipe"
+]
+]
+},
+{
+"t": "fill",
+"q": "We buy ___ vegetables at the market every morning.",
+"a": [
+[
+"fresh"
+]
+]
+},
+{
+"t": "fill",
+"q": "Be careful, this curry is very ___.",
+"a": [
+[
+"spicy"
+]
+]
+},
+{
+"t": "fill",
+"q": "The soup was ___, so I added some salt.",
+"a": [
+[
+"bland"
+]
+]
+},
+{
+"t": "fill",
+"q": "Beans are cheap and very ___.",
+"a": [
+[
+"nutritious"
+]
+]
+},
+{
+"t": "fill",
+"q": "I usually eat a banana as a ___ in the afternoon.",
+"a": [
+[
+"snack"
+]
+]
+}
+],
+"box": [
+"bland",
+"spicy",
+"snack",
+"fresh",
+"recipe",
+"ingredient",
+"nutritious"
+]
+},
+{
+"id": "ie-u04-3",
+"title": "3 · Vocabulary: Choose the word",
+"instruction": "Chọn từ đúng để hoàn thành câu. Choose the correct word.",
+"items": [
+{
+"t": "mcq",
+"q": "The ___s in this restaurant are very big.",
+"opts": [
+"ingredient",
+"recipe",
+"portion"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "We ordered a pizza ___ because we were tired.",
+"opts": [
+"ingredient",
+"takeaway",
+"recipe"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "I have no ___ when I am ill.",
+"opts": [
+"recipe",
+"appetite",
+"portion"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "My sister is a ___, so she never eats chicken.",
+"opts": [
+"portion",
+"recipe",
+"vegetarian"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "A healthy ___ includes a lot of fruit and vegetables.",
+"opts": [
+"ingredient",
+"diet",
+"recipe"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "___ the eggs for ten minutes.",
+"opts": [
+"snack",
+"portion",
+"boil"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "First, ___ the onions until they are soft.",
+"opts": [
+"diet",
+"fry",
+"bland"
+],
+"a": 1
+}
+]
+},
+{
+"id": "ie-u04-4",
+"title": "4 · Grammar: Choose the answer",
+"instruction": "Chọn đáp án đúng. Choose the correct answer.",
+"items": [
+{
+"t": "mcq",
+"q": "I'd like ___ water, please.",
+"opts": [
+"some",
+"any",
+"many"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Is there ___ milk in the fridge?",
+"opts": [
+"any",
+"many",
+"a few"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "How ___ sugar do you take in your coffee?",
+"opts": [
+"many",
+"much",
+"few"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "We don't have ___ eggs.",
+"opts": [
+"much",
+"many",
+"a little"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "There is ___ rice in the pot, so we can all eat.",
+"opts": [
+"a few",
+"a little",
+"many"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "I eat ___ vegetables every day.",
+"opts": [
+"a lot of",
+"much",
+"a little"
+],
+"a": 0
+}
+]
+},
+{
+"id": "ie-u04-5",
+"title": "5 · Grammar: Complete the sentences",
+"instruction": "Viết dạng đúng của từ trong ngoặc. Write the correct form.",
+"items": [
+{
+"t": "fill",
+"q": "How ___ apples do you need? (many / much)",
+"a": [
+[
+"many"
+]
+]
+},
+{
+"t": "fill",
+"q": "There isn't ___ bread left. (some / any)",
+"a": [
+[
+"any"
+]
+]
+},
+{
+"t": "fill",
+"q": "We need ___ onions for the soup. (a few / a little)",
+"a": [
+[
+"a few"
+]
+]
+},
+{
+"t": "fill",
+"q": "She puts ___ salt in the soup. (a little / a few)",
+"a": [
+[
+"a little"
+]
+]
+},
+{
+"t": "fill",
+"q": "Would you like ___ tea? (some / any)",
+"a": [
+[
+"some"
+]
+]
+},
+{
+"t": "fill",
+"q": "There aren't ___ restaurants in this village. (much / many)",
+"a": [
+[
+"many"
+]
+]
+}
+]
+},
+{
+"id": "ie-u04-6",
+"title": "6 · Reading",
+"instruction": "Đọc bài và trả lời câu hỏi. Read the passage and answer the questions.",
+"items": [
+{
+"t": "note",
+"html": "<p><b>Questions 1–5:</b> Do the statements agree with the passage? Choose <b>True</b>, <b>False</b> or <b>Not given</b>.</p>"
+},
+{
+"t": "tf",
+"q": "Street sellers start work after sunrise.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "A bowl of noodle soup costs about forty thousand dong.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Doctors say that a traditional breakfast has no vitamins.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "A survey found that 40 per cent of students skip breakfast on school days.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Most street sellers are women.",
+"a": "NG",
+"ng": true
+},
+{
+"t": "note",
+"html": "<p><b>Choose the correct answer.</b></p>"
+},
+{
+"t": "mcq",
+"q": "What is the main idea of paragraph 2?",
+"opts": [
+"Street food is always unhealthy.",
+"A traditional breakfast can be healthy if you are careful.",
+"Noodles are better than meat."
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "Why are young people choosing fast food?",
+"opts": [
+"It is cheaper.",
+"They are in a hurry.",
+"It is healthier."
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "What are teachers worried about?",
+"opts": [
+"Children cannot concentrate in the morning.",
+"Children eat too much.",
+"Children are late for school."
+],
+"a": 0
+},
+{
+"t": "note",
+"html": "<p><b>Answer the questions.</b> Use no more than THREE words.</p>"
+},
+{
+"t": "text",
+"q": "What do customers often sit on?",
+"a": [
+"plastic stools",
+"small plastic stools"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "What does tofu give you?",
+"a": [
+"protein"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "What is it better not to drink all of?",
+"a": [
+"the soup",
+"soup"
+],
+"hint": "Viết câu trả lời ngắn…"
+}
+],
+"passage": "<h3>A bowl of noodles for breakfast</h3><p>In Vietnam, many people eat breakfast outside the home. Street sellers start work before sunrise, preparing broth, noodles and fresh herbs. A bowl of noodle soup costs about forty thousand dong, and customers often sit on small plastic stools on the pavement.</p><p>Doctors say that a traditional breakfast like this can be healthy because it contains protein from meat or tofu, carbohydrates from noodles and vitamins from vegetables. However, some stalls use a lot of salt, so it is better not to drink all of the soup.</p><p>Today more young people are choosing fast food or sweet drinks for breakfast because they are in a hurry. A recent survey in one city found that 40 per cent of students skip breakfast on school days. Teachers are worried because children who do not eat breakfast often find it difficult to concentrate in the morning.</p>",
+"band": "R"
+},
+{
+"id": "ie-u04-7",
+"title": "7 · Listening",
+"instruction": "Bấm Nghe cả hội thoại (nghe được nhiều lần) rồi trả lời. Listen to the conversation and answer.",
+"items": [
+{
+"t": "dlg",
+"lines": [
+[
+"Emma",
+"Good evening. Are you ready to order?"
+],
+[
+"Jack",
+"Yes, please. I'd like the grilled fish with rice."
+],
+[
+"Emma",
+"Would you like a salad or vegetables with that?"
+],
+[
+"Jack",
+"Vegetables, please. Is the fish spicy?"
+],
+[
+"Emma",
+"No, it's quite mild. The chicken curry is the spicy one."
+],
+[
+"Jack",
+"Then I'll have the fish. And a glass of orange juice."
+],
+[
+"Emma",
+"Fresh orange juice, or from a bottle?"
+],
+[
+"Jack",
+"Fresh, please. How long will it take?"
+],
+[
+"Emma",
+"About fifteen minutes. Would you like some bread while you wait?"
+],
+[
+"Jack",
+"Yes, that would be nice. Thank you."
+]
+],
+"hide": true
+},
+{
+"t": "mcq",
+"q": "What does Jack order?",
+"opts": [
+"grilled fish",
+"chicken curry",
+"a salad"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Which dish is spicy?",
+"opts": [
+"the fish",
+"the chicken curry",
+"the soup"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "What does Jack choose to drink?",
+"opts": [
+"fresh orange juice",
+"bottled juice",
+"water"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "How long will the food take?",
+"opts": [
+"five minutes",
+"fifteen minutes",
+"thirty minutes"
+],
+"a": 1
+},
+{
+"t": "fill",
+"q": "Jack would like vegetables with his ___.",
+"a": [
+[
+"fish"
+]
+]
+},
+{
+"t": "fill",
+"q": "The fish is quite ___.",
+"a": [
+[
+"mild"
+]
+]
+},
+{
+"t": "fill",
+"q": "Jack also gets some ___ while he waits.",
+"a": [
+[
+"bread"
+]
+]
+},
+{
+"t": "fill",
+"q": "The food will take about ___ minutes.",
+"a": [
+[
+"fifteen",
+"15"
+]
+]
+}
+],
+"band": "L"
+},
+{
+"id": "ie-u04-8",
+"title": "8 · Audio và Video của lớp",
+"instruction": "Nghe audio và xem video theo hướng dẫn của giáo viên. Bài này không chấm điểm.",
+"items": [
+{
+"t": "note",
+"html": "<p>Các file nghe và video bên dưới do giáo viên cung cấp cho Unit này. Hãy nghe, xem và ghi chú ý chính vào vở.</p>"
+}
+],
+"media": [
+{
+"t": "audio",
+"title": "Track 4.1",
+"src": "ielts/AUDIO/UNIT 4/Track 4.1.mp3"
+},
+{
+"t": "audio",
+"title": "Track 4.2",
+"src": "ielts/AUDIO/UNIT 4/Track 4.2.mp3"
+},
+{
+"t": "audio",
+"title": "Track 4.3",
+"src": "ielts/AUDIO/UNIT 4/Track 4.3.mp3"
+},
+{
+"t": "audio",
+"title": "Track 4.4",
+"src": "ielts/AUDIO/UNIT 4/Track 4.4.mp3"
+},
+{
+"t": "audio",
+"title": "Track 4.5",
+"src": "ielts/AUDIO/UNIT 4/Track 4.5.mp3"
+},
+{
+"t": "audio",
+"title": "Track 4.6",
+"src": "ielts/AUDIO/UNIT 4/Track 4.6.mp3"
+},
+{
+"t": "audio",
+"title": "Track 4.7",
+"src": "ielts/AUDIO/UNIT 4/Track 4.7.mp3"
+},
+{
+"t": "video",
+"title": "Unit 4 · Video 1",
+"src": "ielts/VIDEO/UNIT 4/Unit 4_Video 1.mp4"
+},
+{
+"t": "video",
+"title": "Unit 4 · Video 2",
+"src": "ielts/VIDEO/UNIT 4/Unit 4_Video 2.mp4"
+}
+]
+},
+{
+"id": "ie-u04-9",
+"title": "9 · Writing (AI chấm)",
+"instruction": "Viết bài, nộp để AI chấm theo 4 tiêu chí IELTS. Write your answer and submit it for AI feedback.",
+"items": [
+{
+"t": "wr",
+"task": 2,
+"minWords": 250,
+"prompt": "Nowadays many people eat more fast food than people did in the past.\nWhy is this? Is this a positive or negative development?\nWrite at least 250 words.",
+"hint": "Gợi ý: nêu 2 nguyên nhân (bận rộn, giá rẻ…), sau đó nêu lợi ích và tác hại, rồi kết luận."
+}
+]
+},
+{
+"id": "ie-u04-10",
+"title": "10 · Speaking Part 1 (AI nhận xét)",
+"instruction": "Thu âm câu trả lời cho từng câu hỏi (khoảng 20–30 giây mỗi câu).",
+"items": [
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "What did you eat for breakfast today?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Do you prefer eating at home or in restaurants?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Is there any food that you really dislike?",
+"secs": 60
+}
+]
+},
+{
+"id": "ie-u04-11",
+"title": "11 · Speaking Part 2 (AI nhận xét)",
+"instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút. Prepare for one minute, then speak for one to two minutes.",
+"items": [
+{
+"t": "sp",
+"part": "Part 2",
+"prompt": "Describe a meal that you enjoyed.",
+"card": [
+"what the meal was",
+"where and when you ate it",
+"who you ate it with",
+"and explain why you enjoyed it"
+],
+"secs": 120
+}
+]
+}
+],
+"note": "Food and Drink"
+},
+{
+"id": "ie-u05",
+"unit": 905,
+"unitTitle": "Unit 5 · Consumerism",
+"title": "Unit 5",
+"sub": "Tiêu dùng và mua sắm · Consumerism",
+"kind": "lesson",
+"vocab": [
+{
+"en": "customer",
+"pos": "n",
+"vi": "khách hàng",
+"ex": "The shop assistant helped the customer to choose a jacket."
+},
+{
+"en": "receipt",
+"pos": "n",
+"vi": "biên lai, hóa đơn",
+"ex": "Keep your receipt in case you want to return the shirt."
+},
+{
+"en": "refund",
+"pos": "n",
+"vi": "tiền hoàn lại",
+"ex": "The phone did not work, so I asked for a refund."
+},
+{
+"en": "discount",
+"pos": "n",
+"vi": "giảm giá",
+"ex": "There is a 20 per cent discount on all shoes this week."
+},
+{
+"en": "bargain",
+"pos": "n",
+"vi": "món hời",
+"ex": "These sunglasses were a real bargain."
+},
+{
+"en": "brand",
+"pos": "n",
+"vi": "thương hiệu",
+"ex": "She only buys famous brands of trainers."
+},
+{
+"en": "advertisement",
+"pos": "n",
+"vi": "quảng cáo",
+"ex": "I saw an advertisement for a new phone on TV."
+},
+{
+"en": "afford",
+"pos": "v",
+"vi": "đủ khả năng chi trả",
+"ex": "We cannot afford a big house in the city centre."
+},
+{
+"en": "purchase",
+"pos": "v",
+"vi": "mua",
+"ex": "She decided to purchase a new laptop online."
+},
+{
+"en": "delivery",
+"pos": "n",
+"vi": "giao hàng",
+"ex": "Free delivery is available for orders over 500,000 dong."
+},
+{
+"en": "second-hand",
+"pos": "adj",
+"vi": "đã qua sử dụng",
+"ex": "He bought a second-hand bicycle for half the price."
+},
+{
+"en": "packaging",
+"pos": "n",
+"vi": "bao bì",
+"ex": "Too much plastic packaging is bad for the environment."
+},
+{
+"en": "review",
+"pos": "n",
+"vi": "bài đánh giá",
+"ex": "I read many reviews before I bought the camera."
+},
+{
+"en": "consumer",
+"pos": "n",
+"vi": "người tiêu dùng",
+"ex": "Consumers now spend more time shopping online."
+}
+],
+"grammar": [
+{
+"title": "Tương lai (will / going to) và câu điều kiện loại 0, 1",
+"html": "<p><b>will</b> + V: quyết định tức thời, dự đoán, lời hứa (<i>I think I'll take the blue one.</i>).<br><b>be going to</b> + V: kế hoạch đã có hoặc dự đoán dựa trên bằng chứng (<i>Look at those clouds. It is going to rain.</i>).</p><p><b>Câu điều kiện loại 1:</b> If + hiện tại đơn, will + V (<i>If it rains, we will stay at home.</i>). Không dùng will sau If.<br><b>Loại 0:</b> If + hiện tại đơn, hiện tại đơn (sự thật hiển nhiên): <i>If you heat ice, it melts.</i></p>"
+}
+],
+"exercises": [
+{
+"id": "ie-u05-1",
+"title": "1 · Vocabulary: Match",
+"instruction": "Nối từ với nghĩa tiếng Anh đúng. Match each word with its definition.",
+"items": [
+{
+"t": "match",
+"left": [
+"customer",
+"receipt",
+"refund",
+"discount",
+"bargain",
+"brand",
+"advertisement"
+],
+"right": [
+"a person who buys goods or services from a shop",
+"a piece of paper that shows you have paid for something",
+"money that a shop gives back to you",
+"a name that a company gives to its products",
+"something that costs less than its usual or real value",
+"a message that tries to persuade people to buy something",
+"a lower price than usual"
+],
+"a": [
+0,
+1,
+2,
+6,
+4,
+3,
+5
+]
+}
+]
+},
+{
+"id": "ie-u05-2",
+"title": "2 · Vocabulary: Complete the sentences",
+"instruction": "Hoàn thành câu bằng các từ trong khung. Complete the sentences with the words in the box.",
+"items": [
+{
+"t": "fill",
+"q": "The shop assistant helped the ___ to choose a jacket.",
+"a": [
+[
+"customer"
+]
+]
+},
+{
+"t": "fill",
+"q": "Keep your ___ in case you want to return the shirt.",
+"a": [
+[
+"receipt"
+]
+]
+},
+{
+"t": "fill",
+"q": "The phone did not work, so I asked for a ___.",
+"a": [
+[
+"refund"
+]
+]
+},
+{
+"t": "fill",
+"q": "There is a 20 per cent ___ on all shoes this week.",
+"a": [
+[
+"discount"
+]
+]
+},
+{
+"t": "fill",
+"q": "These sunglasses were a real ___.",
+"a": [
+[
+"bargain"
+]
+]
+},
+{
+"t": "fill",
+"q": "She only buys famous ___s of trainers.",
+"a": [
+[
+"brand"
+]
+]
+},
+{
+"t": "fill",
+"q": "I saw an ___ for a new phone on TV.",
+"a": [
+[
+"advertisement"
+]
+]
+}
+],
+"box": [
+"advertisement",
+"brand",
+"customer",
+"discount",
+"receipt",
+"bargain",
+"refund"
+]
+},
+{
+"id": "ie-u05-3",
+"title": "3 · Vocabulary: Choose the word",
+"instruction": "Chọn từ đúng để hoàn thành câu. Choose the correct word.",
+"items": [
+{
+"t": "mcq",
+"q": "We cannot ___ a big house in the city centre.",
+"opts": [
+"purchase",
+"afford",
+"delivery"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "She decided to ___ a new laptop online.",
+"opts": [
+"purchase",
+"refund",
+"review"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Free ___ is available for orders over 500,000 dong.",
+"opts": [
+"discount",
+"delivery",
+"refund"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "He bought a ___ bicycle for half the price.",
+"opts": [
+"refund",
+"afford",
+"second-hand"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "Too much plastic ___ is bad for the environment.",
+"opts": [
+"customer",
+"packaging",
+"receipt"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "I read many ___s before I bought the camera.",
+"opts": [
+"customer",
+"review",
+"discount"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "___s now spend more time shopping online.",
+"opts": [
+"consumer",
+"discount",
+"refund"
+],
+"a": 0
+}
+]
+},
+{
+"id": "ie-u05-4",
+"title": "4 · Grammar: Choose the answer",
+"instruction": "Chọn đáp án đúng. Choose the correct answer.",
+"items": [
+{
+"t": "mcq",
+"q": "If it ___ tomorrow, we will stay at home.",
+"opts": [
+"rains",
+"will rain",
+"rain"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Look at those dark clouds. It ___ rain.",
+"opts": [
+"is going to",
+"will",
+"is going"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "I ___ buy a new phone next month. I have already saved the money.",
+"opts": [
+"am going to",
+"will",
+"would"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "If you buy two, you ___ a discount.",
+"opts": [
+"get",
+"will get",
+"got"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "I can't decide. I think I ___ the blue one.",
+"opts": [
+"will take",
+"am going to take",
+"take"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Water boils if you ___ it to 100 degrees.",
+"opts": [
+"heat",
+"will heat",
+"heated"
+],
+"a": 0
+}
+]
+},
+{
+"id": "ie-u05-5",
+"title": "5 · Grammar: Complete the sentences",
+"instruction": "Viết dạng đúng của từ trong ngoặc. Write the correct form.",
+"items": [
+{
+"t": "fill",
+"q": "If I ___ (have) enough money, I will buy a car.",
+"a": [
+[
+"have"
+]
+]
+},
+{
+"t": "fill",
+"q": "She ___ (go) to buy shoes this weekend. She has planned it.",
+"a": [
+[
+"is going to go"
+]
+]
+},
+{
+"t": "fill",
+"q": "If the shop ___ (close), we will shop online.",
+"a": [
+[
+"closes"
+]
+]
+},
+{
+"t": "fill",
+"q": "I think the new model ___ (be) very popular.",
+"a": [
+[
+"will be"
+]
+]
+},
+{
+"t": "fill",
+"q": "They ___ (not / buy) it if it is too expensive.",
+"a": [
+[
+"won't buy",
+"will not buy"
+]
+]
+},
+{
+"t": "fill",
+"q": "We ___ (visit) the market tomorrow morning. We have already arranged it.",
+"a": [
+[
+"are going to visit"
+]
+]
+}
+]
+},
+{
+"id": "ie-u05-6",
+"title": "6 · Reading",
+"instruction": "Đọc bài và trả lời câu hỏi. Read the passage and answer the questions.",
+"items": [
+{
+"t": "note",
+"html": "<p><b>Questions 1–5:</b> Do the statements agree with the passage? Choose <b>True</b>, <b>False</b> or <b>Not given</b>.</p>"
+},
+{
+"t": "tf",
+"q": "Big discounts can make customers spend more than they planned.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "The study looked at older people.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Young adults who use social media a lot buy clothes more often.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Experts recommend buying expensive things immediately.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Online shops are cheaper than real shops.",
+"a": "NG",
+"ng": true
+},
+{
+"t": "note",
+"html": "<p><b>Choose the correct answer.</b></p>"
+},
+{
+"t": "mcq",
+"q": "According to psychologists, what makes customers feel they are saving money?",
+"opts": [
+"a big discount",
+"free delivery",
+"a famous brand"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "How does social media affect shopping?",
+"opts": [
+"People want things their friends have.",
+"People shop less.",
+"Prices become lower."
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What is the purpose of a no-spend day?",
+"opts": [
+"to remind people that happiness does not depend on shopping",
+"to save money for travel",
+"to sell old things"
+],
+"a": 0
+},
+{
+"t": "note",
+"html": "<p><b>Answer the questions.</b> Use no more than THREE words.</p>"
+},
+{
+"t": "text",
+"q": "How long should you wait before buying expensive items?",
+"a": [
+"24 hours",
+"twenty-four hours",
+"twenty four hours"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "What should you write before you go shopping?",
+"a": [
+"a shopping list",
+"shopping list"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "Whose reviews should you read?",
+"a": [
+"real customers",
+"customers"
+],
+"hint": "Viết câu trả lời ngắn…"
+}
+],
+"passage": "<h3>Why do we buy things we do not need?</h3><p>Every day, shoppers around the world buy things they do not really need. Psychologists say that advertisements and sales are partly responsible. When a shop offers a big discount, customers feel that they are saving money, even if they are actually spending more than they planned.</p><p>Social media makes the problem bigger. People see friends and famous bloggers wearing new clothes and using new gadgets, and they want the same things. One study found that young adults who spend more than three hours a day on social media buy clothes twice as often as those who spend less than one hour.</p><p>Experts suggest a few simple rules to control spending. Write a shopping list before you go out, wait 24 hours before buying expensive items, and read reviews from real customers. Some families also have a &quot;no-spend&quot; day each week to remind themselves that happiness does not depend on shopping.</p>",
+"band": "R"
+},
+{
+"id": "ie-u05-7",
+"title": "7 · Listening",
+"instruction": "Bấm Nghe cả hội thoại (nghe được nhiều lần) rồi trả lời. Listen to the conversation and answer.",
+"items": [
+{
+"t": "dlg",
+"lines": [
+[
+"Mina",
+"Hello. I bought this jacket yesterday, but it's too small. Can I change it?"
+],
+[
+"Mark",
+"Of course. Do you have your receipt?"
+],
+[
+"Mina",
+"Yes, here it is."
+],
+[
+"Mark",
+"Thank you. Would you like a bigger size, or a refund?"
+],
+[
+"Mina",
+"A bigger size, please. Do you have a medium in blue?"
+],
+[
+"Mark",
+"Let me check. I'm sorry, we only have medium in black."
+],
+[
+"Mina",
+"Then I'd like a refund. How long will it take?"
+],
+[
+"Mark",
+"The money will go back to your card in three to five days."
+],
+[
+"Mina",
+"That's fine. Thank you for your help."
+],
+[
+"Mark",
+"You're welcome. Have a nice day."
+]
+],
+"hide": true
+},
+{
+"t": "mcq",
+"q": "Why does Mina want to return the jacket?",
+"opts": [
+"It is too small.",
+"It is too expensive.",
+"It is the wrong colour."
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What does Mina ask for first?",
+"opts": [
+"a refund",
+"a bigger size",
+"a discount"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "What is the problem with the medium size?",
+"opts": [
+"It is only available in black.",
+"It is too expensive.",
+"It is damaged."
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "How long will the refund take?",
+"opts": [
+"one day",
+"three to five days",
+"two weeks"
+],
+"a": 1
+},
+{
+"t": "fill",
+"q": "Mina bought the jacket ___.",
+"a": [
+[
+"yesterday"
+]
+]
+},
+{
+"t": "fill",
+"q": "Mina shows her ___.",
+"a": [
+[
+"receipt"
+]
+]
+},
+{
+"t": "fill",
+"q": "The shop only has the jacket in black in size ___.",
+"a": [
+[
+"medium"
+]
+]
+},
+{
+"t": "fill",
+"q": "The money will go back to her ___.",
+"a": [
+[
+"card"
+]
+]
+}
+],
+"band": "L"
+},
+{
+"id": "ie-u05-8",
+"title": "8 · Audio và Video của lớp",
+"instruction": "Nghe audio và xem video theo hướng dẫn của giáo viên. Bài này không chấm điểm.",
+"items": [
+{
+"t": "note",
+"html": "<p>Các file nghe và video bên dưới do giáo viên cung cấp cho Unit này. Hãy nghe, xem và ghi chú ý chính vào vở.</p>"
+}
+],
+"media": [
+{
+"t": "audio",
+"title": "Track 5.1",
+"src": "ielts/AUDIO/UNIT 5/Track 5.1.mp3"
+},
+{
+"t": "audio",
+"title": "Track 5.2",
+"src": "ielts/AUDIO/UNIT 5/Track 5.2.mp3"
+},
+{
+"t": "audio",
+"title": "Track 5.3",
+"src": "ielts/AUDIO/UNIT 5/Track 5.3.mp3"
+},
+{
+"t": "video",
+"title": "Unit 5 · Video 1",
+"src": "ielts/VIDEO/UNIT 5/Unit 5_Video 1.mp4"
+},
+{
+"t": "video",
+"title": "Unit 5 · Video 2",
+"src": "ielts/VIDEO/UNIT 5/Unit 5_Video 2.mp4"
+},
+{
+"t": "video",
+"title": "Unit 5 · Video 3",
+"src": "ielts/VIDEO/UNIT 5/Unit 5_Video 3.mp4"
+},
+{
+"t": "video",
+"title": "Unit 5 · Video 4",
+"src": "ielts/VIDEO/UNIT 5/Unit 5_Video 4.mp4"
+},
+{
+"t": "video",
+"title": "Unit 5 · Video 5",
+"src": "ielts/VIDEO/UNIT 5/Unit 5_Video 5.mp4"
+},
+{
+"t": "video",
+"title": "Unit 5 · Video 6",
+"src": "ielts/VIDEO/UNIT 5/Unit 5_Video 6.mp4"
+},
+{
+"t": "video",
+"title": "Unit 5 · Video 7",
+"src": "ielts/VIDEO/UNIT 5/Unit 5_Video 7.mp4"
+}
+]
+},
+{
+"id": "ie-u05-9",
+"title": "9 · Writing (AI chấm)",
+"instruction": "Viết bài, nộp để AI chấm theo 4 tiêu chí IELTS. Write your answer and submit it for AI feedback.",
+"items": [
+{
+"t": "wr",
+"task": 1,
+"minWords": 150,
+"prompt": "You bought a pair of headphones online, but they do not work properly. Write a letter to the shop manager. In your letter:\n• explain what you bought and when you bought it\n• describe the problem\n• say what you would like the shop to do.\nWrite at least 150 words. You do NOT need to write any addresses.",
+"hint": "Dùng \"Dear Sir or Madam,\" và kết thúc bằng \"Yours faithfully,\"."
+}
+]
+},
+{
+"id": "ie-u05-10",
+"title": "10 · Speaking Part 1 (AI nhận xét)",
+"instruction": "Thu âm câu trả lời cho từng câu hỏi (khoảng 20–30 giây mỗi câu).",
+"items": [
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Do you enjoy shopping?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Do you prefer shopping online or in shops?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "What was the last thing you bought?",
+"secs": 60
+}
+]
+},
+{
+"id": "ie-u05-11",
+"title": "11 · Speaking Part 2 (AI nhận xét)",
+"instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút. Prepare for one minute, then speak for one to two minutes.",
+"items": [
+{
+"t": "sp",
+"part": "Part 2",
+"prompt": "Describe something you bought that you are happy with.",
+"card": [
+"what you bought",
+"where and when you bought it",
+"how much it cost",
+"and explain why you are happy with it"
+],
+"secs": 120
+}
+]
+}
+],
+"note": "Consumerism"
+},
+{
+"id": "ie-u06",
+"unit": 906,
+"unitTitle": "Unit 6 · Leisure Time",
+"title": "Unit 6",
+"sub": "Thời gian rảnh · Leisure Time",
+"kind": "lesson",
+"vocab": [
+{
+"en": "hobby",
+"pos": "n",
+"vi": "sở thích",
+"ex": "Photography is my favourite hobby."
+},
+{
+"en": "relax",
+"pos": "v",
+"vi": "thư giãn",
+"ex": "I listen to music to relax after school."
+},
+{
+"en": "exercise",
+"pos": "n",
+"vi": "tập thể dục",
+"ex": "Regular exercise is good for your heart."
+},
+{
+"en": "outdoor",
+"pos": "adj",
+"vi": "ngoài trời",
+"ex": "My family loves outdoor activities like camping."
+},
+{
+"en": "indoor",
+"pos": "adj",
+"vi": "trong nhà",
+"ex": "We played indoor football because it was raining."
+},
+{
+"en": "keen",
+"pos": "adj",
+"vi": "say mê, ham thích",
+"ex": "He is keen on cycling and rides every weekend."
+},
+{
+"en": "adventure",
+"pos": "n",
+"vi": "cuộc phiêu lưu",
+"ex": "They went on an adventure holiday in the mountains."
+},
+{
+"en": "entertainment",
+"pos": "n",
+"vi": "giải trí",
+"ex": "There is plenty of entertainment in the city, such as cinemas and theatres."
+},
+{
+"en": "member",
+"pos": "n",
+"vi": "thành viên",
+"ex": "I became a member of the swimming club last year."
+},
+{
+"en": "competition",
+"pos": "n",
+"vi": "cuộc thi",
+"ex": "She won the national painting competition."
+},
+{
+"en": "spectator",
+"pos": "n",
+"vi": "khán giả",
+"ex": "Thousands of spectators came to the stadium."
+},
+{
+"en": "social",
+"pos": "adj",
+"vi": "mang tính xã hội",
+"ex": "The club organises social events every month."
+},
+{
+"en": "creative",
+"pos": "adj",
+"vi": "sáng tạo",
+"ex": "My sister is very creative; she designs her own clothes."
+},
+{
+"en": "bored",
+"pos": "adj",
+"vi": "chán",
+"ex": "I get bored when I have nothing to do at the weekend."
+}
+],
+"grammar": [
+{
+"title": "Động từ + V-ing / to V",
+"html": "<p><b>+ V-ing:</b> enjoy, like, love, hate, can't stand, finish, keep, be good at, be interested in.<br><b>+ to V:</b> want, hope, decide, plan, need, would like, learn.</p><p>V-ing cũng có thể làm chủ ngữ: <i>Swimming is good for your health.</i></p><p>Sau giới từ luôn dùng V-ing: <i>I am interested in learning the guitar.</i></p>"
+}
+],
+"exercises": [
+{
+"id": "ie-u06-1",
+"title": "1 · Vocabulary: Match",
+"instruction": "Nối từ với nghĩa tiếng Anh đúng. Match each word with its definition.",
+"items": [
+{
+"t": "match",
+"left": [
+"hobby",
+"relax",
+"exercise",
+"outdoor",
+"indoor",
+"keen",
+"adventure"
+],
+"right": [
+"inside a building",
+"an exciting experience, often with some danger",
+"very interested in doing something",
+"happening outside, not inside a building",
+"to rest and feel calm",
+"an activity you enjoy doing in your free time",
+"physical activity that keeps you healthy"
+],
+"a": [
+5,
+4,
+6,
+3,
+0,
+2,
+1
+]
+}
+]
+},
+{
+"id": "ie-u06-2",
+"title": "2 · Vocabulary: Complete the sentences",
+"instruction": "Hoàn thành câu bằng các từ trong khung. Complete the sentences with the words in the box.",
+"items": [
+{
+"t": "fill",
+"q": "Photography is my favourite ___.",
+"a": [
+[
+"hobby"
+]
+]
+},
+{
+"t": "fill",
+"q": "I listen to music to ___ after school.",
+"a": [
+[
+"relax"
+]
+]
+},
+{
+"t": "fill",
+"q": "Regular ___ is good for your heart.",
+"a": [
+[
+"exercise"
+]
+]
+},
+{
+"t": "fill",
+"q": "My family loves ___ activities like camping.",
+"a": [
+[
+"outdoor"
+]
+]
+},
+{
+"t": "fill",
+"q": "We played ___ football because it was raining.",
+"a": [
+[
+"indoor"
+]
+]
+},
+{
+"t": "fill",
+"q": "He is ___ on cycling and rides every weekend.",
+"a": [
+[
+"keen"
+]
+]
+},
+{
+"t": "fill",
+"q": "They went on an ___ holiday in the mountains.",
+"a": [
+[
+"adventure"
+]
+]
+}
+],
+"box": [
+"adventure",
+"outdoor",
+"keen",
+"relax",
+"hobby",
+"exercise",
+"indoor"
+]
+},
+{
+"id": "ie-u06-3",
+"title": "3 · Vocabulary: Choose the word",
+"instruction": "Chọn từ đúng để hoàn thành câu. Choose the correct word.",
+"items": [
+{
+"t": "mcq",
+"q": "There is plenty of ___ in the city, such as cinemas and theatres.",
+"opts": [
+"hobby",
+"entertainment",
+"adventure"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "I became a ___ of the swimming club last year.",
+"opts": [
+"member",
+"hobby",
+"entertainment"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "She won the national painting ___.",
+"opts": [
+"competition",
+"entertainment",
+"hobby"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Thousands of ___s came to the stadium.",
+"opts": [
+"hobby",
+"spectator",
+"entertainment"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "The club organises ___ events every month.",
+"opts": [
+"keen",
+"outdoor",
+"social"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "My sister is very ___; she designs her own clothes.",
+"opts": [
+"creative",
+"social",
+"outdoor"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "I get ___ when I have nothing to do at the weekend.",
+"opts": [
+"indoor",
+"bored",
+"keen"
+],
+"a": 1
+}
+]
+},
+{
+"id": "ie-u06-4",
+"title": "4 · Grammar: Choose the answer",
+"instruction": "Chọn đáp án đúng. Choose the correct answer.",
+"items": [
+{
+"t": "mcq",
+"q": "I enjoy ___ to music.",
+"opts": [
+"listening",
+"to listen",
+"listen"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "She wants ___ a new hobby.",
+"opts": [
+"to start",
+"starting",
+"start"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "He decided ___ a football club.",
+"opts": [
+"joining",
+"to join",
+"join"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "___ is a good way to relax.",
+"opts": [
+"Swim",
+"Swimming",
+"To swimming"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "My brother can't stand ___ up early.",
+"opts": [
+"get",
+"getting",
+"to get"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "I'd like ___ you to my party.",
+"opts": [
+"to invite",
+"inviting",
+"invite"
+],
+"a": 0
+}
+]
+},
+{
+"id": "ie-u06-5",
+"title": "5 · Grammar: Complete the sentences",
+"instruction": "Viết dạng đúng của từ trong ngoặc. Write the correct form.",
+"items": [
+{
+"t": "fill",
+"q": "We enjoy ___ (play) board games.",
+"a": [
+[
+"playing"
+]
+]
+},
+{
+"t": "fill",
+"q": "She hopes ___ (win) the competition.",
+"a": [
+[
+"to win"
+]
+]
+},
+{
+"t": "fill",
+"q": "He is good at ___ (draw).",
+"a": [
+[
+"drawing"
+]
+]
+},
+{
+"t": "fill",
+"q": "I'd like ___ (learn) the guitar.",
+"a": [
+[
+"to learn"
+]
+]
+},
+{
+"t": "fill",
+"q": "They stopped ___ (watch) TV and went outside.",
+"a": [
+[
+"watching"
+]
+]
+},
+{
+"t": "fill",
+"q": "Do you want ___ (come) with us?",
+"a": [
+[
+"to come"
+]
+]
+}
+]
+},
+{
+"id": "ie-u06-6",
+"title": "6 · Reading",
+"instruction": "Đọc bài và trả lời câu hỏi. Read the passage and answer the questions.",
+"items": [
+{
+"t": "note",
+"html": "<p><b>Questions 1–5:</b> Do the statements agree with the passage? Choose <b>True</b>, <b>False</b> or <b>Not given</b>.</p>"
+},
+{
+"t": "tf",
+"q": "Board games have become popular among young adults.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Game cafés usually offer fewer than a hundred games.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Players need a screen to play board games.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Some good games are expensive.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Most café customers are university students.",
+"a": "NG",
+"ng": true
+},
+{
+"t": "note",
+"html": "<p><b>Choose the correct answer.</b></p>"
+},
+{
+"t": "mcq",
+"q": "What do customers usually pay for in game cafés?",
+"opts": [
+"each hour of play",
+"each game they win",
+"the food only"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Why do teachers like board games?",
+"opts": [
+"They teach children to plan, count and solve problems.",
+"They are cheap.",
+"They are short."
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What do some cafés allow members to do?",
+"opts": [
+"borrow games",
+"sell games",
+"design games"
+],
+"a": 0
+},
+{
+"t": "note",
+"html": "<p><b>Answer the questions.</b> Use no more than THREE words.</p>"
+},
+{
+"t": "text",
+"q": "How many games does a typical café offer?",
+"a": [
+"more than three hundred",
+"more than 300",
+"over 300",
+"300",
+"three hundred"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "How much does one popular game cost?",
+"a": [
+"two million dong",
+"2 million dong",
+"about two million dong"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "What can people do before they decide to buy?",
+"a": [
+"try them for free",
+"try games for free",
+"try the game"
+],
+"hint": "Viết câu trả lời ngắn…"
+}
+],
+"passage": "<h3>The return of board games</h3><p>In recent years, board games have become popular again, especially among young adults. Cafés where customers can play games with friends have opened in many cities. A typical café offers more than three hundred different games, and people usually pay a small fee for each hour.</p><p>Fans say that board games are a good way to relax without a screen. Players have to talk to each other, so the games are also social. Teachers like them too, because many games teach children to plan, count and solve problems.</p><p>However, some players complain that good games are expensive. One popular game costs about two million dong, which is a lot for a student. For this reason, many cafés allow members to borrow games or to try them for free before they decide to buy.</p>",
+"band": "R"
+},
+{
+"id": "ie-u06-7",
+"title": "7 · Listening",
+"instruction": "Bấm Nghe cả hội thoại (nghe được nhiều lần) rồi trả lời. Listen to the conversation and answer.",
+"items": [
+{
+"t": "dlg",
+"lines": [
+[
+"Lan",
+"Hi Nam, I'm thinking of joining a sports club. Which one do you recommend?"
+],
+[
+"Nam",
+"I go to the swimming club. It meets on Tuesday and Thursday evenings."
+],
+[
+"Lan",
+"How much does it cost?"
+],
+[
+"Nam",
+"Membership is two hundred thousand dong a month, and that includes a coach."
+],
+[
+"Lan",
+"That sounds reasonable. Do I need to bring anything?"
+],
+[
+"Nam",
+"Just a swimming costume and a towel. They have lockers for your bag."
+],
+[
+"Lan",
+"Great. Is it for beginners too?"
+],
+[
+"Nam",
+"Yes, there is a beginners' group at six o'clock."
+],
+[
+"Lan",
+"Perfect. Can I come with you this Tuesday?"
+],
+[
+"Nam",
+"Sure, I'll meet you at the entrance."
+]
+],
+"hide": true
+},
+{
+"t": "mcq",
+"q": "Which club does Nam recommend?",
+"opts": [
+"swimming",
+"tennis",
+"football"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "When does the club meet?",
+"opts": [
+"Monday and Friday",
+"Tuesday and Thursday",
+"at weekends"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "What is included in the membership fee?",
+"opts": [
+"a coach",
+"a swimming costume",
+"a towel"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Where will Nam meet Lan?",
+"opts": [
+"at the entrance",
+"at the café",
+"at the lockers"
+],
+"a": 0
+},
+{
+"t": "fill",
+"q": "Membership costs ___ thousand dong a month.",
+"a": [
+[
+"two hundred",
+"200"
+]
+]
+},
+{
+"t": "fill",
+"q": "Lan needs a swimming costume and a ___.",
+"a": [
+[
+"towel"
+]
+]
+},
+{
+"t": "fill",
+"q": "The beginners' group starts at ___ o'clock.",
+"a": [
+[
+"six",
+"6"
+]
+]
+},
+{
+"t": "fill",
+"q": "Lan will go with Nam this ___.",
+"a": [
+[
+"Tuesday"
+]
+]
+}
+],
+"band": "L"
+},
+{
+"id": "ie-u06-8",
+"title": "8 · Audio và Video của lớp",
+"instruction": "Nghe audio và xem video theo hướng dẫn của giáo viên. Bài này không chấm điểm.",
+"items": [
+{
+"t": "note",
+"html": "<p>Các file nghe và video bên dưới do giáo viên cung cấp cho Unit này. Hãy nghe, xem và ghi chú ý chính vào vở.</p>"
+}
+],
+"media": [
+{
+"t": "audio",
+"title": "Track 6.1",
+"src": "ielts/AUDIO/UNIT 6/Track 6.1.mp3"
+},
+{
+"t": "audio",
+"title": "Track 6.2",
+"src": "ielts/AUDIO/UNIT 6/Track 6.2.mp3"
+},
+{
+"t": "audio",
+"title": "Track 6.4",
+"src": "ielts/AUDIO/UNIT 6/Track 6.4.mp3"
+},
+{
+"t": "audio",
+"title": "Track 6.5",
+"src": "ielts/AUDIO/UNIT 6/Track 6.5.mp3"
+},
+{
+"t": "video",
+"title": "Unit 6 · Video 1",
+"src": "ielts/VIDEO/UNIT 6/Unit 6_Video 1.mp4"
+}
+]
+},
+{
+"id": "ie-u06-9",
+"title": "9 · Writing (AI chấm)",
+"instruction": "Viết bài, nộp để AI chấm theo 4 tiêu chí IELTS. Write your answer and submit it for AI feedback.",
+"items": [
+{
+"t": "wr",
+"task": 2,
+"minWords": 250,
+"prompt": "Some people think that team sports are better for children than individual sports.\nDiscuss both views and give your own opinion.\nWrite at least 250 words.",
+"hint": "Gợi ý: nêu lợi ích của thể thao đồng đội (kỹ năng làm việc nhóm) và thể thao cá nhân (tự tin, linh hoạt), rồi cho ý kiến."
+}
+]
+},
+{
+"id": "ie-u06-10",
+"title": "10 · Speaking Part 1 (AI nhận xét)",
+"instruction": "Thu âm câu trả lời cho từng câu hỏi (khoảng 20–30 giây mỗi câu).",
+"items": [
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "What do you like to do in your free time?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Do you prefer to spend your free time alone or with other people?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Did you have different hobbies when you were a child?",
+"secs": 60
+}
+]
+},
+{
+"id": "ie-u06-11",
+"title": "11 · Speaking Part 2 (AI nhận xét)",
+"instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút. Prepare for one minute, then speak for one to two minutes.",
+"items": [
+{
+"t": "sp",
+"part": "Part 2",
+"prompt": "Describe a hobby or activity that you enjoy.",
+"card": [
+"what the activity is",
+"when and where you do it",
+"who you do it with",
+"and explain why you enjoy it"
+],
+"secs": 120
+}
+]
+}
+],
+"note": "Leisure Time"
+},
+{
+"id": "ie-u07",
+"unit": 907,
+"unitTitle": "Unit 7 · Fame and the Media",
+"title": "Unit 7",
+"sub": "Nổi tiếng và truyền thông · Fame and the Media",
+"kind": "lesson",
+"vocab": [
+{
+"en": "celebrity",
+"pos": "n",
+"vi": "người nổi tiếng",
+"ex": "The singer became a celebrity after her first song."
+},
+{
+"en": "fame",
+"pos": "n",
+"vi": "danh tiếng",
+"ex": "Fame came quickly to the young actor."
+},
+{
+"en": "headline",
+"pos": "n",
+"vi": "tiêu đề báo",
+"ex": "The headline said that the school had won a prize."
+},
+{
+"en": "journalist",
+"pos": "n",
+"vi": "nhà báo",
+"ex": "The journalist interviewed the mayor."
+},
+{
+"en": "article",
+"pos": "n",
+"vi": "bài báo",
+"ex": "I read an interesting article about robots."
+},
+{
+"en": "audience",
+"pos": "n",
+"vi": "khán giả",
+"ex": "The audience clapped for a long time."
+},
+{
+"en": "viral",
+"pos": "adj",
+"vi": "lan truyền chóng mặt",
+"ex": "Her video went viral and millions of people watched it."
+},
+{
+"en": "influencer",
+"pos": "n",
+"vi": "người có sức ảnh hưởng",
+"ex": "The influencer recommended a new brand of trainers."
+},
+{
+"en": "broadcast",
+"pos": "v",
+"vi": "phát sóng",
+"ex": "The match will be broadcast live on Saturday."
+},
+{
+"en": "documentary",
+"pos": "n",
+"vi": "phim tài liệu",
+"ex": "We watched a documentary about wild animals."
+},
+{
+"en": "privacy",
+"pos": "n",
+"vi": "sự riêng tư",
+"ex": "Famous people often complain that they have no privacy."
+},
+{
+"en": "rumour",
+"pos": "n",
+"vi": "tin đồn",
+"ex": "There is a rumour that the singer is moving abroad."
+},
+{
+"en": "publish",
+"pos": "v",
+"vi": "xuất bản",
+"ex": "The company will publish her first novel next year."
+},
+{
+"en": "subscribe",
+"pos": "v",
+"vi": "đăng ký (dài hạn)",
+"ex": "I subscribe to an online news channel."
+}
+],
+"grammar": [
+{
+"title": "Câu bị động và câu tường thuật đơn giản",
+"html": "<p><b>Bị động hiện tại đơn:</b> am/is/are + V3 (<i>English is spoken all over the world.</i>).<br><b>Bị động quá khứ đơn:</b> was/were + V3 (<i>The film was made in 2019.</i>). Dùng <i>by</i> để nêu người thực hiện hành động.</p><p><b>Câu tường thuật:</b> lùi thì một bậc: <i>\"I like this programme.\" → He said that he liked that programme.</i> am/is → was; are → were.</p>"
+}
+],
+"exercises": [
+{
+"id": "ie-u07-1",
+"title": "1 · Vocabulary: Match",
+"instruction": "Nối từ với nghĩa tiếng Anh đúng. Match each word with its definition.",
+"items": [
+{
+"t": "match",
+"left": [
+"celebrity",
+"fame",
+"headline",
+"journalist",
+"article",
+"audience",
+"viral"
+],
+"right": [
+"the title of a newspaper story",
+"the people who watch or listen to a show",
+"a person who writes news stories",
+"the state of being known by many people",
+"a piece of writing in a newspaper or magazine",
+"a famous person",
+"spreading very quickly on the internet"
+],
+"a": [
+5,
+3,
+0,
+2,
+4,
+1,
+6
+]
+}
+]
+},
+{
+"id": "ie-u07-2",
+"title": "2 · Vocabulary: Complete the sentences",
+"instruction": "Hoàn thành câu bằng các từ trong khung. Complete the sentences with the words in the box.",
+"items": [
+{
+"t": "fill",
+"q": "The singer became a ___ after her first song.",
+"a": [
+[
+"celebrity"
+]
+]
+},
+{
+"t": "fill",
+"q": "___ came quickly to the young actor.",
+"a": [
+[
+"fame"
+]
+]
+},
+{
+"t": "fill",
+"q": "The ___ said that the school had won a prize.",
+"a": [
+[
+"headline"
+]
+]
+},
+{
+"t": "fill",
+"q": "The ___ interviewed the mayor.",
+"a": [
+[
+"journalist"
+]
+]
+},
+{
+"t": "fill",
+"q": "I read an interesting ___ about robots.",
+"a": [
+[
+"article"
+]
+]
+},
+{
+"t": "fill",
+"q": "The ___ clapped for a long time.",
+"a": [
+[
+"audience"
+]
+]
+},
+{
+"t": "fill",
+"q": "Her video went ___ and millions of people watched it.",
+"a": [
+[
+"viral"
+]
+]
+}
+],
+"box": [
+"journalist",
+"audience",
+"headline",
+"viral",
+"celebrity",
+"article",
+"fame"
+]
+},
+{
+"id": "ie-u07-3",
+"title": "3 · Vocabulary: Choose the word",
+"instruction": "Chọn từ đúng để hoàn thành câu. Choose the correct word.",
+"items": [
+{
+"t": "mcq",
+"q": "The ___ recommended a new brand of trainers.",
+"opts": [
+"journalist",
+"influencer",
+"celebrity"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "The match will be ___ live on Saturday.",
+"opts": [
+"broadcast",
+"publish",
+"subscribe"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "We watched a ___ about wild animals.",
+"opts": [
+"headline",
+"documentary",
+"celebrity"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "Famous people often complain that they have no ___.",
+"opts": [
+"fame",
+"journalist",
+"privacy"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "There is a ___ that the singer is moving abroad.",
+"opts": [
+"rumour",
+"fame",
+"celebrity"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "The company will ___ her first novel next year.",
+"opts": [
+"journalist",
+"broadcast",
+"publish"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "I ___ to an online news channel.",
+"opts": [
+"fame",
+"broadcast",
+"subscribe"
+],
+"a": 2
+}
+]
+},
+{
+"id": "ie-u07-4",
+"title": "4 · Grammar: Choose the answer",
+"instruction": "Chọn đáp án đúng. Choose the correct answer.",
+"items": [
+{
+"t": "mcq",
+"q": "The film ___ in 2019.",
+"opts": [
+"was made",
+"made",
+"is made"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "English ___ all over the world.",
+"opts": [
+"speaks",
+"is spoken",
+"are spoken"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "The article ___ by a famous journalist.",
+"opts": [
+"wrote",
+"was written",
+"is write"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "She said that she ___ tired.",
+"opts": [
+"is",
+"was",
+"were"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "He said, \"I like this programme.\" He said that he ___ that programme.",
+"opts": [
+"likes",
+"liked",
+"is liking"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "Millions of photos ___ every day.",
+"opts": [
+"upload",
+"are uploaded",
+"is uploaded"
+],
+"a": 1
+}
+]
+},
+{
+"id": "ie-u07-5",
+"title": "5 · Grammar: Complete the sentences",
+"instruction": "Viết dạng đúng của từ trong ngoặc. Write the correct form.",
+"items": [
+{
+"t": "fill",
+"q": "The match ___ (watch) by millions of people last night.",
+"a": [
+[
+"was watched"
+]
+]
+},
+{
+"t": "fill",
+"q": "These books ___ (publish) in London.",
+"a": [
+[
+"are published"
+]
+]
+},
+{
+"t": "fill",
+"q": "She said, \"I am happy.\" She said that she ___ (be) happy.",
+"a": [
+[
+"was"
+]
+]
+},
+{
+"t": "fill",
+"q": "The photo ___ (take) by my sister.",
+"a": [
+[
+"was taken"
+]
+]
+},
+{
+"t": "fill",
+"q": "Newspapers ___ (read) by fewer people today.",
+"a": [
+[
+"are read"
+]
+]
+},
+{
+"t": "fill",
+"q": "He told me, \"I like football.\" He told me that he ___ (like) football.",
+"a": [
+[
+"liked"
+]
+]
+}
+]
+},
+{
+"id": "ie-u07-6",
+"title": "6 · Reading",
+"instruction": "Đọc bài và trả lời câu hỏi. Read the passage and answer the questions.",
+"items": [
+{
+"t": "note",
+"html": "<p><b>Questions 1–5:</b> Do the statements agree with the passage? Choose <b>True</b>, <b>False</b> or <b>Not given</b>.</p>"
+},
+{
+"t": "tf",
+"q": "Hoa started posting videos at the age of seventeen.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Her channel has fewer than 100,000 followers.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Companies sometimes pay Hoa to mention their products.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Hoa thinks that being an influencer is easy.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Hoa earns more money than any other influencer in her city.",
+"a": "NG",
+"ng": true
+},
+{
+"t": "note",
+"html": "<p><b>Choose the correct answer.</b></p>"
+},
+{
+"t": "mcq",
+"q": "How long does it take Hoa to make a ten-minute video?",
+"opts": [
+"about six hours",
+"about ten hours",
+"about one hour"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What is the hardest part of her job, according to Hoa?",
+"opts": [
+"lack of privacy",
+"answering messages",
+"editing"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What does Hoa warn young people about?",
+"opts": [
+"Internet fame can disappear quickly.",
+"Videos are too expensive.",
+"Companies pay too little."
+],
+"a": 0
+},
+{
+"t": "note",
+"html": "<p><b>Answer the questions.</b> Use no more than THREE words.</p>"
+},
+{
+"t": "text",
+"q": "What does Hoa make videos about?",
+"a": [
+"cooking"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "How many followers does her channel have?",
+"a": [
+"800,000",
+"more than 800,000",
+"over 800,000",
+"800000"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "What do companies send her?",
+"a": [
+"free products",
+"products"
+],
+"hint": "Viết câu trả lời ngắn…"
+}
+],
+"passage": "<h3>Life as an influencer</h3><p>Twenty-two-year-old Hoa is one of the best-known young influencers in her city. She started posting videos about cooking at the age of seventeen, and her channel now has more than 800,000 followers. Companies send her free products and pay her to mention them in her videos.</p><p>Hoa admits that her job is not as easy as it looks. She spends about six hours making a video that lasts only ten minutes, and she must answer hundreds of messages every week. &quot;People think I only film for fun,&quot; she says, &quot;but I also do research, shopping and editing.&quot;</p><p>The hardest part, according to Hoa, is the lack of privacy. Strangers sometimes recognise her in restaurants and take photos without asking. She has learned to ignore negative comments, but she warns young people that fame on the internet can disappear as quickly as it arrives.</p>",
+"band": "R"
+},
+{
+"id": "ie-u07-7",
+"title": "7 · Listening",
+"instruction": "Bấm Nghe cả hội thoại (nghe được nhiều lần) rồi trả lời. Listen to the conversation and answer.",
+"items": [
+{
+"t": "dlg",
+"lines": [
+[
+"Emma",
+"Welcome to the show, Ravi. You are a journalist for a national newspaper, aren't you?"
+],
+[
+"Ravi",
+"That's right. I've worked there for eight years."
+],
+[
+"Emma",
+"What does a typical day look like?"
+],
+[
+"Ravi",
+"I usually start at eight with a meeting. We decide which stories will be on the front page."
+],
+[
+"Emma",
+"And then?"
+],
+[
+"Ravi",
+"Then I go out to interview people. Yesterday I spoke to a famous footballer about his new school project."
+],
+[
+"Emma",
+"Do you write the headlines yourself?"
+],
+[
+"Ravi",
+"Not always. The editor often changes them to make them shorter."
+],
+[
+"Emma",
+"What advice would you give to young people who want to become journalists?"
+],
+[
+"Ravi",
+"Read the news every day, and practise writing short articles. Most importantly, always check your facts."
+]
+],
+"hide": true
+},
+{
+"t": "mcq",
+"q": "How long has Ravi worked for the newspaper?",
+"opts": [
+"eight years",
+"three years",
+"eighteen years"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What happens at the eight o'clock meeting?",
+"opts": [
+"They choose the stories for the front page.",
+"They interview a footballer.",
+"They change the headlines."
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Who often changes the headlines?",
+"opts": [
+"the editor",
+"Ravi",
+"the footballer"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What is Ravi's most important advice?",
+"opts": [
+"check your facts",
+"write long articles",
+"work at night"
+],
+"a": 0
+},
+{
+"t": "fill",
+"q": "Ravi works for a ___ newspaper.",
+"a": [
+[
+"national"
+]
+]
+},
+{
+"t": "fill",
+"q": "Yesterday he interviewed a famous ___.",
+"a": [
+[
+"footballer"
+]
+]
+},
+{
+"t": "fill",
+"q": "The footballer has a new ___ project.",
+"a": [
+[
+"school"
+]
+]
+},
+{
+"t": "fill",
+"q": "Young people should practise writing short ___.",
+"a": [
+[
+"articles"
+]
+]
+}
+],
+"band": "L"
+},
+{
+"id": "ie-u07-8",
+"title": "8 · Audio và Video của lớp",
+"instruction": "Nghe audio và xem video theo hướng dẫn của giáo viên. Bài này không chấm điểm.",
+"items": [
+{
+"t": "note",
+"html": "<p>Các file nghe và video bên dưới do giáo viên cung cấp cho Unit này. Hãy nghe, xem và ghi chú ý chính vào vở.</p>"
+}
+],
+"media": [
+{
+"t": "audio",
+"title": "Track 7.1",
+"src": "ielts/AUDIO/UNIT 7/Track 7.1.mp3"
+},
+{
+"t": "audio",
+"title": "Track 7.2",
+"src": "ielts/AUDIO/UNIT 7/Track 7.2.mp3"
+},
+{
+"t": "audio",
+"title": "Track 7.3",
+"src": "ielts/AUDIO/UNIT 7/Track 7.3.mp3"
+},
+{
+"t": "audio",
+"title": "Track 7.4",
+"src": "ielts/AUDIO/UNIT 7/Track 7.4.mp3"
+},
+{
+"t": "video",
+"title": "Unit 7 · Video 1",
+"src": "ielts/VIDEO/UNIT 7/Unit 7_Video 1.mp4"
+}
+]
+},
+{
+"id": "ie-u07-9",
+"title": "9 · Writing (AI chấm)",
+"instruction": "Viết bài, nộp để AI chấm theo 4 tiêu chí IELTS. Write your answer and submit it for AI feedback.",
+"items": [
+{
+"t": "wr",
+"task": 1,
+"minWords": 150,
+"prompt": "You recently watched a TV programme or film that you enjoyed. Write a letter to a friend. In your letter:\n• say what you watched and where you watched it\n• describe what happens in it\n• explain why you think your friend would like it too.\nWrite at least 150 words.",
+"hint": "Thư cho bạn bè dùng giọng thân mật: \"Dear …,\" và kết thúc bằng \"Best wishes,\"."
+}
+]
+},
+{
+"id": "ie-u07-10",
+"title": "10 · Speaking Part 1 (AI nhận xét)",
+"instruction": "Thu âm câu trả lời cho từng câu hỏi (khoảng 20–30 giây mỗi câu).",
+"items": [
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "How do you usually get the news?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Do you watch much television?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Do you follow any famous people on social media?",
+"secs": 60
+}
+]
+},
+{
+"id": "ie-u07-11",
+"title": "11 · Speaking Part 2 (AI nhận xét)",
+"instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút. Prepare for one minute, then speak for one to two minutes.",
+"items": [
+{
+"t": "sp",
+"part": "Part 2",
+"prompt": "Describe a TV programme or video that you enjoyed watching.",
+"card": [
+"what it was",
+"where and when you watched it",
+"what it was about",
+"and explain why you enjoyed it"
+],
+"secs": 120
+}
+]
+}
+],
+"note": "Fame and the Media"
+},
+{
+"id": "ie-u08",
+"unit": 908,
+"unitTitle": "Unit 8 · Natural World",
+"title": "Unit 8",
+"sub": "Thế giới tự nhiên · Natural World",
+"kind": "lesson",
+"vocab": [
+{
+"en": "wildlife",
+"pos": "n",
+"vi": "động vật hoang dã",
+"ex": "National parks protect the wildlife of the region."
+},
+{
+"en": "endangered",
+"pos": "adj",
+"vi": "có nguy cơ tuyệt chủng",
+"ex": "The tiger is an endangered animal."
+},
+{
+"en": "extinct",
+"pos": "adj",
+"vi": "đã tuyệt chủng",
+"ex": "Dinosaurs became extinct millions of years ago."
+},
+{
+"en": "habitat",
+"pos": "n",
+"vi": "môi trường sống",
+"ex": "Forests are the habitat of many birds."
+},
+{
+"en": "species",
+"pos": "n",
+"vi": "loài",
+"ex": "More than ten thousand species of insects live in this forest."
+},
+{
+"en": "rainforest",
+"pos": "n",
+"vi": "rừng nhiệt đới",
+"ex": "The Amazon rainforest is the largest in the world."
+},
+{
+"en": "climate",
+"pos": "n",
+"vi": "khí hậu",
+"ex": "Vietnam has a warm and humid climate."
+},
+{
+"en": "flood",
+"pos": "n",
+"vi": "lũ lụt",
+"ex": "The flood destroyed hundreds of homes."
+},
+{
+"en": "drought",
+"pos": "n",
+"vi": "hạn hán",
+"ex": "The drought lasted two years and farmers lost their crops."
+},
+{
+"en": "recycle",
+"pos": "v",
+"vi": "tái chế",
+"ex": "We recycle paper, glass and plastic bottles."
+},
+{
+"en": "protect",
+"pos": "v",
+"vi": "bảo vệ",
+"ex": "We must protect the sea turtles."
+},
+{
+"en": "renewable",
+"pos": "adj",
+"vi": "có thể tái tạo",
+"ex": "Solar power is a renewable source of energy."
+},
+{
+"en": "conservation",
+"pos": "n",
+"vi": "sự bảo tồn",
+"ex": "She works for a conservation group that saves wild elephants."
+},
+{
+"en": "waste",
+"pos": "n",
+"vi": "rác thải",
+"ex": "Each family produces a lot of food waste."
+}
+],
+"grammar": [
+{
+"title": "Động từ khuyết thiếu: must, have to, should, might, can't",
+"html": "<p><b>must / have to:</b> bắt buộc (<i>All visitors must wear a life jacket.</i>). <b>mustn't:</b> cấm (<i>You mustn't feed the animals.</i>). <b>don't have to:</b> không cần thiết, không bắt buộc.</p><p><b>should / shouldn't:</b> lời khuyên. <b>might:</b> có thể (không chắc). <b>must be / can't be:</b> suy đoán chắc chắn (<i>He can't be at home. His car isn't here.</i>).</p>"
+}
+],
+"exercises": [
+{
+"id": "ie-u08-1",
+"title": "1 · Vocabulary: Match",
+"instruction": "Nối từ với nghĩa tiếng Anh đúng. Match each word with its definition.",
+"items": [
+{
+"t": "match",
+"left": [
+"wildlife",
+"endangered",
+"extinct",
+"habitat",
+"species",
+"rainforest",
+"climate"
+],
+"right": [
+"at risk of disappearing forever",
+"a thick forest in a hot area with a lot of rain",
+"the usual weather of a place",
+"animals and plants that live in nature",
+"no longer existing",
+"the natural home of an animal or plant",
+"a particular type of animal or plant"
+],
+"a": [
+3,
+0,
+4,
+5,
+6,
+1,
+2
+]
+}
+]
+},
+{
+"id": "ie-u08-2",
+"title": "2 · Vocabulary: Complete the sentences",
+"instruction": "Hoàn thành câu bằng các từ trong khung. Complete the sentences with the words in the box.",
+"items": [
+{
+"t": "fill",
+"q": "National parks protect the ___ of the region.",
+"a": [
+[
+"wildlife"
+]
+]
+},
+{
+"t": "fill",
+"q": "The tiger is an ___ animal.",
+"a": [
+[
+"endangered"
+]
+]
+},
+{
+"t": "fill",
+"q": "Dinosaurs became ___ millions of years ago.",
+"a": [
+[
+"extinct"
+]
+]
+},
+{
+"t": "fill",
+"q": "Forests are the ___ of many birds.",
+"a": [
+[
+"habitat"
+]
+]
+},
+{
+"t": "fill",
+"q": "More than ten thousand ___ of insects live in this forest.",
+"a": [
+[
+"species"
+]
+]
+},
+{
+"t": "fill",
+"q": "The Amazon ___ is the largest in the world.",
+"a": [
+[
+"rainforest"
+]
+]
+},
+{
+"t": "fill",
+"q": "Vietnam has a warm and humid ___.",
+"a": [
+[
+"climate"
+]
+]
+}
+],
+"box": [
+"habitat",
+"species",
+"extinct",
+"climate",
+"endangered",
+"rainforest",
+"wildlife"
+]
+},
+{
+"id": "ie-u08-3",
+"title": "3 · Vocabulary: Choose the word",
+"instruction": "Chọn từ đúng để hoàn thành câu. Choose the correct word.",
+"items": [
+{
+"t": "mcq",
+"q": "The ___ destroyed hundreds of homes.",
+"opts": [
+"rainforest",
+"flood",
+"wildlife"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "The ___ lasted two years and farmers lost their crops.",
+"opts": [
+"rainforest",
+"drought",
+"habitat"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "We ___ paper, glass and plastic bottles.",
+"opts": [
+"recycle",
+"climate",
+"drought"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "We must ___ the sea turtles.",
+"opts": [
+"recycle",
+"species",
+"protect"
+],
+"a": 2
+},
+{
+"t": "mcq",
+"q": "Solar power is a ___ source of energy.",
+"opts": [
+"renewable",
+"waste",
+"endangered"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "She works for a ___ group that saves wild elephants.",
+"opts": [
+"conservation",
+"rainforest",
+"habitat"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Each family produces a lot of food ___.",
+"opts": [
+"wildlife",
+"waste",
+"habitat"
+],
+"a": 1
+}
+]
+},
+{
+"id": "ie-u08-4",
+"title": "4 · Grammar: Choose the answer",
+"instruction": "Chọn đáp án đúng. Choose the correct answer.",
+"items": [
+{
+"t": "mcq",
+"q": "You ___ throw rubbish in the river. It is against the law.",
+"opts": [
+"mustn't",
+"don't have to",
+"might not"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "You ___ bring a bag. The shop provides them.",
+"opts": [
+"don't have to",
+"mustn't",
+"should"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "It ___ rain tomorrow, but I'm not sure.",
+"opts": [
+"might",
+"must",
+"have to"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "We ___ use less plastic. It is a good idea.",
+"opts": [
+"should",
+"can't",
+"might not"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "He ___ be at home. His car isn't here.",
+"opts": [
+"can't",
+"should",
+"must"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "All visitors ___ wear a life jacket on the boat. It's a rule.",
+"opts": [
+"must",
+"might",
+"could"
+],
+"a": 0
+}
+]
+},
+{
+"id": "ie-u08-5",
+"title": "5 · Grammar: Complete the sentences",
+"instruction": "Viết dạng đúng của từ trong ngoặc. Write the correct form.",
+"items": [
+{
+"t": "fill",
+"q": "You ___ feed the animals in the park. It is not allowed. (must / mustn't)",
+"a": [
+[
+"mustn't",
+"must not"
+]
+]
+},
+{
+"t": "fill",
+"q": "We ___ waste water. It is precious. (should / shouldn't)",
+"a": [
+[
+"shouldn't",
+"should not"
+]
+]
+},
+{
+"t": "fill",
+"q": "It ___ flood this week, so be careful. (might / must)",
+"a": [
+[
+"might"
+]
+]
+},
+{
+"t": "fill",
+"q": "Students ___ wear a uniform here. It is a school rule. (have to / don't have to)",
+"a": [
+[
+"have to"
+]
+]
+},
+{
+"t": "fill",
+"q": "You ___ pay to enter the park. It's free. (don't have to / mustn't)",
+"a": [
+[
+"don't have to",
+"do not have to"
+]
+]
+},
+{
+"t": "fill",
+"q": "She ___ be hungry. She has just eaten two big meals. (can't / must)",
+"a": [
+[
+"can't",
+"cannot"
+]
+]
+}
+]
+},
+{
+"id": "ie-u08-6",
+"title": "6 · Reading",
+"instruction": "Đọc bài và trả lời câu hỏi. Read the passage and answer the questions.",
+"items": [
+{
+"t": "note",
+"html": "<p><b>Questions 1–5:</b> Do the statements agree with the passage? Choose <b>True</b>, <b>False</b> or <b>Not given</b>.</p>"
+},
+{
+"t": "tf",
+"q": "Female turtles lay their eggs on beaches at night.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "The baby turtles come out about two years later.",
+"a": "F",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Turtles sometimes eat plastic bags because they look like jellyfish.",
+"a": "T",
+"ng": true
+},
+{
+"t": "tf",
+"q": "Hotels have agreed to stop using plastic.",
+"a": "NG",
+"ng": true
+},
+{
+"t": "tf",
+"q": "The number of nests has fallen in the last five years.",
+"a": "F",
+"ng": true
+},
+{
+"t": "note",
+"html": "<p><b>Choose the correct answer.</b></p>"
+},
+{
+"t": "mcq",
+"q": "Why do bright lights cause problems?",
+"opts": [
+"They confuse the baby turtles.",
+"They wake the tourists.",
+"They heat the sand."
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What do conservation workers do with the eggs?",
+"opts": [
+"They keep them in safe areas until they hatch.",
+"They sell them.",
+"They move them to hotels."
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "What are tourists asked to do?",
+"opts": [
+"use less plastic and switch off lights near the beach",
+"stay away from the island",
+"feed the turtles"
+],
+"a": 0
+},
+{
+"t": "note",
+"html": "<p><b>Answer the questions.</b> Use no more than THREE words.</p>"
+},
+{
+"t": "text",
+"q": "Where do the turtles lay their eggs?",
+"a": [
+"Con Dao",
+"on the beaches of Con Dao",
+"the beaches of Con Dao"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "About how many eggs does a female lay?",
+"a": [
+"one hundred",
+"100",
+"about 100",
+"about one hundred"
+],
+"hint": "Viết câu trả lời ngắn…"
+},
+{
+"t": "text",
+"q": "By how much has the number of nests increased?",
+"a": [
+"20 per cent",
+"20%",
+"twenty per cent",
+"20 percent"
+],
+"hint": "Viết câu trả lời ngắn…"
+}
+],
+"passage": "<h3>Saving the sea turtles</h3><p>Every year, thousands of sea turtles come to the beaches of Con Dao to lay their eggs. The females dig holes in the sand at night, lay about one hundred eggs, and return to the sea. Two months later, the baby turtles come out and race towards the water.</p><p>Sadly, sea turtles are endangered. Plastic rubbish in the ocean is a serious danger because turtles often mistake plastic bags for jellyfish and eat them. In addition, bright lights from hotels confuse the babies, so they walk in the wrong direction. Conservation workers now collect the eggs and keep them in safe areas until they hatch.</p><p>Volunteers also teach local children about the problem. Tourists are asked to use less plastic and to switch off lights near the beach at night. Thanks to these efforts, the number of nests has increased by 20 per cent in the last five years, but experts say that much more work is needed.</p>",
+"band": "R"
+},
+{
+"id": "ie-u08-7",
+"title": "7 · Listening",
+"instruction": "Bấm Nghe cả hội thoại (nghe được nhiều lần) rồi trả lời. Listen to the conversation and answer.",
+"items": [
+{
+"t": "dlg",
+"lines": [
+[
+"Hana",
+"Leo, did you hear about our school's new recycling project?"
+],
+[
+"Leo",
+"No. What is it?"
+],
+[
+"Hana",
+"Every class will have three bins: one for paper, one for plastic and one for food waste."
+],
+[
+"Leo",
+"That's a good idea. When does it start?"
+],
+[
+"Hana",
+"Next Monday. The students from class 10A will explain how to use them."
+],
+[
+"Leo",
+"Will there be a prize?"
+],
+[
+"Hana",
+"Yes. The class that recycles the most will win a trip to the national park."
+],
+[
+"Leo",
+"Wow! We should tell everyone in our class."
+],
+[
+"Hana",
+"I've already made a poster. I'll put it on the wall tomorrow."
+],
+[
+"Leo",
+"Excellent. Let's make sure we win!"
+]
+],
+"hide": true
+},
+{
+"t": "mcq",
+"q": "How many bins will each class have?",
+"opts": [
+"two",
+"three",
+"four"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "When does the project start?",
+"opts": [
+"next Monday",
+"next Friday",
+"tomorrow"
+],
+"a": 0
+},
+{
+"t": "mcq",
+"q": "Who will explain how to use the bins?",
+"opts": [
+"the teachers",
+"students from class 10A",
+"the headmaster"
+],
+"a": 1
+},
+{
+"t": "mcq",
+"q": "What is the prize?",
+"opts": [
+"a trip to the national park",
+"a new computer",
+"money"
+],
+"a": 0
+},
+{
+"t": "fill",
+"q": "The three bins are for paper, plastic and food ___.",
+"a": [
+[
+"waste"
+]
+]
+},
+{
+"t": "fill",
+"q": "The class that recycles the ___ wins.",
+"a": [
+[
+"most"
+]
+]
+},
+{
+"t": "fill",
+"q": "Hana has made a ___.",
+"a": [
+[
+"poster"
+]
+]
+},
+{
+"t": "fill",
+"q": "She will put it on the ___ tomorrow.",
+"a": [
+[
+"wall"
+]
+]
+}
+],
+"band": "L"
+},
+{
+"id": "ie-u08-8",
+"title": "8 · Audio và Video của lớp",
+"instruction": "Nghe audio và xem video theo hướng dẫn của giáo viên. Bài này không chấm điểm.",
+"items": [
+{
+"t": "note",
+"html": "<p>Các file nghe và video bên dưới do giáo viên cung cấp cho Unit này. Hãy nghe, xem và ghi chú ý chính vào vở.</p>"
+}
+],
+"media": [
+{
+"t": "video",
+"title": "Unit 8 · Video 1",
+"src": "ielts/VIDEO/UNIT 8/Unit 8_Video 1.mp4"
+},
+{
+"t": "video",
+"title": "Unit 8 · Video 2",
+"src": "ielts/VIDEO/UNIT 8/Unit 8_Video 2.mp4"
+},
+{
+"t": "video",
+"title": "Unit 8 · Video 3",
+"src": "ielts/VIDEO/UNIT 8/Unit 8_Video 3.mp4"
+}
+]
+},
+{
+"id": "ie-u08-9",
+"title": "9 · Writing (AI chấm)",
+"instruction": "Viết bài, nộp để AI chấm theo 4 tiêu chí IELTS. Write your answer and submit it for AI feedback.",
+"items": [
+{
+"t": "wr",
+"task": 2,
+"minWords": 250,
+"prompt": "Some people believe that protecting the environment is the responsibility of governments. Others think that individuals should take action.\nDiscuss both views and give your own opinion.\nWrite at least 250 words.",
+"hint": "Gợi ý: nêu vai trò của chính phủ (luật, năng lượng sạch) và của cá nhân (tái chế, tiết kiệm), rồi nêu quan điểm."
+}
+]
+},
+{
+"id": "ie-u08-10",
+"title": "10 · Speaking Part 1 (AI nhận xét)",
+"instruction": "Thu âm câu trả lời cho từng câu hỏi (khoảng 20–30 giây mỗi câu).",
+"items": [
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Do you like spending time in nature?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "Is there a park or green area near your home?",
+"secs": 60
+},
+{
+"t": "sp",
+"part": "Part 1",
+"prompt": "What can people do to protect the environment?",
+"secs": 60
+}
+]
+},
+{
+"id": "ie-u08-11",
+"title": "11 · Speaking Part 2 (AI nhận xét)",
+"instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút. Prepare for one minute, then speak for one to two minutes.",
+"items": [
+{
+"t": "sp",
+"part": "Part 2",
+"prompt": "Describe a natural place that you would like to visit.",
+"card": [
+"where it is",
+"how you know about it",
+"what you would do there",
+"and explain why you would like to go there"
+],
+"secs": 120
+}
+]
+}
+],
+"note": "Natural World"
+}
+]

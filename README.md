@@ -55,7 +55,7 @@ Tên miền riêng: *Domain management → Add a domain*.
 
 ## Bản thu âm của học viên + nhận xét của giáo viên
 
-- Học viên bấm thu ở mục "Listen, repeat and record" → bản thu tự gửi lên (tối đa 40 giây, 2MB).
+- Học viên bấm thu ở mục "Listen, repeat and record" → bản thu tự gửi lên (tối đa khoảng 40 giây ở bài phát âm; bài Speaking IELTS tối đa 2 phút, 4MB).
 - Giáo viên: menu "Bản thu âm" → nghe, viết nhận xét, lưu. Học viên thấy nhận xét ở bài tập, mục "Bản thu" (có huy hiệu đỏ) và trang chủ.
 - File âm thanh tự xóa sau 7 ngày (hàm định kỳ `netlify/functions/cleanup-recs.mjs` chạy mỗi ngày + xóa khi có API gọi). Nhận xét được giữ thêm tới 60 ngày.
 - Lưu trong Netlify Blobs (`recmeta`, `recfiles`). Cần đảm bảo cả 2 file mới `netlify/lib/rec.mjs` và `netlify/functions/cleanup-recs.mjs` được đẩy lên GitHub.
@@ -66,3 +66,24 @@ Tên miền riêng: *Domain management → Add a domain*.
 - Nút "Chọn nhanh" (Vocabulary, Grammar, Listening, Pronunciation, Speaking, Unit test...) chọn mục đó trong tất cả các Unit của khối đang xem.
 - Học sinh thấy số phần đã làm, nút "Làm bài" mở thẳng phần chưa làm tiếp theo, và danh sách các phần được giao kèm dấu ✅.
 - Bài đã giao theo cách cũ (cả Unit) vẫn hoạt động bình thường. File api.mjs đã được cập nhật để lưu danh sách phần (`ex`).
+
+
+## Lớp IELTS 1 (khối 9)
+- Học sinh/giáo viên chọn khối **IELTS 1** ở thanh chọn khối. Khi tạo học sinh, cột khối ghi **9** (hoặc chọn "IELTS 1" trong trang học sinh).
+- 8 Unit (Relationships … Natural World), mỗi Unit 11 bài: Vocabulary ×3, Grammar ×2, Reading, Listening, Audio và Video, Writing, Speaking Part 1, Speaking Part 2. Nội dung do mình soạn mới theo cấu trúc và chủ đề của lớp.
+- **Listening/Reading**: tự chấm, đổi ra band bằng bảng quy đổi tham khảo cho bài 40 câu (tỉ lệ đúng × 40). Trang Tiến độ và Trang chủ hiện Band ước tính 4 kỹ năng và Overall (làm tròn 0,5 theo quy tắc IELTS). Bảng nằm ở đầu `public/ielts.js` (`BL`, `BR`) nếu muốn đổi.
+- **Writing**: ô viết có đếm từ trực tiếp và gạch đỏ chính tả của trình duyệt. Khi nộp, AI chấm theo 4 tiêu chí (Task Response/Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy), đánh dấu lỗi ngay trong bài, giải thích bằng tiếng Việt và đưa bài viết đã cải thiện (giao diện 2 cột giống ảnh mẫu).
+- **Speaking**: học viên thu âm (lưu 7 ngày như bài phát âm), trình duyệt chuyển giọng nói thành chữ (Chrome/Safari), học viên sửa lỗi nhận dạng rồi gửi. AI chấm Fluency, Lexical Resource, Grammar, Pronunciation. **Pronunciation chỉ là ước lượng từ bản chữ**, giáo viên nên nghe lại và chỉnh.
+- **Giáo viên**: menu **Chấm IELTS** → xem bài, sửa điểm từng tiêu chí, nhận xét, lỗi đã chữa, bài cải thiện, lời khuyên → "Lưu và gửi cho học viên" (học viên thấy dòng "Giáo viên đã xem và chỉnh sửa"). Có nút "Chấm lại bằng AI". Bản thu giọng nghe ở đây hoặc ở menu "Bản thu âm". Phần chữ và nhận xét giữ 90 ngày, file ghi âm xóa sau 7 ngày.
+
+### Cài khóa AI (bắt buộc để chấm Writing/Speaking)
+1. Vào console.anthropic.com → API keys → tạo khóa, nạp một khoản nhỏ (khoảng 5–10 USD).
+2. Netlify → Site configuration → Environment variables → thêm `ANTHROPIC_API_KEY` = khóa vừa tạo.
+3. (Tùy chọn) `AI_MODEL` (mặc định `claude-haiku-5-5`), `AI_DAILY_LIMIT` (số lượt chấm AI mỗi học viên mỗi ngày, mặc định 12).
+4. Bấm **Deploy site** lại. Cần đẩy đủ file mới: `netlify/lib/ai.mjs`, `netlify/functions/ai-grade-background.mjs`, `public/ielts.js`, `public/ielts.css`, `public/ielts/lessons.json`.
+- Chi phí tham khảo với Haiku 5.5 khoảng 30 đồng mỗi bài Writing (giá niêm yết 0,10 USD đầu vào và 0,50 USD đầu ra mỗi triệu token).
+- Hàm chấm chạy nền (Netlify background function, tối đa 15 phút), học viên thấy "AI đang chấm…" rồi kết quả tự hiện sau khoảng 10–40 giây.
+
+### Audio và video của lớp
+Mỗi Unit có bài "Audio và Video của lớp". Hãy chép nguyên hai thư mục **AUDIO** và **VIDEO** (giữ tên thư mục UNIT 1…8 và tên file như đang có) vào `public/ielts/`, ví dụ `public/ielts/AUDIO/UNIT 1/Track 1.1.mp3` và `public/ielts/VIDEO/UNIT 1/Unit 1_Video 1.mp4`. Các file `Track 3.x` và `Track 4.x` hiện không có đuôi, hãy đổi tên thêm `.mp3` (hoặc để nguyên, trang cũng thử phát tên không đuôi). Danh sách file được khai báo trong `dev/gen_ielts.py` (biến `AUDIO`, `VIDEO`); nếu thêm file mới, báo mình để cập nhật. Tổng dung lượng audio và video khoảng 200MB, mỗi file dưới 100MB nên đẩy được qua GitHub.
+- Bạn chịu trách nhiệm về quyền sử dụng các file nghe và video bạn tải lên.
