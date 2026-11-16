@@ -2,12 +2,16 @@
 // Routes: /api/*  -> this single function. Data lives in Netlify Blobs (no external database).
 import { getStore } from "@netlify/blobs";
 import crypto from "node:crypto";
+import { REC_MS, fkey, purgeUser } from "../lib/rec.mjs";
 
 export const config = { path: "/api/*" };
 
 const TZ = process.env.TZ_NAME || "Asia/Ho_Chi_Minh";
 const store = (name) => getStore({ name, consistency: "strong" });
-const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config") };
+const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config"), recmeta: () => store("recmeta"), recfiles: () => store("recfiles") };
+const MAX_AUDIO = 2 * 1024 * 1024, MAX_RECS = 150;
+const isEx = (v) => typeof v === "string" && /^[a-z0-9-]{3,40}$/.test(v);
+const isIdx = (v) => /^\d{1,3}$/.test(String(v));
 
 const J = (status, data) =>
   new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
@@ -130,7 +134,7 @@ async function route(req) {
   const parts = url.pathname.replace(/^\/api\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
   const [a, b, c] = parts, m = req.method;
   let body = {};
-  if (m !== "GET" && m !== "DELETE") { try { body = (await req.json()) || {}; } catch { body = {}; } }
+  if (m !== "GET" && m !== "DELETE" && !(a === "rec" && b === "audio")) { try { body = (await req.json()) || {}; } catch { body = {}; } }
 
   /* public */
   if (a === "status" && m === "GET") {
@@ -207,8 +211,92 @@ async function route(req) {
     return J(200, { ci: p.ci });
   }
 
+  /* voice recordings (student) */
+  if (a === "rec" && b === "audio" && m === "PUT") {
+    if (teacher) return fail(403, "Chỉ học sinh mới gửi bản thu.");
+    const exId = c, idx = parts[3];
+    if (!isEx(exId) || !isIdx(idx)) return fail(400, "Bài không hợp lệ.");
+    const buf = Buffer.from(await req.arrayBuffer());
+    if (!buf.length) return fail(400, "Bản thu rỗng.");
+    if (buf.length > MAX_AUDIO) return fail(413, "Bản thu quá dài (tối đa khoảng 40 giây).");
+    const mime = (req.headers.get("content-type") || "audio/webm").split(";")[0].trim();
+    if (!/^audio\/(webm|ogg|mp4|mpeg|wav|x-m4a|aac)$/.test(mime)) return fail(400, "Định dạng âm thanh không được hỗ trợ.");
+    let label = ""; try { label = decodeURIComponent(req.headers.get("x-label") || ""); } catch {}
+    const meta = (await purgeUser(DB.recmeta(), DB.recfiles(), user.username)) || {};
+    const key = exId + ":" + Number(idx);
+    if (!meta[key] && Object.values(meta).filter((v) => !v.expired).length >= MAX_RECS) return fail(429, "Bạn đã gửi quá nhiều bản thu. Hãy đợi các bản cũ tự xóa.");
+    const now = Date.now();
+    await DB.recfiles().set(fkey(user.username, key), buf, { metadata: { mime } });
+    meta[key] = { t: now, exp: now + REC_MS, mime, size: buf.length, label: str(label, 200), comment: "", commentAt: 0, seen: true };
+    await DB.recmeta().setJSON(user.username, meta);
+    return J(200, { key, meta: meta[key] });
+  }
+  if (a === "rec" && b === "mine" && m === "GET") {
+    if (teacher) return J(200, { recs: {} });
+    return J(200, { recs: (await purgeUser(DB.recmeta(), DB.recfiles(), user.username)) || {} });
+  }
+  if (a === "rec" && b === "seen" && m === "PUT") {
+    if (teacher) return J(200, { ok: true });
+    const meta = await DB.recmeta().get(user.username, { type: "json" });
+    if (meta) {
+      for (const k of Array.isArray(body.keys) ? body.keys.slice(0, 300) : []) if (meta[k]) meta[k].seen = true;
+      await DB.recmeta().setJSON(user.username, meta);
+    }
+    return J(200, { ok: true });
+  }
+  if (a === "recfile" && m === "GET") {
+    const [, who, exId, idx] = parts;
+    if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
+    if (!teacher && who !== user.username) return fail(403, "Bạn không có quyền nghe bản thu này.");
+    const key = exId + ":" + Number(idx);
+    const meta = await purgeUser(DB.recmeta(), DB.recfiles(), who);
+    const mt = meta && meta[key];
+    if (!mt) return fail(404, "Không tìm thấy bản thu.");
+    if (mt.expired) return fail(410, "Bản thu đã hết hạn 7 ngày và đã bị xóa.");
+    const data = await DB.recfiles().get(fkey(who, key), { type: "arrayBuffer" });
+    if (!data) return fail(404, "Không tìm thấy bản thu.");
+    return new Response(data, { status: 200, headers: { "content-type": mt.mime || "audio/webm", "cache-control": "private, no-store" } });
+  }
+
   /* teacher only */
   if (!teacher) return fail(403, "Bạn không có quyền thực hiện thao tác này.");
+
+  if (a === "recs" && m === "GET") {
+    const { blobs } = await DB.recmeta().list();
+    const items = [];
+    for (const bl of blobs) {
+      const meta = await purgeUser(DB.recmeta(), DB.recfiles(), bl.key);
+      if (!meta) continue;
+      const u = await DB.users().get(bl.key, { type: "json" });
+      if (!u) continue;
+      for (const [key, v] of Object.entries(meta)) items.push({ user: bl.key, name: u.name, cls: u.cls || "", grade: u.grade || "", key, ...v });
+    }
+    items.sort((x, y) => y.t - x.t);
+    return J(200, { items: items.slice(0, 600) });
+  }
+  if (a === "rec" && b === "comment" && m === "PUT") {
+    const [, , who, exId, idx] = parts;
+    if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
+    const meta = await DB.recmeta().get(who, { type: "json" });
+    const key = exId + ":" + Number(idx);
+    if (!meta || !meta[key]) return fail(404, "Không tìm thấy bản thu.");
+    const text = str(body.comment, 1000);
+    Object.assign(meta[key], { comment: text, commentAt: text ? Date.now() : 0, seen: !text });
+    await DB.recmeta().setJSON(who, meta);
+    return J(200, { ok: true, meta: meta[key] });
+  }
+  if (a === "rec" && m === "DELETE") {
+    const [, who, exId, idx] = parts;
+    if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
+    const meta = await DB.recmeta().get(who, { type: "json" });
+    const key = exId + ":" + Number(idx);
+    if (meta && meta[key]) {
+      try { await DB.recfiles().delete(fkey(who, key)); } catch {}
+      delete meta[key];
+      if (Object.keys(meta).length) await DB.recmeta().setJSON(who, meta); else await DB.recmeta().delete(who);
+    }
+    return J(200, { ok: true });
+  }
 
   if (a === "config" && m === "PUT") {
     const cfg = cleanCfg(body);
@@ -260,6 +348,8 @@ async function route(req) {
     if (!c && m === "DELETE") {
       await users.delete(b);
       await DB.progress().delete(b);
+      const rm = await DB.recmeta().get(b, { type: "json" });
+      if (rm) { for (const k of Object.keys(rm)) { try { await DB.recfiles().delete(fkey(b, k)); } catch {} } await DB.recmeta().delete(b); }
       return J(200, { ok: true });
     }
     if (c === "password" && m === "POST") {

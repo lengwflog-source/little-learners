@@ -159,6 +159,8 @@ body.g2{font-size:18px}
 .recw{padding:6px 0 4px 40px}.recw .rt{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.recw .rtext{font-size:1.35rem;font-family:var(--display)}.recw .rc{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 6px}.recw audio{height:38px;max-width:100%}
 .btn.rec-on{background:#d64545;color:#fff;border-color:#d64545;animation:recp 1.1s infinite}@keyframes recp{50%{opacity:.6}}
 .dlg{margin:6px 0 0 40px}.dlg details{margin-top:10px}.dlg summary{cursor:pointer;font-weight:700;color:var(--primary-deep)}.dlg .dl{margin:6px 0}
+.tcm{background:var(--butter);border-left:4px solid var(--primary);border-radius:12px;padding:10px 14px;margin:10px 0}.tcm p{margin:4px 0;white-space:pre-wrap}
+.vcard{margin-bottom:14px}.vcard.new{border-color:var(--primary);box-shadow:0 0 0 3px rgba(80,140,90,.18)}.badge{background:#d64545;color:#fff;border-radius:99px;padding:0 7px;font-size:.75rem;margin-left:4px}
 .stars{font-size:2rem;color:#f5a524;letter-spacing:2px}
 body.g2 .instr{font-size:1.3rem}
 body.g2 .opt{padding:12px 16px;font-size:1.05rem;border-radius:16px}
@@ -210,7 +212,7 @@ const pct=x=>x==null?'—':Math.round(x*100)+'%';
 const L2='ABCDEFGHIJ';
 const emH=e=>e?`<span class="em${/^\d+$/.test(e)?' n':''}">${e}</span>`:'';
 
-const S={lessons:[],allL:[],grade:6,by:{},exL:{},db:null,user:null,uid:null,isT:false,local:false,ready:false,
+const S={recs:{},vlist:null,vf:'all',lessons:[],allL:[],grade:6,by:{},exL:{},db:null,user:null,uid:null,isT:false,local:false,ready:false,
   prof:null,profLoaded:false,cfg:{classes:[],assignments:[],announcement:'',checkin:null},all:{},att:{},sel:null,tab:'vocab',cls:'',date:today(),msg:'',fail:''};
 let X=null; // current exercise state
 let saving=false,dirty=false,saveT=null,pending=false;
@@ -317,14 +319,15 @@ function refresh(force){const a=document.activeElement;
   pending=false;render()}
 document.addEventListener('focusout',()=>{if(pending)setTimeout(()=>{if(!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))refresh(true)},120)});
 
-function applyMe(d){S.user=d.user;S.isT=d.user.role==='teacher';S.uid=d.user.username;
+function applyMe(d){if(!d.user||d.user.role!=='teacher')setTimeout(()=>loadRecs().then(()=>{if(!route().startsWith('ex-'))refresh();else if(X&&X.E)X.E.items.forEach((it,i)=>{if(it.t==='rec')refreshItem(i)})}),0);
+  S.user=d.user;S.isT=d.user.role==='teacher';S.uid=d.user.username;
   S.cfg=Object.assign({classes:[],assignments:[],announcement:'',checkin:null},d.config||{});
   if(!S.isT){S.prof=Object.assign({ex:{},lv:{},ci:{},days:[]},d.progress||{},{name:d.user.name,cls:d.user.cls});if(!S.prof.ex)S.prof.ex={};S.att={};Object.entries(d.mine||{}).forEach(([dt,c])=>{S.att[dt]={[S.uid]:c}})}}
 async function loadTeacher(){const[st,at]=await Promise.all([API.call('GET','students'),API.call('GET','attendance')]);
   S.all={};st.students.forEach(x=>{S.all[x.username]=Object.assign({ex:{},lv:{},ci:{},days:[]},x.progress||{},{name:x.name,cls:x.cls,grade:x.grade||''})});S.att=at.dates||{}}
 async function poll(){if(!S.user||document.hidden||saving||dirty)return;
   try{if(S.isT){await loadTeacher();const c=await API.call('GET','config');S.cfg=Object.assign({},S.cfg,c.config)}
-    else{const d=await API.call('GET','me');S.cfg=Object.assign({},S.cfg,d.config);S.att={};Object.entries(d.mine||{}).forEach(([dt,c])=>{S.att[dt]={[S.uid]:c}});if(d.progress&&d.progress.ci)S.prof.ci=d.progress.ci}
+    else{await loadRecs();const d=await API.call('GET','me');S.cfg=Object.assign({},S.cfg,d.config);S.att={};Object.entries(d.mine||{}).forEach(([dt,c])=>{S.att[dt]={[S.uid]:c}});if(d.progress&&d.progress.ci)S.prof.ci=d.progress.ci}
     refresh()}catch(e){if(e.status===401)logout()}}
 
 async function init(){
@@ -344,8 +347,8 @@ async function init(){
 const route=()=>{const h=(location.hash||'').slice(1);return h||(S.isT?'t-home':'home')};
 addEventListener('hashchange',()=>{scrollTo(0,0);render()});
 const hdr=()=>{const r=route(),I=(h,t,on)=>`<a href="#${h}" class="${on?'on':''}">${t}</a>`;
-  const nav=S.isT?I('t-home','Tổng quan',r==='t-home')+I('t-students','Học sinh',r.startsWith('t-student'))+I('t-attendance','Điểm danh',r==='t-attendance')+I('t-assign','Giao bài',r==='t-assign')+I('lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')):
-    I('home','Trang chủ',r==='home')+I('lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-'))+I('progress','Tiến độ',r==='progress');
+  const nav=S.isT?I('t-home','Tổng quan',r==='t-home')+I('t-students','Học sinh',r.startsWith('t-student'))+I('t-attendance','Điểm danh',r==='t-attendance')+I('t-assign','Giao bài',r==='t-assign')+I('t-voice','Bản thu âm',r==='t-voice')+I('lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')):
+    I('home','Trang chủ',r==='home')+I('lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-'))+I('progress','Tiến độ',r==='progress')+I('voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice');
   const nm=S.user?S.user.name:'';
   return`<header class="top"><div class="wrap"><a class="brand" href="#${S.isT?'t-home':'home'}">${LOGO}<div><b>MR.LONG's ENGLISH HOUSE</b><span>${GS[S.grade]||GS[6]}</span></div></a>${S.ready&&S.user?`<nav class="nav" aria-label="Menu chính">${nav}</nav><div class="who">${gradeSw()}<span class="avatar" aria-hidden="true">${esc((nm[0]||'?').toUpperCase())}</span><span>${esc(nm)}</span><a class="btn ghost sm" href="#profile">Tài khoản</a></div>`:''}</div></div></header>`};
 
@@ -366,10 +369,12 @@ function render(){
     else if(r==='t-student'&&S.isT)body=studentDetail();
     else if(r==='t-attendance'&&S.isT)body=attendanceView();
     else if(r==='t-assign'&&S.isT)body=assignView();
+    else if(r==='t-voice'&&S.isT)body=teacherVoiceView();
+    else if(r==='voice'&&!S.isT)body=voiceView();
     else body=S.isT?teacherHome():homeView();
   }
   const keepY=scrollY;
-  $('#app').innerHTML=hdr()+(S.fail&&S.ready?`<div class="wrap"><div class="banner err">${esc(S.fail)}</div></div>`:'')+body+`<footer><div class="wrap">MR.LONG's ENGLISH HOUSE · ${S.grade===6?'Tiếng Anh 6 · Học kì 1':GS[S.grade]}</div></footer>`;
+  $('#app').innerHTML=hdr()+(S.fail&&S.ready?`<div class="wrap"><div class="banner err">${esc(S.fail)}</div></div>`:'')+(!S.isT&&r==='home'&&unseen()?`<div class="wrap"><div class="banner">💬 Thầy/cô vừa nhận xét ${unseen()} bản thu âm của bạn. <a href="#voice"><b>Xem ngay</b></a></div></div>`:'')+body+`<footer><div class="wrap">MR.LONG's ENGLISH HOUSE · ${S.grade===6?'Tiếng Anh 6 · Học kì 1':GS[S.grade]}</div></footer>`;
   if(r.startsWith('ex-')===false)scrollTo(0,keepY);
 }
 
@@ -413,6 +418,22 @@ function homeView(){const p=S.prof,o=overall(p),st=streak(p),nx=nextEx(p),ass=my
 function lessonsView(){const p=S.isT?null:S.prof;
   return`<div class="wrap" style="padding-block:28px"><div class="sechead"><div><div class="eyebrow">Thư viện</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Bài học</h1></div></div>${lessonUnits().map(u=>`<h2 style="margin:26px 0 14px;font-size:1.5rem">${u.title}${u.key?` · <span class="muted" style="font-weight:400">${esc(u.sub)}</span>`:''}</h2><div class="grid g2">${u.lessons.map(L=>{const s=lessonStat(p,L);return`<a class="card lcard" href="#lesson-${L.id}">${p?ringHtml(s.pct):`<div class="ring" style="--p:0"><i>${L.exercises.length}</i></div>`}<div class="t"><b>${esc(L.title)}${L.sub?' · '+esc(L.sub):''}</b><span class="muted small">${L.vocab.length?L.vocab.length+' từ vựng · ':''}${L.exercises.length} bộ bài tập${s.avg!=null?' · TB '+pct(s.avg):''}</span></div>${L.kind==='practice'?'<span class="chip sky">Luyện tập</span>':L.kind==='test'?'<span class="chip warn">Đề thi</span>':''}</a>`}).join('')}</div>`).join('')}</div>`}
 
+const exTitleOf=eid=>{const L=S.by[S.exL[eid]];const E=L&&L.exercises.find(e=>e.id===eid);return L&&E?L.title+' · '+E.title:eid};
+function voiceView(){const ks=Object.keys(S.recs).sort((a,b)=>S.recs[b].t-S.recs[a].t);
+  if(!S.recs._seenSent){const u=ks.filter(k=>S.recs[k].comment&&!S.recs[k].seen);if(u.length){setTimeout(()=>{API.call('PUT','rec/seen',{keys:u}).then(()=>{u.forEach(k=>{if(S.recs[k])S.recs[k].seen=true});render()}).catch(()=>{})},2500)}}
+  return`<div class="wrap" style="padding-block:28px"><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Bản thu và nhận xét</h1><p class="muted">Các bản thu giọng của bạn được lưu 7 ngày rồi tự xóa. Nhận xét của giáo viên hiện ở đây.</p>
+  ${ks.length?ks.map(k=>{const m=S.recs[k],[eid,i]=k.split(':');return`<div class="card vcard ${m.comment&&!m.seen?'new':''}"><div class="row"><div><b>${esc(m.label||'(bản thu)')}</b><div class="muted small">${esc(exTitleOf(eid))} · ${fmtT(m.t)}</div></div><span class="sp"></span>${m.expired?'<span class="chip">Đã hết hạn</span>':`<span class="chip good">còn ${daysLeft(m)}</span>`}</div>
+   ${m.expired?'':`<div style="margin:10px 0"><button class="btn ghost sm" data-vplay="${S.uid}|${eid}|${i}">▶ Nghe bản thu</button></div>`}
+   ${m.comment?`<div class="tcm"><b>💬 Nhận xét của giáo viên</b><p>${esc(m.comment)}</p><span class="muted small">${fmtT(m.commentAt)}</span></div>`:'<p class="muted small" style="margin:6px 0 0">Chưa có nhận xét.</p>'}</div>`}).join(''):'<div class="card"><p class="muted">Bạn chưa thu âm bài nào. Hãy vào phần Phát âm hoặc Nói của một Unit để thu âm.</p></div>'}</div>`}
+function teacherVoiceView(){
+  if(S.vlist===null){S.vlist=[];API.call('GET','recs').then(r=>{S.vlist=r.items||[];S.vloaded=true;render()}).catch(e=>{S.vloaded=true;toast(e.message);render()});}
+  const cl=S.cfg.classes||[];let it=(S.vlist||[]).filter(x=>!S.cls||x.cls===S.cls);if(S.vf==='todo')it=it.filter(x=>!x.comment&&!x.expired);
+  return`<div class="wrap" style="padding-block:28px"><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Bản thu âm của học sinh</h1><p class="muted">Bản thu tự xóa sau 7 ngày. Nhận xét bạn viết sẽ hiện cho học sinh đọc và được giữ lâu hơn bản thu.</p>
+  <div class="row" style="margin-block:12px"><div class="seg"><button class="${S.vf==='all'?'on':''}" data-vf="all">Tất cả</button><button class="${S.vf==='todo'?'on':''}" data-vf="todo">Chưa nhận xét</button></div>${cl.length?`<select class="sel-in" id="vcls" onchange="S.cls=this.value;render()"><option value="">Tất cả lớp</option>${cl.map(c=>`<option ${c===S.cls?'selected':''}>${esc(c)}</option>`).join('')}</select>`:''}<button class="btn ghost sm" data-vreload>↻ Tải lại</button></div>
+  ${!S.vloaded?'<div class="sk"></div>':it.length?it.map(x=>{const id=x.user+'|'+x.key.split(':')[0]+'|'+x.key.split(':')[1];return`<div class="card vcard"><div class="row"><div><b>${esc(x.name)}</b> <span class="muted small">${esc(x.cls||'')}</span><div style="margin-top:2px">${esc(x.label||'(bản thu)')}</div><div class="muted small">${esc(exTitleOf(x.key.split(':')[0]))} · ${fmtT(x.t)}</div></div><span class="sp"></span>${x.expired?'<span class="chip">Bản thu đã hết hạn</span>':`<span class="chip">còn ${daysLeft(x)}</span>`}${x.comment?'<span class="chip good">Đã nhận xét</span>':''}</div>
+   ${x.expired?'':`<div style="margin:10px 0"><button class="btn sm" data-vplay="${esc(id)}">▶ Nghe bản thu</button></div>`}
+   <textarea class="txt" rows="2" data-vc="${esc(id)}" placeholder="Viết nhận xét cho học sinh (phát âm, ngữ điệu, lời khuyên…)">${esc(x.comment||'')}</textarea>
+   <div class="row" style="margin-top:8px"><button class="btn sm" data-vsave="${esc(id)}">Lưu nhận xét</button><span class="sp"></span>${x.expired?'':`<button class="btn ghost sm" data-vdel="${esc(id)}">Xóa bản thu</button>`}</div></div>`}).join(''):'<div class="card"><p class="muted">Chưa có bản thu nào.</p></div>'}</div>`}
 function resultsHtml(L,p){if(!p)return`<div class="card"><p class="muted">Học sinh đăng nhập sẽ thấy bảng kết quả của riêng mình ở đây.</p></div>`;
   const ex=exArr(p);let c=0,n=0,done=0;
   const rows=L.exercises.map(E=>{const r=ex[E.id];if(r){done++;c+=r.c;n+=r.n}return`<tr class="click" data-go="ex-${E.id}"><td>${esc(E.title)}</td><td>${r?(r.n?r.c+'/'+r.n:'Đã xem'):'<span class="muted">Chưa làm</span>'}</td><td>${r&&r.n?`<span class="chip ${r.c/r.n>=.8?'good':r.c/r.n>=.5?'warn':'bad'}">${Math.round(r.c/r.n*100)}%</span>`:''}</td></tr>`}).join('');
@@ -472,21 +493,50 @@ function itemHtml(it,i,done,res){const a=X.ans[i];const ok=res?res.every(Boolean
   else if(it.t==='ws'){const f=Array.isArray(a)?a:[];const hl=new Set();f.forEach(w=>{const p=it.pos[w];if(p)for(let n=0;n<w.length;n++)hl.add((p[0]+p[2]*n)+','+(p[1]+p[3]*n))});const sel=X.wsSel&&X.wsSel.i===i?X.wsSel:null;
     body=`<div class="wsw"><div class="wsg" style="--n:${it.grid[0].length}">${it.grid.map((row,r)=>[...row].map((ch,c)=>`<button class="wsc ${hl.has(r+','+c)?'hit':''} ${sel&&sel.r===r&&sel.c===c?'sel':''}" data-wc="${i}:${r}:${c}" ${done?'disabled':''} aria-label="${ch}">${ch}</button>`).join('')).join('')}</div><div class="wsl"><b class="small muted">Tìm ${it.words.length} từ (bấm chữ đầu, rồi bấm chữ cuối):</b>${it.words.map(w=>`<span class="wsw1 ${f.includes(w)?'got':''}">${emH(it.emo&&it.emo[w])}${esc(w)}</span>`).join('')}</div></div>`}
   else if(it.t==='rec'){const k=X.E.id+':'+i;const on=RECING&&RECING.k===k;const url=REC[k];const canRec=!!(navigator.mediaDevices&&window.MediaRecorder);
-    body=`<div class="recw"><div class="rt"><button class="say big" data-say="${esc(it.w)}" aria-label="Nghe mẫu" title="Nghe mẫu">♪</button><button class="say big" data-say="${esc(it.w)}" data-rate="0.55" aria-label="Nghe chậm" title="Nghe chậm">🐢</button><b class="rtext">${esc(it.prompt||it.w)}</b>${it.ipa?`<span class="muted small">${esc(it.ipa)}</span>`:''}${it.vi?`<span class="muted small">${esc(it.vi)}</span>`:''}</div>${it.prompt?`<details class="small" style="margin-top:6px"><summary style="cursor:pointer">Xem câu mẫu</summary><p>${esc(it.w)}</p></details>`:''}<div class="rc"><button class="btn ${on?'rec-on':'ghost'}" data-rec="${i}" ${done||!canRec?'disabled':''}>${on?'■ Dừng thu':'● Thu âm'}</button>${url?`<audio controls src="${url}"></audio>`:''}${a&&!url?'<span class="chip good">Đã thu âm</span>':''}</div><div class="muted small">① Nghe mẫu ♪ ② Bấm Thu âm và đọc to ③ Nghe lại, so sánh với mẫu. Bản thu chỉ ở trên máy của bạn, không gửi đi đâu.${canRec||done?'':` <a href="#" data-recskip="${i}">Máy không thu được? Bấm vào đây nếu bạn đã tự đọc to.</a>`}</div></div>`}
-  else if(it.t==='dlg')body=`<div class="dlg"><div class="row"><button class="btn" data-dlg="${i}">▶ Nghe cả hội thoại</button><button class="btn ghost sm" data-dlg="stop">■ Dừng</button></div><details><summary>Xem lời thoại</summary>${it.lines.map(l=>`<p class="dl"><b>${esc(l[0])}:</b> ${esc(l[1])} <button class="say" data-say="${esc(l[1])}" aria-label="Nghe" title="Nghe">♪</button></p>`).join('')}</details></div>`;
+    body=`<div class="recw"><div class="rt"><button class="say big" data-say="${esc(it.w)}" aria-label="Nghe mẫu" title="Nghe mẫu">♪</button><button class="say big" data-say="${esc(it.w)}" data-rate="0.55" aria-label="Nghe chậm" title="Nghe chậm">🐢</button><b class="rtext">${esc(it.prompt||it.w)}</b>${it.ipa?`<span class="muted small">${esc(it.ipa)}</span>`:''}${it.vi?`<span class="muted small">${esc(it.vi)}</span>`:''}</div>${it.prompt?`<details class="small" style="margin-top:6px"><summary style="cursor:pointer">Xem câu mẫu</summary><p>${esc(it.w)}</p></details>`:''}<div class="rc"><button class="btn ${on?'rec-on':'ghost'}" data-rec="${i}" ${done||!canRec?'disabled':''}>${on?'■ Dừng thu':'● Thu âm'}</button>${url?`<audio controls src="${url}"></audio>`:''}${recStatus(k,i,url,a,done)}</div>${recComment(k)}<div class="muted small">① Nghe mẫu ♪ ② Bấm Thu âm và đọc to ③ Nghe lại, so sánh với mẫu. ${S.local?'(Chế độ thử: bản thu không được gửi.)':'Bản thu được gửi cho giáo viên nghe và tự động xóa sau 7 ngày.'}${canRec||done?'':` <a href="#" data-recskip="${i}">Máy không thu được? Bấm vào đây nếu bạn đã tự đọc to.</a>`}</div></div>`}
+  else if(it.t==='dlg')body=`<div class="dlg"><div class="row"><button class="btn" data-dlg="${i}">▶ Nghe cả hội thoại</button><button class="btn ghost sm" data-dlg="stop">■ Dừng</button></div><details><summary>Xem lời thoại</summary>${(g=>it.lines.map(l=>`<p class="dl"><b>${esc(l[0])}:</b> ${esc(l[1])} <button class="say" data-say="${esc(l[1])}" data-g="${g[l[0]]}" aria-label="Nghe" title="Nghe">♪</button></p>`).join(''))(dlgGender(it.lines))}</details></div>`;
   const sol=done&&res&&!ok&&it.t!=='open'?`<div class="sol x">Đáp án: ${it.t==='mcq'?esc(String(solText(it)).replace(/<[^>]+>/g,'')):esc(solText(it))}</div>`:'';
   return`<div class="item">${head}${body}${sol}${done&&it.expl?`<div class="expl">${esc(it.expl)}</div>`:''}</div>`}
 
-const REC={};let RECING=null;
-function playDlg(lines){try{speechSynthesis.cancel();const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));const sp=[...new Set(lines.map(l=>l[0]))];
-  lines.forEach(l=>{const u=new SpeechSynthesisUtterance(l[1]);u.lang='en-US';u.rate=.85;const b=sp.indexOf(l[0])===1;u.pitch=b?1.3:.9;if(vs.length>1)u.voice=vs[b?1:0];speechSynthesis.speak(u)})}catch(_){}}
+const REC={},RB={},RS={},VA={};let RECING=null;
+const daysLeft=m=>{const h=Math.max(0,m.exp-Date.now())/36e5;return h>=24?Math.ceil(h/24)+' ngày':Math.max(1,Math.ceil(h))+' giờ'};
+const unseen=()=>Object.values(S.recs||{}).filter(m=>m.comment&&!m.seen).length;
+async function loadRecs(){if(S.isT||!S.user)return;try{const r=await API.call('GET','rec/mine');S.recs=r.recs||{}}catch(e){}}
+async function audioUrl(who,eid,i){const r=await fetch('/api/recfile/'+encodeURIComponent(who)+'/'+eid+'/'+i,{headers:{authorization:'Bearer '+API.tok}});
+  if(!r.ok){let j={};try{j=await r.json()}catch(_){}throw new Error(j.error||'Không nghe được bản thu ('+r.status+')')}return URL.createObjectURL(await r.blob())}
+async function uploadRec(eid,i,blob,label){const k=eid+':'+i;if(S.isT||S.local)return;RS[k]='up';if(X&&X.E.id===eid)refreshItem(i);
+  try{const r=await fetch('/api/rec/audio/'+eid+'/'+i,{method:'PUT',headers:{authorization:'Bearer '+API.tok,'content-type':blob.type||'audio/webm','x-label':encodeURIComponent(label.slice(0,200))},body:blob});
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||('Lỗi '+r.status));S.recs[k]=j.meta;RS[k]='ok'}
+  catch(e){RS[k]='err';toast('Chưa gửi được bản thu: '+e.message)}
+  if(X&&X.E.id===eid)refreshItem(i)}
+const MALE_N=/^(peter|tom|mark|nam|leo|jack|ravi|dan|daniel|guest|customer_m|traveller|tourist|waiter)$/i,FEM_N=/^(mai|sara|hanh|hoa|lan|emma|hana|mina|ms reed|receptionist|barista|passer-by|assistant)$/i;
+let DLGTOK=0;
+function pickVoice(vs,male){const m=/male(?!.*female)|david|mark|daniel|alex|fred|guy|george|james|ryan|aaron|arthur|rishi|thomas|oliver|christopher|eric|roger|steffan/i,f=/female|samantha|zira|susan|karen|moira|aria|jenny|libby|serena|victoria|allison|ava|sonia|hazel|emma|joanna|kate|tessa|google us english/i;
+  const c=vs.filter(v=>male?m.test(v.name)&&!/female/i.test(v.name):f.test(v.name));return c.find(v=>/en-US|en-GB/i.test(v.lang))||c[0]||null}
+function spokenText(t){return String(t).replace(/\bMs\b\.?/g,'Miz').replace(/\bMrs\b\.?/g,'Missiz').replace(/\bMr\b\.?/g,'Mister').replace(/Wi-Fi/gi,'Why Fy').replace(/…/g,'').replace(/\bOK\b/g,'okay')}
+function dlgGender(lines){const sp=[...new Set(lines.map(l=>l[0]))],g={};sp.forEach(n=>{g[n]=FEM_N.test(n)?'f':MALE_N.test(n)?'m':null});
+  if(sp.length>1){if(!g[sp[0]]&&g[sp[1]])g[sp[0]]=g[sp[1]]==='m'?'f':'m';if(!g[sp[1]]&&g[sp[0]])g[sp[1]]=g[sp[0]]==='m'?'f':'m'}
+  if(!g[sp[0]]){g[sp[0]]='f';if(sp[1])g[sp[1]]='m'}return g}
+function mkUtt(text,male,rate){const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));const v=pickVoice(vs,male);const u=new SpeechSynthesisUtterance(spokenText(text));u.lang=v?v.lang:'en-US';if(v)u.voice=v;
+  u.rate=rate||(male?.72:.8);u.pitch=male?(v?.95:.75):(v?1:1.1);u.volume=1;return u}
+function playDlg(lines){try{speechSynthesis.cancel();const tok=++DLGTOK;const g=dlgGender(lines);
+  const next=k=>{if(tok!==DLGTOK||k>=lines.length)return;const l=lines[k];const u=mkUtt(l[1],g[l[0]]==='m');
+    u.onend=()=>setTimeout(()=>next(k+1),/[?]$/.test(l[1])?700:500);u.onerror=()=>{};speechSynthesis.speak(u)};
+  next(0)}catch(_){}}
 async function toggleRec(i){const eid=X.E.id,k=eid+':'+i;
   if(RECING){const same=RECING.k===k;RECING.mr.stop();if(same)return}
   try{const st=await navigator.mediaDevices.getUserMedia({audio:true});const mr=new MediaRecorder(st);const ch=[];
     mr.ondataavailable=e=>{if(e.data.size)ch.push(e.data)};
-    mr.onstop=()=>{clearTimeout(RECING&&RECING.tm);st.getTracks().forEach(t=>t.stop());if(REC[k])URL.revokeObjectURL(REC[k]);REC[k]=URL.createObjectURL(new Blob(ch,{type:mr.mimeType||'audio/webm'}));RECING=null;if(X&&X.E.id===eid){X.ans[i]=true;refreshItem(i)}};
+    mr.onstop=()=>{clearTimeout(RECING&&RECING.tm);st.getTracks().forEach(t=>t.stop());if(REC[k])URL.revokeObjectURL(REC[k]);const bl=new Blob(ch,{type:mr.mimeType||'audio/webm'});REC[k]=URL.createObjectURL(bl);RB[k]=bl;RECING=null;if(X&&X.E.id===eid){X.ans[i]=true;refreshItem(i)}uploadRec(eid,i,bl,(X&&X.E.items[i]?(X.E.items[i].prompt||X.E.items[i].w):'')+'')};
     RECING={k,mr,tm:setTimeout(()=>{try{mr.state!=='inactive'&&mr.stop()}catch(_){}},40000)};mr.start();refreshItem(i)}
   catch(e){RECING=null;toast('Không mở được micro. Hãy bấm "Cho phép" khi trình duyệt hỏi quyền dùng micro.')}}
+function recStatus(k,i,url,a,done){const m=S.recs[k],st=RS[k];
+  if(st==='up')return'<span class="chip">Đang gửi cho giáo viên…</span>';
+  if(st==='err')return`<span class="chip bad">Chưa gửi được</span><button class="btn ghost sm" data-recretry="${i}">Gửi lại</button>`;
+  if(m&&!m.expired)return`<span class="chip good">Đã gửi · tự xóa sau ${daysLeft(m)}</span>${url?'':`<button class="btn ghost sm" data-recplay="${i}">▶ Nghe lại bản đã gửi</button>`}`;
+  if(m&&m.expired)return'<span class="chip">Bản thu đã hết hạn 7 ngày</span>';
+  return a&&!url?'<span class="chip good">Đã thu âm</span>':''}
+function recComment(k){const m=S.recs[k];return m&&m.comment?`<div class="tcm"><b>💬 Nhận xét của giáo viên</b><p>${esc(m.comment)}</p><span class="muted small">${fmtT(m.commentAt)}</span></div>`:''}
 function refreshItem(i){const els=document.querySelectorAll('#app .item');if(els[i])els[i].outerHTML=itemHtml(X.E.items[i],i,false,null)}
 function collect(){ // read DOM inputs into X.ans (text-like values)
   document.querySelectorAll('#app [data-i]').forEach(el=>{const i=+el.dataset.i,it=X.E.items[i];if(!it)return;
@@ -564,11 +614,19 @@ async function putAtt(d,m){try{await API.call('PUT','attendance/'+d,{marks:m})}c
 
 /* ---------- events ---------- */
 document.addEventListener('click',async e=>{
-  const t=e.target.closest('[data-grade],[data-act],[data-tab],[data-go],[data-sel],[data-mark],[data-say],[data-rec],[data-recskip],[data-dlg],[data-flip],[data-bt],[data-br],[data-wc],[data-reset],[data-delas],[data-delcls],[data-tabx]');if(!t)return;
+  const t=e.target.closest('[data-grade],[data-act],[data-tab],[data-go],[data-sel],[data-mark],[data-say],[data-rec],[data-recskip],[data-recretry],[data-recplay],[data-vplay],[data-vsave],[data-vdel],[data-vf],[data-vreload],[data-dlg],[data-flip],[data-bt],[data-br],[data-wc],[data-reset],[data-delas],[data-delcls],[data-tabx]');if(!t)return;
   const D=t.dataset;
   if(D.rec!==undefined){toggleRec(+D.rec);return}
+  if(D.recretry!==undefined){const i=+D.recretry,k=X.E.id+':'+i;if(RB[k])uploadRec(X.E.id,i,RB[k],(X.E.items[i].prompt||X.E.items[i].w)+'');return}
+  if(D.recplay!==undefined){const i=+D.recplay,k=X.E.id+':'+i;t.disabled=true;audioUrl(S.uid,X.E.id,i).then(u=>{REC[k]=u;refreshItem(i)}).catch(er=>{toast(er.message);t.disabled=false});return}
+  if(D.vplay){const[who,eid,i]=D.vplay.split('|');const k=who+'|'+eid+'|'+i;t.disabled=true;(VA[k]?Promise.resolve(VA[k]):audioUrl(who,eid,i)).then(u=>{VA[k]=u;t.insertAdjacentHTML('afterend',`<audio controls autoplay src="${u}" style="margin-left:8px"></audio>`);t.remove()}).catch(er=>{toast(er.message);t.disabled=false});return}
+  if(D.vsave){const[who,eid,i]=D.vsave.split('|');const box=document.querySelector('[data-vc="'+D.vsave+'"]');const txt=box?box.value.trim():'';t.disabled=true;
+    API.call('PUT','rec/comment/'+encodeURIComponent(who)+'/'+eid+'/'+i,{comment:txt}).then(r=>{const it=(S.vlist||[]).find(x=>x.user===who&&x.key===eid+':'+i);if(it)Object.assign(it,r.meta);toast(txt?'Đã lưu nhận xét. Học sinh sẽ thấy ngay.':'Đã xóa nhận xét.');t.textContent='Đã lưu ✓';setTimeout(()=>{t.disabled=false;t.textContent='Lưu nhận xét'},1500)}).catch(er=>{toast(er.message);t.disabled=false});return}
+  if(D.vdel){const[who,eid,i]=D.vdel.split('|');if(!confirm('Xóa bản thu này?'))return;API.call('DELETE','rec/'+encodeURIComponent(who)+'/'+eid+'/'+i).then(()=>{S.vlist=(S.vlist||[]).filter(x=>!(x.user===who&&x.key===eid+':'+i));render()}).catch(er=>toast(er.message));return}
+  if(D.vf!==undefined){S.vf=D.vf;render();return}
+  if(D.vreload!==undefined){S.vlist=null;render();return}
   if(D.recskip!==undefined){e.preventDefault();X.ans[+D.recskip]=true;refreshItem(+D.recskip);return}
-  if(D.dlg!==undefined){if(D.dlg==='stop'){try{speechSynthesis.cancel()}catch(_){}}else playDlg(X.E.items[+D.dlg].lines);return}
+  if(D.dlg!==undefined){if(D.dlg==='stop'){DLGTOK++;try{speechSynthesis.cancel()}catch(_){}}else playDlg(X.E.items[+D.dlg].lines);return}
   if(D.flip!==undefined){t.classList.toggle('flip');return}
   if(D.bt||D.br){const[i,k]=(D.bt||D.br).split(':').map(Number);const a=Array.isArray(X.ans[i])?X.ans[i].slice():[];if(D.bt)a.push(k);else{const p=a.indexOf(k);if(p>=0)a.splice(p,1)}X.ans[i]=a;refreshItem(i);return}
   if(D.wc){const[i,r,c]=D.wc.split(':').map(Number);const it=X.E.items[i];const sel=X.wsSel;
@@ -584,7 +642,7 @@ document.addEventListener('click',async e=>{
   if(D.tabx){S.tab='ex';return}
   if(D.go){location.hash=D.go;return}
   if(D.sel){S.sel=D.sel;if(location.hash==='#t-student')render();else location.hash='t-student';return}
-  if(D.say){try{const u=new SpeechSynthesisUtterance(D.say);u.lang='en-US';u.rate=D.rate?+D.rate:.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(_){}return}
+  if(D.say){try{DLGTOK++;speechSynthesis.cancel();const male=D.g==='m';speechSynthesis.speak(mkUtt(D.say,male,D.rate?+D.rate:(male?.7:.78)))}catch(_){}return}
   if(D.mark){const[uid,k]=D.mark.split('|');const d=S.date;const m=Object.assign({},S.att[d]||{});if(m[uid]===k)delete m[uid];else m[uid]=k;S.att[d]=m;render();putAtt(d,m);return}
   if(D.reset){const p=S.all[S.sel];if(!p)return;delete p.ex[D.reset];render();try{await API.call('PUT','students/'+encodeURIComponent(S.sel)+'/progress',{resetEx:D.reset});toast('Đã đặt lại bài')}catch(err){toast(err.message)}return}
   if(D.delas!=null){const a=(S.cfg.assignments||[]).slice();a.splice(+D.delas,1);putCfg({assignments:a});return}
