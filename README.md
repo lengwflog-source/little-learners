@@ -60,3 +60,9 @@ Tên miền riêng: *Domain management → Add a domain*.
 - File âm thanh tự xóa sau 7 ngày (hàm định kỳ `netlify/functions/cleanup-recs.mjs` chạy mỗi ngày + xóa khi có API gọi). Nhận xét được giữ thêm tới 60 ngày.
 - Lưu trong Netlify Blobs (`recmeta`, `recfiles`). Cần đảm bảo cả 2 file mới `netlify/lib/rec.mjs` và `netlify/functions/cleanup-recs.mjs` được đẩy lên GitHub.
 - Học viên phải cho phép trình duyệt dùng micro.
+
+## Giao bài theo từng phần
+- Ở mục Giao bài, giáo viên chọn từng phần bài tập (ví dụ chỉ Vocabulary: Match hoặc Grammar), không bắt buộc giao cả Unit. Tích ô cạnh tên Unit để chọn cả Unit, bấm vào Unit để mở danh sách các phần.
+- Nút "Chọn nhanh" (Vocabulary, Grammar, Listening, Pronunciation, Speaking, Unit test...) chọn mục đó trong tất cả các Unit của khối đang xem.
+- Học sinh thấy số phần đã làm, nút "Làm bài" mở thẳng phần chưa làm tiếp theo, và danh sách các phần được giao kèm dấu ✅.
+- Bài đã giao theo cách cũ (cả Unit) vẫn hoạt động bình thường. File api.mjs đã được cập nhật để lưu danh sách phần (`ex`).

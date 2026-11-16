@@ -101,6 +101,7 @@ function cleanCfg(b) {
   const assignments = (Array.isArray(b.assignments) ? b.assignments : []).slice(0, 100).map((a) => ({
     id: str(a.id, 30), title: str(a.title, 120), cls: str(a.cls, 20), due: isDate(a.due) ? a.due : "",
     lessons: (Array.isArray(a.lessons) ? a.lessons : []).map((x) => str(x, 30)).filter(Boolean).slice(0, 40),
+    ex: (Array.isArray(a.ex) ? a.ex : []).map((x) => str(x, 40)).filter(Boolean).slice(0, 400),
   })).filter((a) => a.title);
   let checkin = null;
   if (b.checkin && isDate(b.checkin.date) && /^\d{4,6}$/.test(String(b.checkin.code))) checkin = { date: b.checkin.date, code: String(b.checkin.code) };
