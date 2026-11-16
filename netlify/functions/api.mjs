@@ -65,7 +65,7 @@ async function auth(req) {
 
 /* ---------- helpers ---------- */
 const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "" });
-const cleanGrade = (g) => (["2", "6"].includes(String(g)) ? String(g) : "");
+const cleanGrade = (g) => (["2", "3", "6"].includes(String(g)) ? String(g) : "");
 const strip = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
 function baseUsername(name) {
   const parts = strip(name).toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/).filter(Boolean);

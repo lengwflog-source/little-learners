@@ -42,3 +42,11 @@ Tên miền riêng: *Domain management → Add a domain*.
 - Khi thêm học sinh, ghi `Họ tên; lớp; khối` (khối là 2 hoặc 6). Học sinh đã có khối chỉ thấy khối của mình. Bỏ trống khối thì học sinh tự chuyển được. Đổi khối trong trang chi tiết học sinh.
 - Muốn thêm khối khác, thêm thư mục `public/lopX/` cùng cấu trúc (lessons.json + img/) rồi nhờ tôi nối vào giao diện.
 - Bài lớp 2 được tạo tự động từ danh sách từ vựng và mẫu câu của từng Unit (file `public/lop2/lessons.json`); đã chạy thử toàn bộ 300 bài để chắc chắn đáp án chấm đúng. Muốn sửa từ vựng hay câu, sửa trực tiếp trong file này.
+
+
+## Cấp A1+ (English File Elementary)
+- Nội dung nằm ở `public/ef/lessons.json`: 12 Unit và 6 bài tổng hợp Revise and Check, mỗi bài gồm từ vựng, ngữ pháp, nghe, phát âm, nói và bài kiểm tra cuối.
+- Đây là bài tập tự soạn, bám theo chủ điểm từ vựng, ngữ pháp và phát âm của từng Unit trong sách. Không chép nội dung sách.
+- **Thu âm:** học sinh bấm Thu âm, đọc to rồi nghe lại và so với giọng mẫu. Bản thu chỉ nằm trong trình duyệt của học sinh, không được gửi lên máy chủ. Cần dùng HTTPS (Netlify mặc định có) và cho phép micro.
+- **Nghe:** giọng mẫu là giọng đọc có sẵn của trình duyệt (Chrome, Safari, Edge). Chất lượng phụ thuộc máy. Muốn dùng giọng thật, thay bằng file mp3 là việc có thể làm thêm.
+- Khi tạo học sinh, ghi khối là 3 để học sinh vào thẳng cấp A1+ (ví dụ `Trần An; E1; 3`).
