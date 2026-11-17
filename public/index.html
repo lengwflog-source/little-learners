@@ -262,23 +262,23 @@ ICONS[104]=`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-wi
 const DISC={4:'var(--peach)',5:'var(--mint)',6:'var(--butter)',0:'var(--sky)',101:'var(--peach)',102:'var(--mint)',103:'var(--butter)',104:'var(--sky)'};
 ICONS[201]=ICONS[101];ICONS[202]=ICONS[102];ICONS[203]=ICONS[103];ICONS[204]=ICONS[104];ICONS[205]=ICONS[101];ICONS[206]=ICONS[102];
 Object.assign(DISC,{201:'var(--peach)',202:'var(--mint)',203:'var(--butter)',204:'var(--sky)',205:'var(--peach)',206:'var(--mint)'});
-const GN={6:'Lớp 6',5:'Lớp 5',2:'Lớp 2',8:'Lớp 3',3:'A1.1',9:'IE1.1'},GCODE={2:'2',8:'3',5:'5',6:'6',3:'A1.1',9:'IE1.1'},GS={6:'Tiếng Anh 6 · Global Success',5:'Tiếng Anh 5 · Extra Workbook',2:'Tiếng Anh 2',8:'Tiếng Anh 3',3:'English A1+ · Elementary',9:'IELTS 1 · Band 3.0–5.0'};
+const GN={6:'Lớp 6',5:'Lớp 5',4:'Lớp 4',2:'Lớp 2',8:'Lớp 3',3:'A1.1',9:'IE1.1'},GCODE={2:'2',8:'3',4:'4',5:'5',6:'6',3:'A1.1',9:'IE1.1'},GS={6:'Tiếng Anh 6 · Global Success',5:'Tiếng Anh 5 · Extra Workbook',4:'Tiếng Anh 4 · Global Success',2:'Tiếng Anh 2',8:'Tiếng Anh 3',3:'English A1+ · Elementary',9:'IELTS 1 · Band 3.0–5.0'};
 /* mã khối khi nhập: 2, 3, 5, 6 = số lớp; A1.1 = A1+ Elementary; IE1.1 = IELTS 1 (id nội bộ giữ nguyên để không mất dữ liệu cũ) */
 function gradeFromCode(x){const t=String(x==null?'':x).toUpperCase().replace(/[\s_+-]/g,'');if(!t)return'';
-  if(t==='2'||t==='5'||t==='6')return t;if(t==='3'||t==='LỚP3'||t==='LOP3')return'8';
+  if(t==='2'||t==='4'||t==='5'||t==='6')return t;if(t==='3'||t==='LỚP3'||t==='LOP3')return'8';
   if(['A1','A1.1','A11'].includes(t))return'3';if(['IE1','IE1.1','IE11','IELTS1','IELTS','IELTS1.1'].includes(t))return'9';
-  const m=/^(?:LỚP|LOP)?([256])$/.exec(t);if(m)return m[1];return null}
-const gradeOpts=sel=>`<option value="">(tự chọn)</option>${[['2','2 · Lớp 2'],['8','3 · Lớp 3'],['5','5 · Lớp 5'],['6','6 · Lớp 6'],['3','A1.1 · A1+ Elementary'],['9','IE1.1 · IELTS 1']].map(([v,l])=>`<option value="${v}" ${String(sel)===v?'selected':''}>${l}</option>`).join('')}`;
-const IB=()=>X&&X.L?(X.L.grade===2?'lop2/img/':X.L.grade===5?'lop5/img/':'img/'):'img/';
+  const m=/^(?:LỚP|LOP)?([2456])$/.exec(t);if(m)return m[1];return null}
+const gradeOpts=sel=>`<option value="">(tự chọn)</option>${[['2','2 · Lớp 2'],['8','3 · Lớp 3'],['4','4 · Lớp 4'],['5','5 · Lớp 5'],['6','6 · Lớp 6'],['3','A1.1 · A1+ Elementary'],['9','IE1.1 · IELTS 1']].map(([v,l])=>`<option value="${v}" ${String(sel)===v?'selected':''}>${l}</option>`).join('')}`;
+const IB=()=>X&&X.L?(X.L.grade===2?'lop2/img/':X.L.grade===5?'lop5/img/':X.L.grade===4?'lop4/img/':'img/'):'img/';
 function setGrade(g){S.grade=g;S.lessons=S.allL.filter(L=>L.grade===g);try{localStorage.setItem('ll-grade',String(g))}catch(e){}}
 function initGrade(){let g=6;try{g=Number(localStorage.getItem('ll-grade'))||6}catch(e){}
   if(S.user&&!S.isT&&S.user.grade)g=Number(S.user.grade);
   if(!S.allL.some(L=>L.grade===g))g=6;setGrade(g)}
-const gradeSw=()=>{const gs=[6,5,2,8,3,9].filter(g=>S.allL.some(L=>L.grade===g));if(gs.length<2||(!S.isT&&S.user&&S.user.grade))return'';
+const gradeSw=()=>{const gs=[6,5,4,2,8,3,9].filter(g=>S.allL.some(L=>L.grade===g));if(gs.length<2||(!S.isT&&S.user&&S.user.grade))return'';
   return`<details class="gdd" id="gdd"><summary aria-label="Chọn khối, đang chọn ${GN[S.grade]}">${GN[S.grade]} <span class="car">▾</span></summary><div class="gmenu" role="menu">${gs.map(g=>`<button class="gitem ${S.grade===g?'on':''}" role="menuitem" data-grade="${g}">${GN[g]}<small>${GS[g]}</small></button>`).join('')}</div></details>`};
 
 /* ---------- data helpers ---------- */
-const lessonUnits=()=>{const g=[];S.lessons.forEach(L=>{let u=g.find(x=>x.key===L.unit);if(!u){u={key:L.unit,title:L.grade!==6?L.unitTitle:(L.unit?'Unit '+L.unit:'Đề ôn tập HK1'),sub:L.grade===2||L.grade===8?'Bài tập có hình':L.grade===5?'Từ vựng · Ngữ pháp · Bài tập · Nghe':L.grade===9?'Vocabulary · Reading · Listening · Writing · Speaking':L.grade===3?'Từ vựng · Ngữ pháp · Nghe · Phát âm':(L.unit?L.unitTitle:'Ôn luyện cuối kì'),lessons:[]};g.push(u)}u.lessons.push(L)});return g};
+const lessonUnits=()=>{const g=[];S.lessons.forEach(L=>{let u=g.find(x=>x.key===L.unit);if(!u){u={key:L.unit,title:L.grade!==6?L.unitTitle:(L.unit?'Unit '+L.unit:'Đề ôn tập HK1'),sub:L.grade===2||L.grade===8?'Bài tập có hình':L.grade===5||L.grade===4?'Từ vựng · Ngữ pháp · Bài tập · Nghe':L.grade===9?'Vocabulary · Reading · Listening · Writing · Speaking':L.grade===3?'Từ vựng · Ngữ pháp · Nghe · Phát âm':(L.unit?L.unitTitle:'Ôn luyện cuối kì'),lessons:[]};g.push(u)}u.lessons.push(L)});return g};
 const exArr=p=>(p&&p.ex)||{};
 function lessonStat(p,L){const ex=exArr(p);let done=0,sum=0,cnt=0;for(const E of L.exercises){const r=ex[E.id];if(r){done++;if(r.n>0){sum+=r.c/r.n;cnt++}}}const total=L.exercises.length;return{done,total,pct:total?done/total:0,avg:cnt?sum/cnt:null}}
 function overall(p){let done=0,total=0,sum=0,cnt=0;const ex=exArr(p);for(const L of S.lessons)for(const E of L.exercises){total++;const r=ex[E.id];if(r){done++;if(r.n>0){sum+=r.c/r.n;cnt++}}}return{done,total,pct:total?done/total:0,avg:cnt?sum/cnt:null}}
@@ -378,6 +378,7 @@ async function init(){
   try{const r=await fetch('lessons.json');S.allL=await r.json();S.allL.forEach(L=>{L.grade=6;L.label=(L.unit?'Unit '+L.unit+' · ':'')+L.title})}catch(e){$('#app').innerHTML='<div class="wrap"><div class="banner err">Không tải được dữ liệu bài học. Hãy tải lại trang.</div></div>';return}
   try{const r=await fetch('lop2/lessons.json');if(r.ok){const t=(await r.text()).split('{{IMG}}').join('lop2/img/');const g2=JSON.parse(t);g2.forEach(L=>{L.grade=2;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(g2)}}catch(e){}
   try{const r=await fetch('lop5/lessons.json');if(r.ok){const t=(await r.text()).split('{{IMG}}').join('lop5/img/');const g5=JSON.parse(t);g5.forEach(L=>{L.grade=5;L.label=(L.unitTitle?L.unitTitle+' · ':'')+L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(g5)}}catch(e){}
+  try{const r=await fetch('lop4/lessons.json');if(r.ok){const t=(await r.text()).split('{{IMG}}').join('lop4/img/');const g4=JSON.parse(t);g4.forEach(L=>{L.grade=4;L.label=(L.unitTitle?L.unitTitle+' · ':'')+L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(g4)}}catch(e){}
   try{const r=await fetch('ef/lessons.json');if(r.ok){const e3=await r.json();e3.forEach(L=>{L.grade=3;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e3)}}catch(e){}
   try{const r=await fetch('lop3/lessons.json');if(r.ok){const e8=await r.json();e8.forEach(L=>{L.grade=8;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e8)}}catch(e){}
   try{const r=await fetch('ielts/lessons.json');if(r.ok){const e9=await r.json();e9.forEach(L=>{L.grade=9;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e9)}}catch(e){}
@@ -490,7 +491,7 @@ function wrongOf(E,r){if(!r||!r.a||!r.n)return null;const g=gradeEx(E,r.a),out=[
     if(bad.length)out.push(res.length>1?`${numOf(E,i)} (ô ${bad.join(', ')})`:String(numOf(E,i)))});return out}
 const sc=r=>r.n?`<span class="chip ${r.c/r.n>=.8?'good':r.c/r.n>=.5?'warn':'bad'}">${r.c}/${r.n}</span>`:'<span class="chip sky">✓</span>';
 function teacherResults(L){const st=visibleStudents(),exs=L.exercises;
-  const head=`<div class="card" style="margin-bottom:14px"><div class="row"><div><b style="font-size:1.3rem">Kết quả ${esc(L.grade===5&&L.unitTitle?L.unitTitle+' · '+L.title:L.title)}</b><div class="muted small">Bấm vào điểm của một bé để xem bé làm sai câu nào.</div></div><span class="sp"></span>${clsSel()}</div></div>`;
+  const head=`<div class="card" style="margin-bottom:14px"><div class="row"><div><b style="font-size:1.3rem">Kết quả ${esc((L.grade===5||L.grade===4)&&L.unitTitle?L.unitTitle+' · '+L.title:L.title)}</b><div class="muted small">Bấm vào điểm của một bé để xem bé làm sai câu nào.</div></div><span class="sp"></span>${clsSel()}</div></div>`;
   if(!st.length)return head+`<div class="card"><p class="muted">Chưa có học sinh nào${S.cls?' trong lớp '+esc(S.cls):''} thuộc khối ${esc(GN[S.grade])}.</p></div>`;
   const colAvg=exs.map(E=>{let c=0,n=0,k=0;st.forEach(x=>{const r=exArr(x.p)[E.id];if(r){k++;if(r.n){c+=r.c;n+=r.n}}});return{k,pct:n?c/n:null}});
   const num=E=>(E.title.match(/^\d+/)||[''])[0];

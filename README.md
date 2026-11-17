@@ -112,6 +112,13 @@ Cần đẩy lại `netlify/functions/api.mjs` và `public/index.html` (các fil
 - **Trợ giảng.** Trang **Trợ giảng** (chỉ giáo viên thấy) để tạo tài khoản, chọn lớp phụ trách, cấp lại mật khẩu, xóa. Trợ giảng đăng nhập ở link riêng `…/#tro-giang` (hoặc tab "Trợ giảng" ở màn đăng nhập), không đăng nhập được ở tab chính và ngược lại. Trợ giảng **chỉ thấy lớp mình phụ trách**: học sinh, bài giao, điểm danh, bản thu âm. Được: giao bài cho lớp mình, điểm danh (kể cả mở mã điểm danh theo lớp), viết nhận xét thái độ, nhận xét bản thu âm. Cũng được: báo điểm cho phụ huynh và tạo/gửi liên kết phụ huynh cho học sinh lớp mình. Không được: tạo/xóa học sinh, đổi mật khẩu học sinh, cho làm lại bài, xóa bản thu, chấm IELTS, sửa thông báo hay danh sách lớp. Mọi hạn chế kiểm tra ở máy chủ.
 - Dữ liệu mới lưu trong hai Blobs store `parent` (link phụ huynh) và `reports` (báo cáo đã báo), tự tạo khi dùng.
 
+## Cập nhật v17 · Tiếng Anh 4 (Lớp 4)
+- Thêm khối **Lớp 4** (`public/lop4/lessons.json`, `public/lop4/img/`, `public/lop4/audio/`): Starter, Unit 1–10, Review 1, Review 2 (có phần Extension). Mỗi Unit chia Lesson 1 (từ vựng · ngữ pháp · bài tập), Lesson 2–3 (luyện tập) và phần Nghe có chấm điểm tự động (audio đã nhúng).
+- Mã khối: **4**. Giáo viên chọn Lớp 4 trong danh sách khối; khi nhập học sinh hàng loạt dùng mã lớp `4`.
+- Hình ảnh được cắt riêng từng hình, nền trắng; những hình phức tạp được tách ra hoặc soạn lại bằng bảng/văn bản.
+- Đáp án do thầy/cô soạn lại (sách không kèm đáp án); đáp án phần nghe lấy từ file tape script. Các câu mở/vẽ/tô màu/viết về bản thân được bỏ qua.
+- Cần đẩy lên GitHub: `public/index.html`, `netlify/functions/api.mjs`, `public/lop4/`, `README.md`.
+
 ## Cập nhật v16 · Quản lý học sinh cho giáo viên
 
 - **Kết quả (trong bài học)**: giáo viên thấy bảng cả lớp (mỗi bé một dòng, mỗi phần bài tập một cột, có TB cả lớp). Bấm vào điểm của bé để xem bài làm.
