@@ -112,6 +112,15 @@ Cần đẩy lại `netlify/functions/api.mjs` và `public/index.html` (các fil
 - **Trợ giảng.** Trang **Trợ giảng** (chỉ giáo viên thấy) để tạo tài khoản, chọn lớp phụ trách, cấp lại mật khẩu, xóa. Trợ giảng đăng nhập ở link riêng `…/#tro-giang` (hoặc tab "Trợ giảng" ở màn đăng nhập), không đăng nhập được ở tab chính và ngược lại. Trợ giảng **chỉ thấy lớp mình phụ trách**: học sinh, bài giao, điểm danh, bản thu âm. Được: giao bài cho lớp mình, điểm danh (kể cả mở mã điểm danh theo lớp), viết nhận xét thái độ, nhận xét bản thu âm. Cũng được: báo điểm cho phụ huynh và tạo/gửi liên kết phụ huynh cho học sinh lớp mình. Không được: tạo/xóa học sinh, đổi mật khẩu học sinh, cho làm lại bài, xóa bản thu, chấm IELTS, sửa thông báo hay danh sách lớp. Mọi hạn chế kiểm tra ở máy chủ.
 - Dữ liệu mới lưu trong hai Blobs store `parent` (link phụ huynh) và `reports` (báo cáo đã báo), tự tạo khi dùng.
 
+## Cập nhật v15 · Lớp 5 đủ 20 Unit + Review 1–4
+Cần đẩy: `public/index.html`, `public/ielts.js`, `netlify/functions/api.mjs` và thư mục **`public/lop5/`** (`lessons.json`, `img/`, `audio/`).
+
+- Có thêm **Học kỳ 1: Unit 1–10, Review 1 và Review 2** (Lớp 5 = khối **5**). Mỗi Unit chia 3 bài *Lesson 1 · Lesson 2 · Lesson 3* (Lesson 1 có từ vựng và ngữ pháp). Học kỳ 2 (Unit 11–20, Review 3–4) giữ nguyên như v14.
+- **Bài nghe Học kỳ 1 (Track 1–56) đã chấm tự động**: đáp án lấy từ file *HK1 (Bản GV)* của bạn (bản giáo viên có đáp án phần nghe). Vài chỗ bản GV ghi sai so với đề/hình (ví dụ Unit 1 Lesson 3 bài 6, Unit 3 vài hình quốc kỳ) thì mình theo đề/hình cho hợp lý. Riêng **Unit 6 Track 37 và Unit 8 Track 43** bản GV không có đáp án nên chỉ phát audio, chưa chấm.
+- **Unit 17–20 (học kỳ 2)** vẫn chưa có lời băng nên bài nghe chỉ phát audio, chưa chấm tự động.
+- Đáp án các bài đọc/viết do mình soạn và đối chiếu với bản GV khi có. Bài mở ("Write about you"), tô màu/vẽ, ô chữ/ô chữ tìm từ, bài vài câu mơ hồ hoặc hình mâu thuẫn với đề đã được bỏ hoặc thay bằng dạng tương đương (ví dụ ô chữ → nhìn hình viết từ).
+- Hình ảnh: mỗi hình trong sách cắt riêng, nén nhẹ, gắn đúng câu hỏi.
+
 ## Cập nhật v14 · Lớp 5 (Unit 11–20 và Review 3, 4)
 Cần đẩy: `public/index.html`, `public/ielts.js`, `netlify/functions/api.mjs` và thư mục mới **`public/lop5/`** (khoảng 19 MB: `lessons.json`, `img/`, `audio/`).
 
