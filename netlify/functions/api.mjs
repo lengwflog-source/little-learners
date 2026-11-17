@@ -531,17 +531,27 @@ async function route(req) {
   }
 
   if (a === "students" && !b && m === "POST") {
-    const list = (Array.isArray(body.list) ? body.list : []).slice(0, 200);
-    const created = [];
-    for (const it of list) {
-      const name = str(it.name, 60);
-      if (name.length < 2) continue;
-      const username = await freeUsername(name), password = genPw();
-      const u = { username, role: "student", name, cls: str(it.cls, 20), grade: cleanGrade(it.grade), ...(await hashPw(password)), created: Date.now() };
-      await DB.users().setJSON(username, u);
-      created.push({ username, password, name, cls: u.cls, grade: u.grade });
+    const list = (Array.isArray(body.list) ? body.list : []).slice(0, 50);
+    const created = [], errors = [];
+    for (const [idx, it] of list.entries()) {
+      const name = str(it && it.name, 60);
+      if (name.length < 2) { errors.push({ i: idx, name, msg: "Họ tên quá ngắn" }); continue; }
+      try {
+        const username = await freeUsername(name), password = genPw();
+        const u = { username, role: "student", name, cls: str(it.cls, 20), grade: cleanGrade(it.grade), ...(await hashPw(password)), created: Date.now() };
+        await DB.users().setJSON(username, u);
+        created.push({ username, password, name, cls: u.cls, grade: u.grade });
+      } catch (e) { errors.push({ i: idx, name, msg: "Không tạo được tài khoản" }); }
     }
-    return J(200, { created });
+    const newCls = [...new Set(created.map((x) => x.cls).filter(Boolean))];
+    if (newCls.length) {
+      try {
+        const cfg = await getCfg();
+        const miss = newCls.filter((c) => !cfg.classes.includes(c));
+        if (miss.length) { cfg.classes = cleanClasses([...cfg.classes, ...miss]); await DB.config().setJSON("main", cfg); }
+      } catch (e) { /* lớp sẽ được thêm thủ công */ }
+    }
+    return J(200, { created, errors });
   }
   if (a === "students" && isUser(b)) {
     const users = DB.users();

@@ -112,6 +112,15 @@ Cần đẩy lại `netlify/functions/api.mjs` và `public/index.html` (các fil
 - **Trợ giảng.** Trang **Trợ giảng** (chỉ giáo viên thấy) để tạo tài khoản, chọn lớp phụ trách, cấp lại mật khẩu, xóa. Trợ giảng đăng nhập ở link riêng `…/#tro-giang` (hoặc tab "Trợ giảng" ở màn đăng nhập), không đăng nhập được ở tab chính và ngược lại. Trợ giảng **chỉ thấy lớp mình phụ trách**: học sinh, bài giao, điểm danh, bản thu âm. Được: giao bài cho lớp mình, điểm danh (kể cả mở mã điểm danh theo lớp), viết nhận xét thái độ, nhận xét bản thu âm. Cũng được: báo điểm cho phụ huynh và tạo/gửi liên kết phụ huynh cho học sinh lớp mình. Không được: tạo/xóa học sinh, đổi mật khẩu học sinh, cho làm lại bài, xóa bản thu, chấm IELTS, sửa thông báo hay danh sách lớp. Mọi hạn chế kiểm tra ở máy chủ.
 - Dữ liệu mới lưu trong hai Blobs store `parent` (link phụ huynh) và `reports` (báo cáo đã báo), tự tạo khi dùng.
 
+## Cập nhật v16 · Quản lý học sinh cho giáo viên
+
+- **Kết quả (trong bài học)**: giáo viên thấy bảng cả lớp (mỗi bé một dòng, mỗi phần bài tập một cột, có TB cả lớp). Bấm vào điểm của bé để xem bài làm.
+- **Câu sai của từng bé**: trong hồ sơ học sinh, mỗi phần bài ghi rõ "Sai ở câu: 2, 5" và nút **Xem bài làm** (hiện đáp án bé chọn, đúng xanh, sai đỏ, kèm đáp án đúng).
+- **Chọn khối**: 6 nút khối gộp thành một ô có mũi tên ▾ ở thanh trên cùng.
+- **Nhập học sinh**: không còn giới hạn 4 bé; có bước *Kiểm tra danh sách* báo lỗi từng dòng, tạo theo từng nhóm 4 bé, dòng lỗi giữ lại trong ô nhập. Có ô *Lớp mặc định* và *Khối mặc định* (chỉ cần dán họ tên). Lớp mới tự được thêm vào danh sách lớp.
+- **Mã khối khi nhập**: `2`, `3`, `5`, `6` (đúng số lớp), `A1.1` (A1+ Elementary), `IE1.1` (IELTS 1). Dữ liệu cũ không đổi (nội bộ vẫn giữ id cũ nên học sinh đã tạo không bị mất).
+- Tên bài Lớp 5 trong hồ sơ học sinh có kèm tên Unit.
+
 ## Cập nhật v15 · Lớp 5 đủ 20 Unit + Review 1–4
 Cần đẩy: `public/index.html`, `public/ielts.js`, `netlify/functions/api.mjs` và thư mục **`public/lop5/`** (`lessons.json`, `img/`, `audio/`).
 
