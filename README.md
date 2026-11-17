@@ -145,3 +145,11 @@ Cần đẩy: `public/index.html`, `public/ielts.js`, `netlify/functions/api.mjs
 - **Bài nghe**: các file nghe của bạn đã chuyển sang mp3 nhẹ (`public/lop5/audio/`) và phát ngay trong bài. Unit 11–16 chấm tự động theo lời băng. **Unit 17–20 chưa có lời băng nên bài nghe chỉ phát audio + hiện đề, chưa chấm tự động.**
 - Đáp án do mình soạn (bản sách học sinh không có đáp án). Một số bài mở ("Write about you"), bài đánh dấu ngữ điệu, ô chữ và vài câu mà hình trong sách mâu thuẫn với đề đã được bỏ hoặc chuyển thành bài nghe/đọc to.
 - Học kỳ 1 (Unit 1–10) chưa có trong bản này.
+
+## Cập nhật v18 · Tiếng Anh 7 + liên hệ
+
+- **Lớp 7 (mã khối `7`)**: `public/lop7/lessons.json` (+ `public/lop7/img/`). 3 Unit (Hobbies, Healthy living, Community service) × 7 bài (Getting Started, A Closer Look 1+2, Communication, Skills 1+2, Looking Back, Practice 1, Practice 2) và nhóm "Ôn tập giữa kì 1" (Đề cương + Đề số 1–5). Đáp án lấy từ phần ĐÁP ÁN trong tài liệu; bài hình, bài nối cột, bài chỉ có phiên âm IPA, bài mở (tự trả lời) không chấm tự động.
+- Bài viết lại câu (Rewrite) chấm theo đáp án mẫu (đã tự thêm dạng viết tắt/đầy đủ: don't ↔ do not…).
+- Đã bỏ dòng thông báo nhỏ dưới "Chờ báo điểm cho phụ huynh".
+- Chân trang: mục **Liên hệ · Zalo / SĐT** → hiện QR Zalo (`public/zalo-qr.png`) và 0923 880 442 / 0941 741 420.
+- `netlify/functions/api.mjs`: cho phép khối "7".
