@@ -111,3 +111,12 @@ Cần đẩy lại `netlify/functions/api.mjs` và `public/index.html` (các fil
 - **Nhận xét thái độ khi điểm danh.** Trang Điểm danh có thêm cột nhận xét cho từng em (tự lưu khi bấm ra ngoài ô). Nhận xét hiện trên trang phụ huynh; học sinh không thấy.
 - **Trợ giảng.** Trang **Trợ giảng** (chỉ giáo viên thấy) để tạo tài khoản, chọn lớp phụ trách, cấp lại mật khẩu, xóa. Trợ giảng đăng nhập ở link riêng `…/#tro-giang` (hoặc tab "Trợ giảng" ở màn đăng nhập), không đăng nhập được ở tab chính và ngược lại. Trợ giảng **chỉ thấy lớp mình phụ trách**: học sinh, bài giao, điểm danh, bản thu âm. Được: giao bài cho lớp mình, điểm danh (kể cả mở mã điểm danh theo lớp), viết nhận xét thái độ, nhận xét bản thu âm. Cũng được: báo điểm cho phụ huynh và tạo/gửi liên kết phụ huynh cho học sinh lớp mình. Không được: tạo/xóa học sinh, đổi mật khẩu học sinh, cho làm lại bài, xóa bản thu, chấm IELTS, sửa thông báo hay danh sách lớp. Mọi hạn chế kiểm tra ở máy chủ.
 - Dữ liệu mới lưu trong hai Blobs store `parent` (link phụ huynh) và `reports` (báo cáo đã báo), tự tạo khi dùng.
+
+## Cập nhật v14 · Lớp 5 (Unit 11–20 và Review 3, 4)
+Cần đẩy: `public/index.html`, `public/ielts.js`, `netlify/functions/api.mjs` và thư mục mới **`public/lop5/`** (khoảng 19 MB: `lessons.json`, `img/`, `audio/`).
+
+- **Lớp 5** là khối **5**: khi tạo học sinh ghi khối 5 (hoặc chọn "Lớp 5"). Nội dung theo sách *Extra Workbook 5, học kỳ 2*: mỗi Unit có 3 phần là *Từ vựng · Ngữ pháp*, *Luyện tập ngữ pháp* và *Listening Skill*; thêm Review 3 (Unit 11–15) và Review 4 (Unit 16–20).
+- **Hình ảnh**: mỗi hình trong sách được **cắt riêng** và nén (JPEG nhỏ), gắn đúng vào câu hỏi/từ vựng của nó, không dùng ảnh gộp cả trang.
+- **Bài nghe**: các file nghe của bạn đã chuyển sang mp3 nhẹ (`public/lop5/audio/`) và phát ngay trong bài. Unit 11–16 chấm tự động theo lời băng. **Unit 17–20 chưa có lời băng nên bài nghe chỉ phát audio + hiện đề, chưa chấm tự động.**
+- Đáp án do mình soạn (bản sách học sinh không có đáp án). Một số bài mở ("Write about you"), bài đánh dấu ngữ điệu, ô chữ và vài câu mà hình trong sách mâu thuẫn với đề đã được bỏ hoặc chuyển thành bài nghe/đọc to.
+- Học kỳ 1 (Unit 1–10) chưa có trong bản này.

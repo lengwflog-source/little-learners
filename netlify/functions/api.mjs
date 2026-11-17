@@ -71,7 +71,7 @@ async function auth(req) {
 /* ---------- helpers ---------- */
 const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "", ...(u.role === "ta" ? { classes: u.classes || [] } : {}) });
 const cleanClasses = (v) => [...new Set((Array.isArray(v) ? v : []).map((c) => str(c, 20)).filter(Boolean))].slice(0, 40);
-const cleanGrade = (g) => (["2", "3", "6", "8", "9"].includes(String(g)) ? String(g) : "");
+const cleanGrade = (g) => (["2", "3", "5", "6", "8", "9"].includes(String(g)) ? String(g) : "");
 const strip = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
 function baseUsername(name) {
   const parts = strip(name).toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/).filter(Boolean);

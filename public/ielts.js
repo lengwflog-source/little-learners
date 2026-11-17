@@ -55,7 +55,7 @@ function ieMedia(list) {
   return `<div class="iemedia">${list.map(m => m.t === 'video'
     ? `<figure class="iem"><figcaption>🎬 ${esc(m.title)}</figcaption><video controls preload="none" playsinline src="${enc(m.src)}"></video></figure>`
     : `<figure class="iem"><figcaption>🎧 ${esc(m.title)}</figcaption><audio controls preload="none"><source src="${enc(m.src)}"><source src="${enc(m.src.replace(/\.mp3$/i, ''))}"></audio></figure>`).join('')}
-  <p class="muted small" style="margin:6px 0 0">Không phát được? Nhờ giáo viên kiểm tra đã chép thư mục AUDIO và VIDEO vào <code>public/ielts/</code> chưa.</p></div>`;
+  <p class="muted small" style="margin:6px 0 0">Không phát được? Hãy tải lại trang hoặc nhờ giáo viên kiểm tra tệp âm thanh.</p></div>`;
 }
 
 /* ---------- feedback rendering ---------- */
