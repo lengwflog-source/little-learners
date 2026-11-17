@@ -9,7 +9,7 @@ export const config = { path: "/api/*" };
 
 const TZ = process.env.TZ_NAME || "Asia/Ho_Chi_Minh";
 const store = (name) => getStore({ name, consistency: "strong" });
-const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config"), recmeta: () => store("recmeta"), recfiles: () => store("recfiles") };
+const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config"), recmeta: () => store("recmeta"), recfiles: () => store("recfiles"), parent: () => store("parent"), reports: () => store("reports") };
 const MAX_AUDIO = 4 * 1024 * 1024, MAX_RECS = 150;
 const isEx = (v) => typeof v === "string" && /^[a-z0-9-]{3,40}$/.test(v);
 const isIdx = (v) => /^\d{1,3}$/.test(String(v));
@@ -69,7 +69,8 @@ async function auth(req) {
 }
 
 /* ---------- helpers ---------- */
-const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "" });
+const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "", ...(u.role === "ta" ? { classes: u.classes || [] } : {}) });
+const cleanClasses = (v) => [...new Set((Array.isArray(v) ? v : []).map((c) => str(c, 20)).filter(Boolean))].slice(0, 40);
 const cleanGrade = (g) => (["2", "3", "6", "8", "9"].includes(String(g)) ? String(g) : "");
 const strip = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
 function baseUsername(name) {
@@ -89,30 +90,68 @@ async function freeUsername(name) {
 const PW_ALPHA = "abcdefghjkmnpqrstuvwxyz23456789";
 const genPw = () => Array.from({ length: 6 }, () => PW_ALPHA[crypto.randomInt(PW_ALPHA.length)]).join("");
 
-const DEFAULT_CFG = { classes: [], assignments: [], announcement: "", checkin: null };
+const DEFAULT_CFG = { classes: [], assignments: [], announcement: "", checkin: null, ciByCls: {} };
 async function getCfg() {
   const c = (await DB.config().get("main", { type: "json" })) || {};
   return { ...DEFAULT_CFG, ...c };
 }
-const cfgFor = (cfg, user) =>
-  user.role === "teacher" ? cfg : { ...cfg, checkin: cfg.checkin ? { date: cfg.checkin.date } : null };
-
-function cleanCfg(b) {
-  const classes = (Array.isArray(b.classes) ? b.classes : []).map((c) => str(c, 20)).filter(Boolean).slice(0, 40);
-  const assignments = (Array.isArray(b.assignments) ? b.assignments : []).slice(0, 100).map((a) => ({
-    id: str(a.id, 30), title: str(a.title, 120), cls: str(a.cls, 20), due: isDate(a.due) ? a.due : "",
-    lessons: (Array.isArray(a.lessons) ? a.lessons : []).map((x) => str(x, 30)).filter(Boolean).slice(0, 40),
-    ex: (Array.isArray(a.ex) ? a.ex : []).map((x) => str(x, 40)).filter(Boolean).slice(0, 400),
-  })).filter((a) => a.title);
-  let checkin = null;
-  if (b.checkin && isDate(b.checkin.date) && /^\d{4,6}$/.test(String(b.checkin.code))) checkin = { date: b.checkin.date, code: String(b.checkin.code) };
-  return { classes, assignments, announcement: str(b.announcement, 500), checkin };
+const taOk = (user, cls) => user.role === "teacher" || (user.role === "ta" && !!cls && (user.classes || []).includes(cls));
+function cfgFor(cfg, user) {
+  const td = today();
+  if (user.role === "teacher") return cfg;
+  if (user.role === "ta") {
+    const mine = user.classes || [];
+    return { classes: mine, assignments: cfg.assignments.filter((a) => a.cls && mine.includes(a.cls)), announcement: cfg.announcement, checkin: null, ciByCls: Object.fromEntries(Object.entries(cfg.ciByCls || {}).filter(([c]) => mine.includes(c))) };
+  }
+  const open = (cfg.checkin && cfg.checkin.date === td) || (user.cls && cfg.ciByCls && cfg.ciByCls[user.cls] && cfg.ciByCls[user.cls].date === td);
+  return { classes: cfg.classes, assignments: cfg.assignments, announcement: cfg.announcement, checkin: open ? { date: td } : null, ciByCls: {} };
+}
+const cleanAssign = (a) => ({
+  id: str(a.id, 30) || Date.now().toString(36), title: str(a.title, 120), cls: str(a.cls, 20), due: isDate(a.due) ? a.due : "",
+  lessons: (Array.isArray(a.lessons) ? a.lessons : []).map((x) => str(x, 30)).filter(Boolean).slice(0, 40),
+  ex: (Array.isArray(a.ex) ? a.ex : []).map((x) => str(x, 40)).filter(Boolean).slice(0, 400),
+});
+/* Mọi thay đổi cấu hình đi qua "op" để giáo viên và trợ giảng sửa cùng lúc không ghi đè lẫn nhau */
+function applyCfgOp(cfg, user, b) {
+  const op = b.op, teacher = user.role === "teacher";
+  if (op === "addas") {
+    const a = cleanAssign(b.a || {});
+    if (!a.title) throw new Error("Nhập tiêu đề bài giao.");
+    if (!teacher && !taOk(user, a.cls)) throw new Error("Trợ giảng chỉ giao bài cho lớp mình phụ trách.");
+    cfg.assignments = [...cfg.assignments.filter((x) => x.id !== a.id), a].slice(-100);
+  } else if (op === "delas") {
+    const a = cfg.assignments.find((x) => x.id === str(b.id, 30));
+    if (a && !teacher && !taOk(user, a.cls)) throw new Error("Bạn không có quyền xóa bài giao này.");
+    cfg.assignments = cfg.assignments.filter((x) => x.id !== str(b.id, 30));
+  } else if (op === "ci") {
+    const code = String(b.code || ""), on = /^\d{4,6}$/.test(code);
+    if (teacher) cfg.checkin = on ? { date: today(), code } : null;
+    else {
+      const want = cleanClasses(b.classes).filter((c) => taOk(user, c)), cl = want.length ? want : user.classes || [];
+      cfg.ciByCls = { ...(cfg.ciByCls || {}) };
+      for (const c of cl) { if (on) cfg.ciByCls[c] = { date: today(), code }; else delete cfg.ciByCls[c]; }
+    }
+  } else if (!teacher) throw new Error("Bạn không có quyền thực hiện thao tác này.");
+  else if (op === "classes") cfg.classes = cleanClasses(b.classes);
+  else if (op === "ann") cfg.announcement = str(b.text, 500);
+  else throw new Error("Thao tác không hợp lệ.");
+  return cfg;
 }
 function cleanProgress(b, old) {
   const out = { ex: {}, lv: {}, days: [], ci: (old && old.ci) || {}, last: Date.now() };
   const ex = b && typeof b.ex === "object" && b.ex ? b.ex : {};
+  const oldEx = (old && old.ex) || {};
+  // Điểm lần làm đầu tiên được khóa: bài đã có kết quả thì không ghi đè được nữa.
+  // Ngoại lệ: bài Writing/Speaking của IELTS (id bắt đầu bằng "ie-") được cập nhật số điểm khi AI chấm xong, với điều kiện đáp án không đổi.
+  for (const id of Object.keys(oldEx)) {
+    const o = oldEx[id], r = ex[id];
+    out.ex[id] = o;
+    if (/^ie-/.test(id) && r && typeof r === "object" && JSON.stringify(r.a || []) === JSON.stringify(o.a || []))
+      out.ex[id] = { ...o, c: Math.max(0, Math.min(500, r.c | 0)), n: Math.max(0, Math.min(500, r.n | 0)) };
+  }
   for (const id of Object.keys(ex).slice(0, 800)) {
     const r = ex[id];
+    if (oldEx[id]) continue;
     if (!r || typeof r !== "object" || !/^[\w.-]{1,40}$/.test(id)) continue;
     out.ex[id] = { c: Math.max(0, Math.min(500, r.c | 0)), n: Math.max(0, Math.min(500, r.n | 0)), t: Number(r.t) || Date.now(), a: Array.isArray(r.a) ? r.a : [] };
   }
@@ -168,18 +207,36 @@ async function route(req) {
       }
       return fail(401, "Sai tên đăng nhập hoặc mật khẩu.");
     }
+    if (body.mode === "ta" && user.role !== "ta") return fail(403, "Đây không phải tài khoản trợ giảng. Hãy đăng nhập ở mục chính.");
+    if (body.mode !== "ta" && user.role === "ta") return fail(403, "Tài khoản trợ giảng đăng nhập ở mục \"Trợ giảng\".");
     if (user.fails || user.lockUntil) { user.fails = 0; delete user.lockUntil; await users.setJSON(username, user); }
     return J(200, { token: await signToken({ u: username, r: user.role, exp: Math.floor(Date.now() / 1000) + 7 * 86400 }), user: pub(user) });
+  }
+
+  /* phụ huynh xem báo cáo bằng liên kết riêng (không cần đăng nhập) */
+  if (a === "parent" && b && m === "GET") {
+    const token = String(b);
+    const uname = /^[a-f0-9]{32}$/.test(token) ? await DB.parent().get(token) : null;
+    const su = uname ? await DB.users().get(uname, { type: "json" }) : null;
+    if (!su || su.role !== "student" || su.ptoken !== token) return fail(404, "Liên kết không còn hiệu lực. Hãy xin giáo viên liên kết mới.");
+    const rep = (await DB.reports().get(uname, { type: "json" })) || {};
+    const attendance = [];
+    for (const [d, doc] of await listAll(DB.attendance())) {
+      const mk = doc && doc.marks && doc.marks[uname], nt = doc && doc.notes && doc.notes[uname];
+      if (mk || nt) attendance.push({ date: d, status: mk || "", note: nt || "" });
+    }
+    attendance.sort((x, y) => (x.date < y.date ? 1 : -1));
+    return J(200, { student: { name: su.name, cls: su.cls || "", grade: su.grade || "" }, reports: Object.values(rep).sort((x, y) => y.at - x.at), attendance: attendance.slice(0, 80) });
   }
 
   /* authenticated */
   const user = await auth(req);
   if (!user) return fail(401, "Phiên đăng nhập đã hết hạn.");
-  const teacher = user.role === "teacher";
+  const teacher = user.role === "teacher", ta = user.role === "ta", staff = teacher || ta;
 
   if (a === "me" && m === "GET") {
     const out = { user: pub(user), config: cfgFor(await getCfg(), user) };
-    if (!teacher) {
+    if (!staff) {
       out.progress = (await DB.progress().get(user.username, { type: "json" })) || {};
       out.mine = {};
       for (const [d, doc] of await listAll(DB.attendance())) if (doc && doc.marks && doc.marks[user.username]) out.mine[d] = doc.marks[user.username];
@@ -196,7 +253,7 @@ async function route(req) {
   }
   if (a === "config" && m === "GET") return J(200, { config: cfgFor(await getCfg(), user) });
   if (a === "progress" && m === "PUT") {
-    if (teacher) return fail(403, "Giáo viên không có tiến trình học.");
+    if (staff) return fail(403, "Tài khoản giáo viên/trợ giảng không có tiến trình học.");
     const old = (await DB.progress().get(user.username, { type: "json" })) || {};
     const next = cleanProgress(body, old);
     if (JSON.stringify(next).length > 450000) return fail(413, "Dữ liệu quá lớn.");
@@ -204,9 +261,11 @@ async function route(req) {
     return J(200, { ok: true });
   }
   if (a === "checkin" && m === "POST") {
-    if (teacher) return fail(403, "Chỉ học sinh mới điểm danh bằng mã.");
-    const cfg = await getCfg();
-    if (!cfg.checkin || cfg.checkin.date !== today() || String(body.code).trim() !== cfg.checkin.code) return fail(400, "Mã điểm danh chưa đúng hoặc chưa mở.");
+    if (staff) return fail(403, "Chỉ học sinh mới điểm danh bằng mã.");
+    const cfg = await getCfg(), td = today(), code = String(body.code).trim();
+    const okG = cfg.checkin && cfg.checkin.date === td && code === cfg.checkin.code;
+    const cc = user.cls && cfg.ciByCls && cfg.ciByCls[user.cls];
+    if (!okG && !(cc && cc.date === td && code === cc.code)) return fail(400, "Mã điểm danh chưa đúng hoặc chưa mở.");
     const p = (await DB.progress().get(user.username, { type: "json" })) || { ex: {}, lv: {}, days: [], ci: {} };
     p.ci = { ...(p.ci || {}), [today()]: Date.now() };
     await DB.progress().setJSON(user.username, p);
@@ -215,7 +274,7 @@ async function route(req) {
 
   /* voice recordings (student) */
   if (a === "rec" && b === "audio" && m === "PUT") {
-    if (teacher) return fail(403, "Chỉ học sinh mới gửi bản thu.");
+    if (staff) return fail(403, "Chỉ học sinh mới gửi bản thu.");
     const exId = c, idx = parts[3];
     if (!isEx(exId) || !isIdx(idx)) return fail(400, "Bài không hợp lệ.");
     const buf = Buffer.from(await req.arrayBuffer());
@@ -234,11 +293,11 @@ async function route(req) {
     return J(200, { key, meta: meta[key] });
   }
   if (a === "rec" && b === "mine" && m === "GET") {
-    if (teacher) return J(200, { recs: {} });
+    if (staff) return J(200, { recs: {} });
     return J(200, { recs: (await purgeUser(DB.recmeta(), DB.recfiles(), user.username)) || {} });
   }
   if (a === "rec" && b === "seen" && m === "PUT") {
-    if (teacher) return J(200, { ok: true });
+    if (staff) return J(200, { ok: true });
     const meta = await DB.recmeta().get(user.username, { type: "json" });
     if (meta) {
       for (const k of Array.isArray(body.keys) ? body.keys.slice(0, 300) : []) if (meta[k]) meta[k].seen = true;
@@ -249,7 +308,8 @@ async function route(req) {
   if (a === "recfile" && m === "GET") {
     const [, who, exId, idx] = parts;
     if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
-    if (!teacher && who !== user.username) return fail(403, "Bạn không có quyền nghe bản thu này.");
+    if (!staff && who !== user.username) return fail(403, "Bạn không có quyền nghe bản thu này.");
+    if (ta) { const su = await DB.users().get(who, { type: "json" }); if (!su || !taOk(user, su.cls)) return fail(403, "Bạn không có quyền nghe bản thu này."); }
     const key = exId + ":" + Number(idx);
     const meta = await purgeUser(DB.recmeta(), DB.recfiles(), who);
     const mt = meta && meta[key];
@@ -262,7 +322,7 @@ async function route(req) {
 
   /* IELTS AI feedback (student) */
   if (a === "ai" && b === "submit" && m === "POST") {
-    if (teacher) return fail(403, "Chỉ học viên mới nộp bài để AI chấm.");
+    if (staff) return fail(403, "Chỉ học viên mới nộp bài để AI chấm.");
     const kind = body.kind === "sp" ? "sp" : body.kind === "wr" ? "wr" : "";
     const exId = str(body.exId, 40), idx = Number(body.idx);
     if (!kind || !isEx(exId) || !isIdx(idx)) return fail(400, "Bài không hợp lệ.");
@@ -290,30 +350,32 @@ async function route(req) {
     return J(200, { key, entry: doc[key] });
   }
   if (a === "ai" && b === "mine" && m === "GET") {
-    if (teacher) return J(200, { ai: {} });
+    if (staff) return J(200, { ai: {} });
     const doc = (await aiStore().get(user.username, { type: "json" })) || {};
     delete doc._day;
     for (const e of Object.values(doc)) delete e.ai;
     return J(200, { ai: doc });
   }
   if (a === "ai" && b === "seen" && m === "PUT") {
-    if (teacher) return J(200, { ok: true });
+    if (staff) return J(200, { ok: true });
     const store = aiStore(), doc = await store.get(user.username, { type: "json" });
     if (doc && doc[str(body.key, 60)]) { doc[str(body.key, 60)].seen = true; await store.setJSON(user.username, doc); }
     return J(200, { ok: true });
   }
 
-  /* teacher only */
-  if (!teacher) return fail(403, "Bạn không có quyền thực hiện thao tác này.");
+  /* ---------- giáo viên và trợ giảng (trợ giảng chỉ thấy lớp mình phụ trách) ---------- */
+  if (!staff) return fail(403, "Bạn không có quyền thực hiện thao tác này.");
+  const myStudents = async () => (await listAll(DB.users())).map(([, u]) => u).filter((u) => u && u.role === "student" && taOk(user, u.cls));
+  const studentOf = async (who) => { const su = isUser(who) ? await DB.users().get(who, { type: "json" }) : null; return su && su.role === "student" && taOk(user, su.cls) ? su : null; };
 
   if (a === "recs" && m === "GET") {
     const { blobs } = await DB.recmeta().list();
     const items = [];
     for (const bl of blobs) {
+      const u = await DB.users().get(bl.key, { type: "json" });
+      if (!u || !taOk(user, u.cls)) continue;
       const meta = await purgeUser(DB.recmeta(), DB.recfiles(), bl.key);
       if (!meta) continue;
-      const u = await DB.users().get(bl.key, { type: "json" });
-      if (!u) continue;
       for (const [key, v] of Object.entries(meta)) items.push({ user: bl.key, name: u.name, cls: u.cls || "", grade: u.grade || "", key, ...v });
     }
     items.sort((x, y) => y.t - x.t);
@@ -322,6 +384,7 @@ async function route(req) {
   if (a === "rec" && b === "comment" && m === "PUT") {
     const [, , who, exId, idx] = parts;
     if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
+    if (!(await studentOf(who))) return fail(403, "Học sinh này không thuộc lớp bạn phụ trách.");
     const meta = await DB.recmeta().get(who, { type: "json" });
     const key = exId + ":" + Number(idx);
     if (!meta || !meta[key]) return fail(404, "Không tìm thấy bản thu.");
@@ -330,6 +393,89 @@ async function route(req) {
     await DB.recmeta().setJSON(who, meta);
     return J(200, { ok: true, meta: meta[key] });
   }
+  if (a === "config" && m === "PUT") {
+    let cfg;
+    try { cfg = applyCfgOp(await getCfg(), user, body); } catch (e) { return fail(400, e.message); }
+    await DB.config().setJSON("main", cfg);
+    return J(200, { config: cfgFor(cfg, user) });
+  }
+  if (a === "attendance" && m === "GET") {
+    const mine = ta ? new Set((await myStudents()).map((u) => u.username)) : null;
+    const dates = {}, notes = {};
+    for (const [d, doc] of await listAll(DB.attendance())) {
+      if (!doc) continue;
+      dates[d] = Object.fromEntries(Object.entries(doc.marks || {}).filter(([u]) => !mine || mine.has(u)));
+      notes[d] = Object.fromEntries(Object.entries(doc.notes || {}).filter(([u]) => !mine || mine.has(u)));
+    }
+    return J(200, { dates, notes });
+  }
+  if (a === "attendance" && isDate(b) && m === "PUT") {
+    const allowed = ta ? new Set((await myStudents()).map((u) => u.username)) : null;
+    const inScope = (u) => !allowed || allowed.has(u);
+    const old = (await DB.attendance().get(b, { type: "json" })) || {};
+    const marks = {}, notes = {};
+    for (const [u, v] of Object.entries(old.marks || {})) if (!inScope(u) || body.marks === undefined) marks[u] = v;
+    for (const [u, v] of Object.entries(old.notes || {})) notes[u] = v;
+    if (body.marks) for (const [u, v] of Object.entries(body.marks)) if (isUser(u) && inScope(u) && ["P", "L", "E", "A"].includes(v)) marks[u] = v;
+    if (body.notes) for (const [u, v] of Object.entries(body.notes)) { const t = str(v, 400); if (!isUser(u) || !inScope(u)) continue; if (t) notes[u] = t; else delete notes[u]; }
+    await DB.attendance().setJSON(b, { date: b, marks, notes });
+    return J(200, { ok: true });
+  }
+  if (a === "students" && !b && m === "GET") {
+    const prog = Object.fromEntries(await listAll(DB.progress()));
+    const reps = Object.fromEntries(await listAll(DB.reports()));
+    const students = (await myStudents()).map((u) => ({
+      username: u.username, name: u.name, cls: u.cls || "", grade: u.grade || "", progress: prog[u.username] || {},
+      ptoken: u.ptoken || "", reports: Object.fromEntries(Object.entries(reps[u.username] || {}).map(([k, r]) => [k, { at: r.at, c: r.c, n: r.n, note: r.note || "" }])),
+    }));
+    return J(200, { students });
+  }
+
+  /* link phụ huynh và báo điểm: giáo viên và trợ giảng (trợ giảng chỉ với học sinh lớp mình) */
+  if (a === "students" && isUser(b) && (c === "ptoken" || c === "report")) {
+    const users = DB.users(), u = await studentOf(b);
+    if (!u) return fail(403, "Học sinh này không thuộc lớp bạn phụ trách.");
+  if (c === "ptoken" && m === "POST") {
+    if (u.ptoken) { try { await DB.parent().delete(u.ptoken); } catch {} }
+    u.ptoken = crypto.randomBytes(16).toString("hex");
+    await users.setJSON(b, u);
+    await DB.parent().set(u.ptoken, b);
+    return J(200, { ptoken: u.ptoken });
+  }
+  if (c === "ptoken" && m === "DELETE") {
+    if (u.ptoken) { try { await DB.parent().delete(u.ptoken); } catch {} }
+    u.ptoken = "";
+    await users.setJSON(b, u);
+    return J(200, { ok: true });
+  }
+  if (c === "report" && m === "POST") {
+    const lessonId = str(body.lessonId, 30), label = str(body.label, 140), note = str(body.note, 800);
+    const exs = (Array.isArray(body.exs) ? body.exs : []).slice(0, 60).map((x) => ({ id: str(x && x.id, 40), title: str(x && x.title, 100) })).filter((x) => x.id);
+    if (!/^[\w.-]{1,30}$/.test(lessonId) || !exs.length) return fail(400, "Thiếu thông tin phần bài cần báo điểm.");
+    const p = (await DB.progress().get(b, { type: "json" })) || {};
+    const rows = []; let cc = 0, nn = 0;
+    for (const x of exs) {
+      const r = p.ex && p.ex[x.id];
+      if (!r) return fail(400, "Học sinh chưa làm xong mục \"" + x.title + "\", chưa thể báo điểm.");
+      rows.push({ id: x.id, title: x.title, c: r.c, n: r.n, t: r.t });
+      cc += r.c; nn += r.n;
+    }
+    const rep = (await DB.reports().get(b, { type: "json" })) || {};
+    rep[lessonId] = { lessonId, label, unit: str(body.unit, 80), rows, c: cc, n: nn, pct: nn ? cc / nn : null, note, at: Date.now(), by: user.name };
+    await DB.reports().setJSON(b, rep);
+    return J(200, { report: { at: rep[lessonId].at, c: cc, n: nn } });
+  }
+  if (c === "report" && m === "DELETE") {
+    const rep = (await DB.reports().get(b, { type: "json" })) || {};
+    delete rep[str(parts[3], 30)];
+    await DB.reports().setJSON(b, rep);
+    return J(200, { ok: true });
+  }
+  }
+
+  /* ---------- chỉ giáo viên ---------- */
+  if (!teacher) return fail(403, "Chức năng này chỉ dành cho giáo viên.");
+
   if (a === "rec" && m === "DELETE") {
     const [, who, exId, idx] = parts;
     if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
@@ -342,7 +488,6 @@ async function route(req) {
     }
     return J(200, { ok: true });
   }
-
   if (a === "ai" && b === "list" && m === "GET") {
     const store = aiStore();
     const { blobs } = await store.list();
@@ -385,29 +530,6 @@ async function route(req) {
     return ok ? J(200, { ok: true }) : fail(502, "Không gọi được máy chủ chấm bài.");
   }
 
-  if (a === "config" && m === "PUT") {
-    const cfg = cleanCfg(body);
-    await DB.config().setJSON("main", cfg);
-    return J(200, { config: cfg });
-  }
-  if (a === "attendance" && m === "GET") {
-    const dates = {};
-    for (const [d, doc] of await listAll(DB.attendance())) if (doc) dates[d] = doc.marks || {};
-    return J(200, { dates });
-  }
-  if (a === "attendance" && isDate(b) && m === "PUT") {
-    const marks = {};
-    for (const [u, v] of Object.entries(body.marks || {})) if (isUser(u) && ["P", "L", "E", "A"].includes(v)) marks[u] = v;
-    await DB.attendance().setJSON(b, { date: b, marks });
-    return J(200, { ok: true });
-  }
-  if (a === "students" && !b && m === "GET") {
-    const prog = Object.fromEntries(await listAll(DB.progress()));
-    const students = (await listAll(DB.users()))
-      .map(([, u]) => u).filter((u) => u && u.role === "student")
-      .map((u) => ({ username: u.username, name: u.name, cls: u.cls || "", grade: u.grade || "", progress: prog[u.username] || {} }));
-    return J(200, { students });
-  }
   if (a === "students" && !b && m === "POST") {
     const list = (Array.isArray(body.list) ? body.list : []).slice(0, 200);
     const created = [];
@@ -435,6 +557,8 @@ async function route(req) {
     if (!c && m === "DELETE") {
       await users.delete(b);
       await DB.progress().delete(b);
+      try { await DB.reports().delete(b); } catch {}
+      if (u.ptoken) { try { await DB.parent().delete(u.ptoken); } catch {} }
       const rm = await DB.recmeta().get(b, { type: "json" });
       if (rm) { for (const k of Object.keys(rm)) { try { await DB.recfiles().delete(fkey(b, k)); } catch {} } await DB.recmeta().delete(b); }
       return J(200, { ok: true });
@@ -451,6 +575,38 @@ async function route(req) {
       if (body.resetEx && p.ex) delete p.ex[String(body.resetEx)];
       await DB.progress().setJSON(b, p);
       return J(200, { ok: true });
+    }
+  }
+
+  /* quản lý tài khoản trợ giảng */
+  if (a === "staff" && !b && m === "GET") {
+    const list = (await listAll(DB.users())).map(([, u]) => u).filter((u) => u && u.role === "ta").map((u) => ({ username: u.username, name: u.name, classes: u.classes || [] }));
+    return J(200, { staff: list });
+  }
+  if (a === "staff" && !b && m === "POST") {
+    const name = str(body.name, 60);
+    if (name.length < 2) return fail(400, "Nhập họ tên trợ giảng.");
+    const username = await freeUsername(name), password = genPw();
+    const u = { username, role: "ta", name, cls: "", classes: cleanClasses(body.classes), ...(await hashPw(password)), created: Date.now() };
+    await DB.users().setJSON(username, u);
+    return J(200, { created: { username, password, name, classes: u.classes } });
+  }
+  if (a === "staff" && isUser(b)) {
+    const users = DB.users(), u = await users.get(b, { type: "json" });
+    if (!u || u.role !== "ta") return fail(404, "Không tìm thấy trợ giảng.");
+    if (!c && m === "PATCH") {
+      if (body.classes !== undefined) u.classes = cleanClasses(body.classes);
+      if (typeof body.name === "string" && str(body.name, 60).length >= 2) u.name = str(body.name, 60);
+      await users.setJSON(b, u);
+      return J(200, { ok: true });
+    }
+    if (!c && m === "DELETE") { await users.delete(b); return J(200, { ok: true }); }
+    if (c === "password" && m === "POST") {
+      const password = genPw();
+      Object.assign(u, await hashPw(password), { fails: 0 });
+      delete u.lockUntil;
+      await users.setJSON(b, u);
+      return J(200, { username: b, password });
     }
   }
   return fail(404, "Không tìm thấy.");

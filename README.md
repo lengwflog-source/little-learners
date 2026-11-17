@@ -96,3 +96,18 @@ Mỗi Unit có bài "Audio và Video của lớp". Hãy chép nguyên hai thư m
 - **Lớp 3 (khối 8)**: khi tạo học sinh ghi khối **8** (hoặc chọn "Lớp 3"). Nội dung (từ vựng, mẫu câu, câu hỏi) do mình soạn lại theo danh mục Starter, Unit 1–20 của hai tập sách, không sao chép câu hỏi gốc, hình minh họa dùng emoji.
 - **Giảm tải máy chủ**: trang tự hỏi máy chủ mỗi 90 giây (trước là 30 giây), tạm dừng khi ẩn tab hoặc khi 5 phút không thao tác. Việc này giảm số request và compute của Netlify.
 - **Nén ảnh**: thư mục `public/img` (ảnh của bài Lớp 6) giảm từ 5,1 MB xuống 1,7 MB. Lớp 2 không dùng ảnh nên không cần nén.
+
+## Cập nhật v13
+Cần đẩy lại `netlify/functions/api.mjs` và `public/index.html` (các file khác không đổi).
+
+- **Điểm lần đầu được khóa.** Học sinh nộp bài xong thì không làm lại để lấy điểm được nữa (nút "Làm lại" đã bỏ với học sinh). Khóa nằm ở máy chủ nên sửa trên trình duyệt cũng không đổi được. Nộp bài có bước xác nhận, báo còn bao nhiêu câu chưa trả lời.
+  - Bài đã nộp luôn mở ra ở chế độ xem lại: thấy đáp án học sinh chọn, câu đúng sai và đáp án đúng.
+  - Nút **"Luyện lại (không tính điểm)"** cho làm một bản mới để ôn, kết quả không được lưu. Bài thu âm, Writing và Speaking không có nút này.
+  - Mỗi bài học có thêm tab **Kết quả** (bảng điểm lần đầu từng phần, bấm "Xem lại" để mở lại bài).
+  - Kết quả đã có từ trước v13 được xem là lần đầu và bị khóa. Muốn cho một em làm lại: vào trang học sinh, bấm **"Cho làm lại"** ở phần bài đó (kết quả cũ bị xóa, lần làm tới là lần đầu mới).
+  - Ngoại lệ: bài Writing/Speaking của IELTS vẫn được cập nhật số điểm khi AI chấm xong (đáp án vẫn không đổi được).
+- **Báo điểm cho phụ huynh.** Khi học sinh làm xong **tất cả** các phần của một mục (ví dụ Unit 4 · Getting started), trang chi tiết học sinh hiện ô **"Báo điểm cho phụ huynh"**: điểm tính theo lần làm đầu, kèm ô nhận xét. Trang Tổng quan có thẻ "Chờ báo điểm cho phụ huynh" liệt kê các mục đã xong mà chưa báo. Nút **"Sao chép tin nhắn"** tạo sẵn đoạn tin để dán vào Zalo.
+- **Liên kết cho phụ huynh.** Trong trang học sinh, bấm "Tạo liên kết" để có link dạng `…/#ph-xxxxxxxx`. Phụ huynh mở link (không cần đăng nhập) để xem: điểm các mục đã báo, nhận xét của giáo viên, điểm danh và **nhận xét thái độ** từng buổi. Có nút In / lưu PDF. Có thể "Tạo liên kết mới" (link cũ ngừng dùng) hoặc "Tắt". Link chỉ cho xem đúng một học sinh và không lộ mật khẩu hay dữ liệu bạn học.
+- **Nhận xét thái độ khi điểm danh.** Trang Điểm danh có thêm cột nhận xét cho từng em (tự lưu khi bấm ra ngoài ô). Nhận xét hiện trên trang phụ huynh; học sinh không thấy.
+- **Trợ giảng.** Trang **Trợ giảng** (chỉ giáo viên thấy) để tạo tài khoản, chọn lớp phụ trách, cấp lại mật khẩu, xóa. Trợ giảng đăng nhập ở link riêng `…/#tro-giang` (hoặc tab "Trợ giảng" ở màn đăng nhập), không đăng nhập được ở tab chính và ngược lại. Trợ giảng **chỉ thấy lớp mình phụ trách**: học sinh, bài giao, điểm danh, bản thu âm. Được: giao bài cho lớp mình, điểm danh (kể cả mở mã điểm danh theo lớp), viết nhận xét thái độ, nhận xét bản thu âm. Cũng được: báo điểm cho phụ huynh và tạo/gửi liên kết phụ huynh cho học sinh lớp mình. Không được: tạo/xóa học sinh, đổi mật khẩu học sinh, cho làm lại bài, xóa bản thu, chấm IELTS, sửa thông báo hay danh sách lớp. Mọi hạn chế kiểm tra ở máy chủ.
+- Dữ liệu mới lưu trong hai Blobs store `parent` (link phụ huynh) và `reports` (báo cáo đã báo), tự tạo khi dùng.
