@@ -196,6 +196,7 @@ footer{padding-block:30px 40px;color:var(--muted);font-size:.84rem;text-align:ce
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 <link rel="stylesheet" href="ielts.css">
+<link rel="stylesheet" href="match.css">
 </head>
 <body>
 <div id="app"></div>
@@ -241,17 +242,17 @@ ICONS[104]=`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-wi
 const DISC={4:'var(--peach)',5:'var(--mint)',6:'var(--butter)',0:'var(--sky)',101:'var(--peach)',102:'var(--mint)',103:'var(--butter)',104:'var(--sky)'};
 ICONS[201]=ICONS[101];ICONS[202]=ICONS[102];ICONS[203]=ICONS[103];ICONS[204]=ICONS[104];ICONS[205]=ICONS[101];ICONS[206]=ICONS[102];
 Object.assign(DISC,{201:'var(--peach)',202:'var(--mint)',203:'var(--butter)',204:'var(--sky)',205:'var(--peach)',206:'var(--mint)'});
-const GN={6:'Lớp 6',2:'Lớp 2',3:'A1+',9:'IELTS 1'},GS={6:'Tiếng Anh 6 · Global Success',2:'Tiếng Anh 2',3:'English A1+ · Elementary',9:'IELTS 1 · Band 3.0–5.0'};
+const GN={6:'Lớp 6',2:'Lớp 2',8:'Lớp 3',3:'A1+',9:'IELTS 1'},GS={6:'Tiếng Anh 6 · Global Success',2:'Tiếng Anh 2',8:'Tiếng Anh 3',3:'English A1+ · Elementary',9:'IELTS 1 · Band 3.0–5.0'};
 const IB=()=>X&&X.L&&X.L.grade===2?'lop2/img/':'img/';
 function setGrade(g){S.grade=g;S.lessons=S.allL.filter(L=>L.grade===g);try{localStorage.setItem('ll-grade',String(g))}catch(e){}}
 function initGrade(){let g=6;try{g=Number(localStorage.getItem('ll-grade'))||6}catch(e){}
   if(S.user&&!S.isT&&S.user.grade)g=Number(S.user.grade);
   if(!S.allL.some(L=>L.grade===g))g=6;setGrade(g)}
-const gradeSw=()=>{const gs=[6,2,3,9].filter(g=>S.allL.some(L=>L.grade===g));if(gs.length<2||(!S.isT&&S.user&&S.user.grade))return'';
+const gradeSw=()=>{const gs=[6,2,8,3,9].filter(g=>S.allL.some(L=>L.grade===g));if(gs.length<2||(!S.isT&&S.user&&S.user.grade))return'';
   return`<div class="seg" role="group" aria-label="Chọn khối">${gs.map(g=>`<button class="gsw ${S.grade===g?'on':''}" data-grade="${g}">${GN[g]}</button>`).join('')}</div>`};
 
 /* ---------- data helpers ---------- */
-const lessonUnits=()=>{const g=[];S.lessons.forEach(L=>{let u=g.find(x=>x.key===L.unit);if(!u){u={key:L.unit,title:L.grade!==6?L.unitTitle:(L.unit?'Unit '+L.unit:'Đề ôn tập HK1'),sub:L.grade===2?'Bài tập có hình':L.grade===9?'Vocabulary · Reading · Listening · Writing · Speaking':L.grade===3?'Từ vựng · Ngữ pháp · Nghe · Phát âm':(L.unit?L.unitTitle:'Ôn luyện cuối kì'),lessons:[]};g.push(u)}u.lessons.push(L)});return g};
+const lessonUnits=()=>{const g=[];S.lessons.forEach(L=>{let u=g.find(x=>x.key===L.unit);if(!u){u={key:L.unit,title:L.grade!==6?L.unitTitle:(L.unit?'Unit '+L.unit:'Đề ôn tập HK1'),sub:L.grade===2||L.grade===8?'Bài tập có hình':L.grade===9?'Vocabulary · Reading · Listening · Writing · Speaking':L.grade===3?'Từ vựng · Ngữ pháp · Nghe · Phát âm':(L.unit?L.unitTitle:'Ôn luyện cuối kì'),lessons:[]};g.push(u)}u.lessons.push(L)});return g};
 const exArr=p=>(p&&p.ex)||{};
 function lessonStat(p,L){const ex=exArr(p);let done=0,sum=0,cnt=0;for(const E of L.exercises){const r=ex[E.id];if(r){done++;if(r.n>0){sum+=r.c/r.n;cnt++}}}const total=L.exercises.length;return{done,total,pct:total?done/total:0,avg:cnt?sum/cnt:null}}
 function overall(p){let done=0,total=0,sum=0,cnt=0;const ex=exArr(p);for(const L of S.lessons)for(const E of L.exercises){total++;const r=ex[E.id];if(r){done++;if(r.n>0){sum+=r.c/r.n;cnt++}}}return{done,total,pct:total?done/total:0,avg:cnt?sum/cnt:null}}
@@ -334,8 +335,10 @@ function applyMe(d){if(!d.user||d.user.role!=='teacher')setTimeout(()=>loadAi().
   if(!S.isT){S.prof=Object.assign({ex:{},lv:{},ci:{},days:[]},d.progress||{},{name:d.user.name,cls:d.user.cls});if(!S.prof.ex)S.prof.ex={};S.att={};Object.entries(d.mine||{}).forEach(([dt,c])=>{S.att[dt]={[S.uid]:c}})}}
 async function loadTeacher(){const[st,at]=await Promise.all([API.call('GET','students'),API.call('GET','attendance')]);
   S.all={};st.students.forEach(x=>{S.all[x.username]=Object.assign({ex:{},lv:{},ci:{},days:[]},x.progress||{},{name:x.name,cls:x.cls,grade:x.grade||''})});S.att=at.dates||{}}
-async function poll(){if(!S.user||document.hidden||saving||dirty)return;
-  try{if(S.isT){await loadTeacher();const c=await API.call('GET','config');S.cfg=Object.assign({},S.cfg,c.config)}
+let lastAct=Date.now(),lastPoll=0;['pointerdown','keydown','touchstart','wheel'].forEach(e=>addEventListener(e,()=>{lastAct=Date.now()},{passive:true}));
+/* hỏi máy chủ thưa: 90 giây/lần, dừng khi ẩn tab hoặc 5 phút không thao tác */
+async function poll(){if(!S.user||document.hidden||saving||dirty||Date.now()-lastAct>300000)return;
+  lastPoll=Date.now();try{if(S.isT){await loadTeacher();const c=await API.call('GET','config');S.cfg=Object.assign({},S.cfg,c.config)}
     else{await loadRecs();const d=await API.call('GET','me');S.cfg=Object.assign({},S.cfg,d.config);S.att={};Object.entries(d.mine||{}).forEach(([dt,c])=>{S.att[dt]={[S.uid]:c}});if(d.progress&&d.progress.ci)S.prof.ci=d.progress.ci}
     refresh()}catch(e){if(e.status===401)logout()}}
 
@@ -344,13 +347,14 @@ async function init(){
   try{const r=await fetch('lessons.json');S.allL=await r.json();S.allL.forEach(L=>{L.grade=6;L.label=(L.unit?'Unit '+L.unit+' · ':'')+L.title})}catch(e){$('#app').innerHTML='<div class="wrap"><div class="banner err">Không tải được dữ liệu bài học. Hãy tải lại trang.</div></div>';return}
   try{const r=await fetch('lop2/lessons.json');if(r.ok){const t=(await r.text()).split('{{IMG}}').join('lop2/img/');const g2=JSON.parse(t);g2.forEach(L=>{L.grade=2;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(g2)}}catch(e){}
   try{const r=await fetch('ef/lessons.json');if(r.ok){const e3=await r.json();e3.forEach(L=>{L.grade=3;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e3)}}catch(e){}
+  try{const r=await fetch('lop3/lessons.json');if(r.ok){const e8=await r.json();e8.forEach(L=>{L.grade=8;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e8)}}catch(e){}
   try{const r=await fetch('ielts/lessons.json');if(r.ok){const e9=await r.json();e9.forEach(L=>{L.grade=9;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e9)}}catch(e){}
   S.allL.forEach(L=>{S.by[L.id]=L;L.exercises.forEach(E=>{S.exL[E.id]=L.id})});
   API.tok=lsGet(TK);
   if(API.tok){try{applyMe(await API.call('GET','me'));if(S.isT)await loadTeacher()}catch(e){if(e.status===401){API.tok=null;lsSet(TK,null)}else S.fail=e.message}}
   if(!S.user){try{const st=await API.call('GET','status');S.needSetup=st.setup;S.needCode=st.needsCode}catch(e){S.fail=e.message}}
   initGrade();S.ready=true;render();
-  setInterval(poll,30000);
+  setInterval(poll,90000);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastPoll>90000)poll()});
 }
 
 /* ---------- routing ---------- */
@@ -363,7 +367,7 @@ const hdr=()=>{const r=route(),I=(h,t,on)=>`<a href="#${h}" class="${on?'on':''}
   return`<header class="top"><div class="wrap"><a class="brand" href="#${S.isT?'t-home':'home'}">${LOGO}<div><b>MR.LONG's ENGLISH HOUSE</b><span>${GS[S.grade]||GS[6]}</span></div></a>${S.ready&&S.user?`<nav class="nav" aria-label="Menu chính">${nav}</nav><div class="who">${gradeSw()}<span class="avatar" aria-hidden="true">${esc((nm[0]||'?').toUpperCase())}</span><span>${esc(nm)}</span><a class="btn ghost sm" href="#profile">Tài khoản</a></div>`:''}</div></div></header>`};
 
 function render(){
-  document.body.classList.toggle('g2',S.grade===2);
+  document.body.classList.toggle('g2',S.grade===2||S.grade===8);
   const r=route();let body='';
   if(!S.ready||!S.lessons.length)body=`<div class="wrap" style="padding-block:40px"><div class="sk"></div><div class="grid g3" style="margin-top:16px"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></div>`;
   else if(!S.user)body=loginView();
@@ -497,7 +501,7 @@ function itemHtml(it,i,done,res){const a=X.ans[i];const ok=res?res.every(Boolean
   else if(it.t==='text')body=`<textarea class="txt ${done?(ok?'ok-in':'bad-in'):''}" rows="2" data-i="${i}" placeholder="${esc(it.hint||'Viết câu trả lời của bạn…')}" ${done?'disabled':''}>${esc(a||'')}</textarea>`;
   else if(it.t==='open')body=`<textarea class="txt" rows="3" data-i="${i}" placeholder="Viết câu trả lời của bạn…" ${done?'':''}>${esc(a||'')}</textarea>${done?`<div class="sol">Gợi ý: ${esc(it.sample||'')}</div>`:''}`;
   else if(it.t==='order')body=`<div>${it.steps.map((s,k)=>`<div class="ordrow"><select class="sel-in ${done&&res?(res[k]?'ok-in':'bad-in'):''}" data-i="${i}" data-k="${k}" ${done?'disabled':''}><option value="">–</option>${it.steps.map((_,n)=>`<option value="${n+1}" ${Number((a||[])[k])===n+1?'selected':''}>${n+1}</option>`).join('')}</select><span>${s}</span></div>`).join('')}</div>`;
-  else if(it.t==='match')body=`<div class="mright">${it.right.map((r,j)=>`<div><b>${L2[j]}.</b> ${r}</div>`).join('')}</div>`+it.left.map((l,k)=>`<div class="mrow"><span><b>${k+1}.</b> ${l}</span><select class="sel-in ${done&&res?(res[k]?'ok-in':'bad-in'):''}" data-i="${i}" data-k="${k}" ${done?'disabled':''}><option value="">–</option>${it.right.map((_,j)=>`<option value="${j}" ${String((a||[])[k])===String(j)?'selected':''}>${L2[j]}</option>`).join('')}</select></div>`).join('');
+  else if(it.t==='match')body=mtHtml(it,i,a,done,res);
   else if(it.t==='cat')body=it.words.map((w,k)=>`<div class="mrow"><span><b>${esc(w)}</b></span><select class="sel-in ${done&&res?(res[k]?'ok-in':'bad-in'):''}" data-i="${i}" data-k="${k}" ${done?'disabled':''}><option value="">–</option>${it.cats.map((c,j)=>`<option value="${j}" ${String((a||[])[k])===String(j)?'selected':''}>${esc(c)}</option>`).join('')}</select></div>`).join('');
   else if(it.t==='say')body=`<div class="srow"><button class="say big" data-say="${esc(it.w)}" aria-label="Nghe" title="Nghe">♪</button>${emH(it.em)}<b>${esc(it.w)}</b><span class="muted small">${esc(it.vi||'')}</span></div>`;
   else if(it.t==='card')body=`<div class="fcard" data-flip tabindex="0" role="button" aria-label="Lật thẻ"><div class="ff">${emH(it.em)}<small>Bấm để lật thẻ · ${esc(it.vi||'')}</small></div><div class="fb"><b>${esc(it.w)}</b>${it.s?`<p>${esc(it.s)}</p>`:''}<button class="say" data-say="${esc(it.s||it.w)}" aria-label="Nghe" title="Nghe">♪</button><small>Nói to lên nhé!</small></div></div>`;
@@ -591,7 +595,7 @@ function credsCard(){const c=S.creds;if(!c||!c.length)return'';
 function studentsView(){const st=visibleStudents(),td=today();
   return`<div class="wrap" style="padding-block:28px"><div class="sechead"><div><div class="eyebrow">Quản lý</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Học sinh</h1></div><div class="row">${clsSel()}<button class="btn ghost sm" data-act="exportp">Xuất CSV</button></div></div>
   ${credsCard()}
-  <details class="card" style="margin-bottom:16px" ${st.length?'':'open'}><summary style="cursor:pointer;font-weight:800">Thêm học sinh</summary><p class="muted small" style="margin:10px 0">Mỗi dòng một học sinh theo dạng <b>Họ tên; lớp; khối</b> (khối là 2, 3, 6 hoặc 9; 3 = A1+ Elementary, 9 = IELTS 1, có thể bỏ trống nếu muốn học sinh tự chọn). Hệ thống tự tạo tên đăng nhập và mật khẩu.</p>
+  <details class="card" style="margin-bottom:16px" ${st.length?'':'open'}><summary style="cursor:pointer;font-weight:800">Thêm học sinh</summary><p class="muted small" style="margin:10px 0">Mỗi dòng một học sinh theo dạng <b>Họ tên; lớp; khối</b> (khối là 2, 3, 6, 8 hoặc 9; 8 = Lớp 3, 3 = A1+ Elementary, 9 = IELTS 1, có thể bỏ trống nếu muốn học sinh tự chọn). Hệ thống tự tạo tên đăng nhập và mật khẩu.</p>
   <div class="field"><textarea id="stu-list" rows="5" placeholder="Nguyễn Văn An; 6A; 6&#10;Lê Bảo Châu; 2A; 2" aria-label="Danh sách học sinh"></textarea></div><button class="btn" data-act="addstu">Tạo tài khoản</button></details>
   ${st.length?`<div class="tw"><table class="t"><thead><tr><th>Họ tên</th><th>Lớp</th><th>Hoàn thành</th><th>Điểm TB</th><th>Hoạt động</th><th>Hôm nay</th></tr></thead><tbody>${st.map(x=>{const o=overall(x.p),a=attOf(x.uid,td);return`<tr class="click" data-sel="${esc(x.uid)}"><td><b>${esc(x.p.name||'')}</b><div class="small muted">${esc(x.uid)}</div></td><td>${esc(x.p.cls||'')}</td><td style="min-width:150px"><div class="row"><div class="bar"><i style="width:${o.pct*100}%"></i></div><span class="small">${pct(o.pct)}</span></div></td><td>${pct(o.avg)}</td><td class="small muted">${fmtT(x.p.last)}</td><td>${a?`<span class="chip ${a==='P'?'good':a==='L'?'warn':a==='E'?'sky':'bad'}">${{P:'Có mặt',L:'Muộn',E:'Có phép',A:'Vắng'}[a]}</span>`:'<span class="muted">—</span>'}</td></tr>`}).join('')}</tbody></table></div>`:'<div class="card"><p class="muted">Chưa có học sinh nào. Mở mục "Thêm học sinh" ở trên để tạo tài khoản.</p></div>'}</div>`}
 
@@ -599,7 +603,7 @@ function studentDetail(){const p=S.all[S.sel];if(!p)return`<div class="wrap" sty
   const days=Object.keys(S.att).sort();const cnt={P:0,L:0,E:0,A:0};days.forEach(d=>{const a=attOf(S.sel,d);if(a)cnt[a]++});const cl=S.cfg.classes||[];
   return`<div class="wrap" style="padding-block:28px"><div class="crumb"><a href="#t-students">Học sinh</a> / ${esc(p.name||'')}</div><div class="sechead"><div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">${esc(p.name||'')}</h1><p class="muted">Tên đăng nhập <b>${esc(S.sel)}</b> · lớp ${esc(p.cls||'—')} · hoạt động cuối ${fmtT(p.last)}</p></div><div class="row"><button class="btn ghost sm" data-act="newpw">Cấp mật khẩu mới</button><button class="btn danger sm" data-act="delstu" id="delbtn">Xóa học sinh</button></div></div>
   ${S.newpw&&S.newpw.username===S.sel?`<div class="banner">Mật khẩu mới của <b>${esc(S.sel)}</b>: <b style="font-size:1.1rem;letter-spacing:.08em">${esc(S.newpw.password)}</b>. Hãy gửi cho học sinh ngay, mật khẩu này không hiện lại.</div>`:''}
-  <div class="row" style="margin-block:8px">${cl.length?`<label class="small muted" for="stu-cls">Lớp:</label><select id="stu-cls" class="sel-in"><option value="">(chưa xếp lớp)</option>${cl.map(c=>`<option ${c===p.cls?'selected':''}>${esc(c)}</option>`).join('')}</select>`:''}<label class="small muted" for="stu-grade">Khối:</label><select id="stu-grade" class="sel-in"><option value="">(tự chọn)</option><option value="2" ${String(p.grade)==='2'?'selected':''}>Lớp 2</option><option value="3" ${String(p.grade)==='3'?'selected':''}>A1+ Elementary</option><option value="6" ${String(p.grade)==='6'?'selected':''}>Lớp 6</option><option value="9" ${String(p.grade)==='9'?'selected':''}>IELTS 1</option></select><button class="btn ghost sm" data-act="savecls">Lưu</button></div>
+  <div class="row" style="margin-block:8px">${cl.length?`<label class="small muted" for="stu-cls">Lớp:</label><select id="stu-cls" class="sel-in"><option value="">(chưa xếp lớp)</option>${cl.map(c=>`<option ${c===p.cls?'selected':''}>${esc(c)}</option>`).join('')}</select>`:''}<label class="small muted" for="stu-grade">Khối:</label><select id="stu-grade" class="sel-in"><option value="">(tự chọn)</option><option value="2" ${String(p.grade)==='2'?'selected':''}>Lớp 2</option><option value="8" ${String(p.grade)==='8'?'selected':''}>Lớp 3</option><option value="3" ${String(p.grade)==='3'?'selected':''}>A1+ Elementary</option><option value="6" ${String(p.grade)==='6'?'selected':''}>Lớp 6</option><option value="9" ${String(p.grade)==='9'?'selected':''}>IELTS 1</option></select><button class="btn ghost sm" data-act="savecls">Lưu</button></div>
   <div class="grid g4" style="margin-block:16px"><div class="card kpi"><b>${pct(o.pct)}</b><span>Hoàn thành</span></div><div class="card kpi"><b>${pct(o.avg)}</b><span>Điểm trung bình</span></div><div class="card kpi"><b>${streak(p)}</b><span>Ngày học liên tiếp</span></div><div class="card kpi"><b>${cnt.P+cnt.L}/${days.length}</b><span>Buổi có mặt (vắng ${cnt.A}, phép ${cnt.E})</span></div></div>
   ${S.lessons.map(L=>{const s=lessonStat(p,L);return`<details class="card" style="margin-bottom:10px;padding:14px 18px"><summary style="cursor:pointer;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><b style="flex:1;min-width:140px">${esc(L.label)}</b><span class="small muted">${s.done}/${s.total} bộ</span><span class="chip ${s.avg==null?'':s.avg>=.8?'good':s.avg>=.5?'warn':'bad'}">${pct(s.avg)}</span></summary><div style="margin-top:10px">${L.exercises.map(E=>{const r=ex[E.id];return`<div class="row" style="padding:6px 0;border-top:1px solid var(--line)"><span>${esc(exTitle(E))}</span><span class="sp"></span>${r?`<span class="small muted">${fmtT(r.t)}</span><span class="chip ${r.n&&r.c/r.n>=.8?'good':r.n&&r.c/r.n>=.5?'warn':'bad'}">${r.n?r.c+'/'+r.n:'Đã xem'}</span><button class="btn ghost sm" data-reset="${E.id}">Đặt lại</button>`:'<span class="chip">Chưa làm</span>'}</div>`}).join('')}</div></details>`}).join('')}</div>`}
 
@@ -707,5 +711,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.target.id==='lg-p
 init();
 </script>
 <script src="ielts.js"></script>
+<script src="match.js"></script>
 </body>
 </html>

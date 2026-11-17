@@ -7,6 +7,8 @@ Không cần cơ sở dữ liệu ngoài: dữ liệu nằm trong **Netlify Blob
 - `public/` – giao diện (index.html)
 - `public/lessons.json` + `public/img/` – Tiếng Anh lớp 6 (26 bài, 272 bộ bài tập, 2.191 câu)
 - `public/lop2/lessons.json` – Tiếng Anh lớp 2 (16 Unit + 4 Review, mỗi bài đủ 16 mục, 300 bộ bài tập). Hình minh họa dùng emoji và hình vẽ đơn giản, phần Listen dùng giọng đọc của trình duyệt.
+- `public/lop3/lessons.json` – Tiếng Anh lớp 3 (khối **8**): Starter + Unit 1–20 + 4 bài Review, mỗi bài 15 mục. Tạo bằng `dev/gen_l3.py` từ dữ liệu `dev/l3_data.py` (sửa từ vựng/câu trong `l3_data.py` rồi chạy `python3 dev/gen_l3.py`).
+- `public/match.js`, `public/match.css` – bài nối tương tác (nối bằng đường kẻ)
 - `netlify/functions/api.mjs` – đăng nhập, tiến trình, điểm danh, giao bài, quản lý học sinh
 - `netlify.toml`, `package.json` – cấu hình Netlify
 
@@ -87,3 +89,10 @@ Tên miền riêng: *Domain management → Add a domain*.
 ### Audio và video của lớp
 Mỗi Unit có bài "Audio và Video của lớp". Hãy chép nguyên hai thư mục **AUDIO** và **VIDEO** (giữ tên thư mục UNIT 1…8 và tên file như đang có) vào `public/ielts/`, ví dụ `public/ielts/AUDIO/UNIT 1/Track 1.1.mp3` và `public/ielts/VIDEO/UNIT 1/Unit 1_Video 1.mp4`. Các file `Track 3.x` và `Track 4.x` hiện không có đuôi, hãy đổi tên thêm `.mp3` (hoặc để nguyên, trang cũng thử phát tên không đuôi). Danh sách file được khai báo trong `dev/gen_ielts.py` (biến `AUDIO`, `VIDEO`); nếu thêm file mới, báo mình để cập nhật. Tổng dung lượng audio và video khoảng 200MB, mỗi file dưới 100MB nên đẩy được qua GitHub.
 - Bạn chịu trách nhiệm về quyền sử dụng các file nghe và video bạn tải lên.
+
+
+## Cập nhật v12
+- **Bài nối (matching)** nay là bài nối thật: chạm một ô rồi chạm ô tương ứng, hoặc **kéo từ chấm tròn** sang ô cần nối (chuột và cảm ứng đều dùng được). Đường nối được vẽ bằng SVG, mỗi cặp một màu. Chạm ô đã nối để gỡ, nút "Nối lại từ đầu" xóa hết. Sau khi nộp: đường xanh là đúng, đỏ là sai, nét đứt xanh chỉ đáp án đúng. Kết quả cũ đã lưu vẫn đọc được. Cần đẩy file mới `public/match.js`, `public/match.css` và `public/index.html`.
+- **Lớp 3 (khối 8)**: khi tạo học sinh ghi khối **8** (hoặc chọn "Lớp 3"). Nội dung (từ vựng, mẫu câu, câu hỏi) do mình soạn lại theo danh mục Starter, Unit 1–20 của hai tập sách, không sao chép câu hỏi gốc, hình minh họa dùng emoji.
+- **Giảm tải máy chủ**: trang tự hỏi máy chủ mỗi 90 giây (trước là 30 giây), tạm dừng khi ẩn tab hoặc khi 5 phút không thao tác. Việc này giảm số request và compute của Netlify.
+- **Nén ảnh**: thư mục `public/img` (ảnh của bài Lớp 6) giảm từ 5,1 MB xuống 1,7 MB. Lớp 2 không dùng ảnh nên không cần nén.
