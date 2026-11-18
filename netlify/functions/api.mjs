@@ -9,7 +9,7 @@ export const config = { path: "/api/*" };
 
 const TZ = process.env.TZ_NAME || "Asia/Ho_Chi_Minh";
 const store = (name) => getStore({ name, consistency: "strong" });
-const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config"), recmeta: () => store("recmeta"), recfiles: () => store("recfiles"), parent: () => store("parent"), reports: () => store("reports") };
+const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config"), recmeta: () => store("recmeta"), recfiles: () => store("recfiles"), parent: () => store("parent"), reports: () => store("reports"), vocab: () => store("vocab") };
 const MAX_AUDIO = 4 * 1024 * 1024, MAX_RECS = 150;
 const RUBRIC_KEYS = ["pron", "vocab", "answer"], RUBRIC_LV = ["A", "B", "C", "D"];
 const isEx = (v) => typeof v === "string" && /^[a-z0-9-]{3,40}$/.test(v);
@@ -72,7 +72,7 @@ async function auth(req) {
 /* ---------- helpers ---------- */
 const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "", nseen: u.nseen || 0, ...(u.role === "ta" ? { classes: u.classes || [] } : {}) });
 const cleanClasses = (v) => [...new Set((Array.isArray(v) ? v : []).map((c) => str(c, 20)).filter(Boolean))].slice(0, 40);
-const cleanGrade = (g) => (["2", "3", "4", "5", "6", "7", "8", "9"].includes(String(g)) ? String(g) : "");
+const cleanGrade = (g) => (["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"].includes(String(g)) ? String(g) : "");
 const strip = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
 function baseUsername(name) {
   const parts = strip(name).toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/).filter(Boolean);
@@ -170,6 +170,64 @@ async function listAll(store) {
   return Promise.all(blobs.map(async (x) => [x.key, await store.get(x.key, { type: "json" })]));
 }
 
+
+/* ---------- tra từ (dịch từ đơn Anh → Việt) + kho từ vựng cá nhân ---------- */
+const TRC = new Map();
+const WORD_RE = /^[A-Za-z][A-Za-z'’-]{0,38}$/;
+async function getJ(url, ms = 5000) {
+  const r = await fetch(url, { signal: AbortSignal.timeout(ms), headers: { "user-agent": "Mozilla/5.0" } });
+  if (!r.ok) throw new Error("http " + r.status);
+  return r.json();
+}
+async function lookupWord(w) {
+  const key = w.toLowerCase();
+  if (TRC.has(key)) return TRC.get(key);
+  const out = { w: key, ipa: "", vi: "", items: [] };
+  const [g, d] = await Promise.allSettled([
+    getJ("https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&dt=bd&q=" + encodeURIComponent(key)),
+    getJ("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(key), 4000),
+  ]);
+  if (g.status === "fulfilled" && Array.isArray(g.value)) {
+    const j = g.value;
+    out.vi = (j[0] || []).map((x) => (x && x[0]) || "").join("").trim();
+    for (const e of Array.isArray(j[1]) ? j[1] : []) {
+      const vi = (Array.isArray(e[1]) ? e[1] : []).filter((x) => typeof x === "string").slice(0, 5);
+      if (e[0] && vi.length) out.items.push({ pos: String(e[0]).slice(0, 20), vi });
+    }
+  }
+  if (d.status === "fulfilled" && Array.isArray(d.value) && d.value[0]) {
+    const e = d.value[0];
+    out.ipa = String(e.phonetic || ((e.phonetics || []).find((p) => p.text) || {}).text || "").slice(0, 40);
+    if (!out.items.length) {
+      const seen = new Set();
+      for (const mn of e.meanings || []) if (mn.partOfSpeech && !seen.has(mn.partOfSpeech)) { seen.add(mn.partOfSpeech); out.items.push({ pos: mn.partOfSpeech, vi: [], en: String(((mn.definitions || [])[0] || {}).definition || "").slice(0, 160) }); }
+    }
+  }
+  if (!out.vi) {
+    try {
+      const j = await getJ("https://api.mymemory.translated.net/get?langpair=en|vi&q=" + encodeURIComponent(key));
+      out.vi = String((j.responseData || {}).translatedText || "").trim();
+    } catch {}
+  }
+  if (!out.vi && !out.items.length) return null;
+  if (!out.vi && out.items[0] && out.items[0].vi[0]) out.vi = out.items[0].vi[0];
+  if (TRC.size > 3000) TRC.clear();
+  TRC.set(key, out);
+  return out;
+}
+function cleanVocab(arr) {
+  const out = [], seen = new Set();
+  for (const x of Array.isArray(arr) ? arr : []) {
+    if (!x || typeof x !== "object") continue;
+    const w = String(x.w || "").trim().toLowerCase().slice(0, 40);
+    if (!WORD_RE.test(w) || seen.has(w)) continue;
+    seen.add(w);
+    out.push({ w, pos: String(x.pos || "").slice(0, 20), vi: String(x.vi || "").slice(0, 200), ctx: String(x.ctx || "").slice(0, 260), ipa: String(x.ipa || "").slice(0, 40), t: Number(x.t) || Date.now(), g: Number(x.g) || 0, k: x.k ? 1 : 0 });
+    if (out.length >= 1500) break;
+  }
+  return out;
+}
+
 /* ---------- router ---------- */
 export default async (req) => {
   try { return await route(req); } catch (e) { console.error(e); return fail(500, "Lỗi máy chủ, vui lòng thử lại."); }
@@ -255,6 +313,24 @@ async function route(req) {
     Object.assign(user, await hashPw(pw));
     await DB.users().setJSON(user.username, user);
     return J(200, { ok: true });
+  }
+  if (a === "tr" && m === "GET") {
+    const w = String(url.searchParams.get("w") || "").trim();
+    if (!WORD_RE.test(w)) return fail(400, "Từ không hợp lệ.");
+    const r = await lookupWord(w);
+    if (!r) return fail(404, "Chưa tra được từ này. Thử lại sau nhé.");
+    return J(200, r);
+  }
+  if (a === "vocab" && m === "GET") {
+    if (staff) return J(200, { words: [] });
+    const v = (await DB.vocab().get(user.username, { type: "json" })) || { words: [] };
+    return J(200, { words: cleanVocab(v.words) });
+  }
+  if (a === "vocab" && m === "PUT") {
+    if (staff) return fail(403, "Chỉ học sinh có kho từ vựng cá nhân.");
+    const words = cleanVocab(body.words);
+    await DB.vocab().setJSON(user.username, { words, at: Date.now() });
+    return J(200, { ok: true, n: words.length });
   }
   if (a === "notif" && b === "seen" && m === "PUT") {
     user.nseen = Date.now();
@@ -583,6 +659,7 @@ async function route(req) {
       await users.delete(b);
       await DB.progress().delete(b);
       try { await DB.reports().delete(b); } catch {}
+      try { await DB.vocab().delete(b); } catch {}
       if (u.ptoken) { try { await DB.parent().delete(u.ptoken); } catch {} }
       const rm = await DB.recmeta().get(b, { type: "json" });
       if (rm) { for (const k of Object.keys(rm)) { try { await DB.recfiles().delete(fkey(b, k)); } catch {} } await DB.recmeta().delete(b); }

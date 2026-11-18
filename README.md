@@ -192,3 +192,15 @@ Khi có audio thì báo lại để thêm vào. Audio hiện có: Unit 1–8 ph�
 - **Giáo viên** bật/tắt rồng cho tất cả học sinh ở trang *Giao bài → Linh vật Baby Dragon*. Rồng chỉ hiện ở tài khoản học sinh.
 - **Cách gỡ hẳn:** xóa 2 dòng `mascot.css` và `mascot.js` trong `public/index.html` (hai file này nằm riêng), hoặc dùng "Revert" commit trong GitHub Desktop.
 - File mới: `public/mascot.js`, `public/mascot.css`. Có sửa: `public/index.html`, `netlify/functions/api.mjs` (cờ `mascotOff` trong cấu hình).
+
+## Cập nhật v24 · Lớp 12 giải đề THPT + công cụ làm bài + Kho từ vựng
+**Cần đẩy lên GitHub:** toàn bộ thư mục (chép đè). File mới: `public/thpt.js`, `public/thpt.css`, `public/thpt12/lessons.json`. Có sửa: `public/index.html`, `netlify/functions/api.mjs`.
+- **Khối 12 · Luyện đề THPT** (tên khối "Lớp 12"; khi tạo học sinh chọn khối 12). Hiện có 3 đề × 40 câu: Đề 01 (Sở GD Ninh Bình L1) và Đề 02 (Chuyên KHTN L2) chuyển từ hai file bạn gửi, kèm đáp án, lời giải từng đáp án và bản dịch; Đề 03 là đề tự soạn theo ma trận. Mỗi đề chia thành 6 phần nhỏ; **nộp phần trước mới mở phần sau** (cả nút Bài kế tiếp lẫn danh sách bài). Sau khi nộp, **mọi câu** (đúng hoặc sai) đều hiện lời giải: vì sao đúng, vì sao từng đáp án còn lại sai, bản dịch. Có tổng kết số câu đúng và điểm /10 khi nộp đủ.
+- **Giao diện chia đôi**: bài đọc bên trái (rộng hơn, cuộn riêng), câu hỏi bên phải. Điện thoại: hai tab "Bài đọc" / "Câu hỏi".
+- **Thanh công cụ làm bài** (mọi khối): bút highlight xanh lá / vàng pastel + tẩy; **Dịch từ**; nút **A▾ A▴** chỉnh cỡ chữ (nhớ theo thiết bị). Highlight lưu trên máy học sinh, không mất sau khi nộp bài.
+- **Dịch từ** (mọi khối): bật nút Dịch từ rồi chạm/bấm vào từ bất kỳ (bài đọc, câu hỏi, đáp án, lời giải). Máy tính: rê chuột thấy kính lúp và ô sáng quanh từ. Hiện nghĩa tiếng Việt + loại từ + phiên âm + nút nghe; khối 10-11-12 có nút **Thêm vào kho từ vựng** (lưu kèm câu chứa từ đó). Tra từ chạy qua máy chủ (`GET /api/tr?w=`), dùng Google Translate (dữ liệu loại từ) + dictionaryapi.dev (phiên âm), dự phòng MyMemory. Không cần khóa API.
+- **Kho từ vựng cá nhân** (menu "Kho từ vựng", chỉ khối 10-11-12): danh sách từ đã lưu, tìm kiếm, lọc đã thuộc / chưa thuộc, ôn bằng thẻ lật, kiểm tra nhanh 10 câu chọn nghĩa. Lưu trên máy chủ theo tài khoản (kho dữ liệu mới `vocab`, API `GET/PUT /api/vocab`), tự xóa khi xóa học sinh.
+- Khối 10 và 11 đã có trong danh sách khối (hiện chỉ có trang "đang cập nhật" + Kho từ vựng). Muốn thêm nội dung sau chỉ cần thêm `public/thpt10/` hoặc tương tự và một dòng nạp file giống `thpt12`.
+- Chưa làm trong bản này: 7 đề mới còn lại (sẽ bổ sung theo từng đợt, mỗi đợt chỉ cần thay `public/thpt12/lessons.json`).
+- Lưu ý: nếu máy chủ Netlify chặn gọi ra ngoài thì nút Dịch từ báo "Chưa tra được từ", các tính năng khác vẫn dùng bình thường.
+- **Rồng hướng dẫn công cụ làm bài** (thêm vào v24, sửa `public/mascot.js`): lần đầu học sinh mở một bài có thanh công cụ, rồng tự giới thiệu 7 bước (bút highlight, Dịch từ, Kho từ vựng, cỡ chữ, chia đôi bài đọc/câu hỏi, Nộp bài). Chỉ hiện một lần (lưu `tour_ex_v1`); bấm vào rồng ở trang làm bài để xem lại. Ở trang chủ, hướng dẫn thêm bước Kho từ vựng cho khối 10-12.

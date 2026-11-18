@@ -66,7 +66,7 @@ ${P(HEAD,C.g,3.8)}
 
 /* ---- Baby Dragon: tour + corner mascot (student only). Gỡ: bỏ 2 dòng link/script trong index.html ---- */
 (function(){
-const LS='bd_hide_v1',KEY='tour_v1';let T=null,hiVis=false;
+const LS='bd_hide_v1',KEY='tour_v1',KEY2='tour_ex_v1';const onEx=()=>typeof route==='function'&&route().startsWith('ex-')&&!!$1('.xtb');let T=null,hiVis=false;
 const ok=()=>typeof S!=='undefined'&&S&&!S.isT&&S.prof&&!(S.cfg&&S.cfg.mascotOff);
 const $1=s=>document.querySelector(s);
 function hidden(){try{return localStorage.getItem(LS)==='1'}catch(e){return false}}
@@ -74,15 +74,26 @@ function setHidden(v){try{v?localStorage.setItem(LS,'1'):localStorage.removeItem
 function assignCard(){return[...document.querySelectorAll('.card')].filter(c=>/Bài được giao/.test(c.innerText||'')).pop()||null}
 function navLink(t){return[...document.querySelectorAll('.top a')].find(a=>(a.textContent||'').trim()===t)||null}
 function name(){return((S.prof&&S.prof.name)||'').split(' ').pop()||'bạn'}
-function steps(){const r=[];
+function vis(sel){return()=>{const e=[...document.querySelectorAll(sel)].find(x=>x.offsetParent!==null||getComputedStyle(x).position==='fixed');return e||null}}
+function exSteps(){const r=[];
+ r.push({pose:'wave',t:`Mình chỉ bạn <b>công cụ làm bài</b> nhé! 🧰`,s:'Thanh công cụ nằm ngay phía trên bài đọc. Có 3 món rất tiện, xem nhanh nào!'});
+ r.push({pose:'point',el:()=>$1('.xtb .xgrp'),t:'<b>Bút highlight</b> 🖍️',s:'Bấm bút, chọn màu <b>xanh lá</b> hoặc <b>vàng</b>, rồi kéo chọn chữ trong bài đọc hoặc câu hỏi để tô màu. Trên điện thoại: nhấn giữ rồi kéo. Nút tẩy để xóa chỗ đã tô.'});
+ r.push({pose:'point',el:()=>$1('.xtb [data-xt="tr"]'),t:'<b>Dịch từ</b> 🔍',s:'Bấm nút này rồi chạm vào bất kỳ từ nào để xem nghĩa, loại từ và nghe phát âm. Máy tính: rê chuột vào từ sẽ có kính lúp. Muốn chọn đáp án thì nhớ <b>tắt</b> Dịch từ.'});
+ if(typeof bankOK==='function'&&bankOK())r.push({pose:'cheer',el:()=>navLink('Kho từ vựng'),t:'<b>Kho từ vựng</b> của bạn 📚',s:'Khi tra từ, bấm <b>Thêm vào kho từ vựng</b>. Các từ đã lưu nằm ở menu này, bạn có thể ôn bằng thẻ lật và làm bài kiểm tra nhanh.'});
+ r.push({pose:'point',el:()=>$1('.xtb .xgrp:last-of-type'),t:'<b>Chỉnh cỡ chữ</b> 🔠',s:'Bấm <b>A▴</b> để chữ to hơn, <b>A▾</b> để nhỏ lại cho dễ đọc.'});
+ r.push({pose:'point',el:vis('.xtabs,.xpas'),t:'Bài đọc và câu hỏi 📖',s:'Máy tính: bài đọc bên trái, câu hỏi bên phải. Điện thoại: chuyển giữa hai tab <b>Bài đọc</b> và <b>Câu hỏi</b>.'});
+ r.push({pose:'cheer',t:'Nộp bài để mở phần tiếp theo ✅',s:'Làm xong một phần, bấm <b>Nộp bài</b> để xem đáp án và lời giải chi tiết từng câu. Nộp rồi mới sang được phần kế tiếp. Chúc bạn làm bài thật tốt!'});
+ return r.filter(x=>!x.el||x.el())}
+function steps(){if(T&&T.ex)return exSteps();const r=[];
  r.push({pose:'wave',t:`Chào ${esc(name())}! Mình là <b>Baby Dragon</b> 🐲`,s:'Mình sẽ chỉ bạn cách học trên web này, chỉ mất một phút thôi!'});
  r.push({pose:'point',el:assignCard,t:'Đây là <b>Bài được giao</b> từ thầy/cô 📘',s:'Bấm "Làm bài" để vào đúng các bài thầy/cô giao. Thanh xanh cho biết bạn đã làm được bao nhiêu.'});
  r.push({pose:'point',el:()=>$1('#bell-btn'),t:'Đây là <b>chuông thông báo</b> 🔔',s:'Có bài mới được giao hoặc thầy/cô vừa nhận xét bản thu của bạn, chuông sẽ báo ở đây.'});
  r.push({pose:'point',el:()=>navLink('Bản thu'),t:'Nhận xét của thầy/cô nằm ở <b>Bản thu</b> 🎤',s:'Bạn xem điểm Phát âm, Từ vựng, Trả lời câu hỏi và lời nhận xét ở đây, hoặc ngay trong bài làm.'});
+ if(typeof bankOK==='function'&&bankOK())r.push({pose:'point',el:()=>navLink('Kho từ vựng'),t:'<b>Kho từ vựng</b> của bạn 📚',s:'Những từ bạn thêm bằng nút <b>Dịch từ</b> khi làm bài sẽ nằm ở đây để ôn lại.'});
  r.push({pose:'cheer',t:'Cách làm bài ✏️',s:'Làm xong từng bài, nhớ bấm <b>Nộp bài</b> để xem kết quả. Nộp rồi mới sang được <b>Bài kế tiếp</b>, và có nút <b>Bài trước</b> nếu muốn xem lại. Cố lên nhé!'});
  return r.filter(x=>!x.el||x.el())}
-function finish(){if(!T)return;T.root.remove();T.spot&&T.spot.remove();window.removeEventListener('resize',T.rp);window.removeEventListener('scroll',T.rp,true);document.removeEventListener('keydown',T.kd);T=null;
- if(S.prof){S.prof.lv=S.prof.lv||{};if(!S.prof.lv[KEY]){S.prof.lv[KEY]=Date.now();try{saveProf()}catch(e){}}}sync()}
+function finish(){if(!T)return;const ISEX=T.ex;T.root.remove();T.spot&&T.spot.remove();window.removeEventListener('resize',T.rp);window.removeEventListener('scroll',T.rp,true);document.removeEventListener('keydown',T.kd);T=null;
+ const K=ISEX?KEY2:KEY;if(S.prof){S.prof.lv=S.prof.lv||{};if(!S.prof.lv[K]){S.prof.lv[K]=Date.now();try{saveProf()}catch(e){}}}sync()}
 function place(){if(!T)return;const st=T.list[T.i];const el=st.el&&st.el();
  if(el){const r=el.getBoundingClientRect();if(r.top<70||r.bottom>innerHeight-200){scrollTo({top:Math.max(0,r.top+scrollY-110),behavior:'smooth'})}
   const q=el.getBoundingClientRect();Object.assign(T.spot.style,{display:'block',left:q.left-8+'px',top:q.top-8+'px',width:q.width+16+'px',height:q.height+16+'px'});T.shade.style.display='none'}
@@ -90,9 +101,9 @@ function place(){if(!T)return;const st=T.list[T.i];const el=st.el&&st.el();
 function draw(){const st=T.list[T.i],n=T.list.length;
  T.root.innerHTML=`<div class="bdg">${bdSVG(st.pose)}</div><div class="bdc" role="dialog" aria-label="Hướng dẫn của Baby Dragon">${st.t}<small>${st.s}</small><div class="bdr"><span class="bdd">${T.list.map((_,k)=>`<i class="${k===T.i?'on':''}"></i>`).join('')}</span><span class="sp"></span>${T.i>0?'<button type="button" class="bdk" data-bd="prev">Quay lại</button>':'<button type="button" class="bdk" data-bd="skip">Bỏ qua</button>'}<button type="button" class="bdn" data-bd="next">${T.i===n-1?'Xong! 🎉':'Tiếp theo ➜'}</button></div></div>`;
  place();setTimeout(place,380)}
-function start(){if(T||!ok())return;const list=steps();if(!list.length)return;
+function start(){if(T||!ok())return;const ex=onEx();T={ex};const list=steps();T=null;if(!list.length)return;
  const root=document.createElement('div');root.className='bdtour';const spot=document.createElement('div');spot.className='bdspot';const shade=document.createElement('div');shade.className='bdshade';
- document.body.append(shade,spot,root);T={list,i:0,root,spot,shade};
+ document.body.append(shade,spot,root);T={list,i:0,root,spot,shade,ex};
  const rm=T.root.remove.bind(T.root);T.root.remove=()=>{rm();shade.remove()};
  T.rp=()=>place();T.kd=e=>{if(e.key==='Escape')finish()};addEventListener('resize',T.rp);addEventListener('scroll',T.rp,true);document.addEventListener('keydown',T.kd);
  root.addEventListener('click',e=>{const a=e.target.closest('[data-bd]');if(!a)return;const k=a.dataset.bd;if(k==='skip')finish();else if(k==='prev'){T.i--;draw()}else{if(T.i>=T.list.length-1)finish();else{T.i++;draw()}}});
@@ -108,6 +119,7 @@ function sync(){
  if(!old){const w=document.createElement('div');w.className='bdw';w.setAttribute('role','button');w.tabIndex=0;w.setAttribute('aria-label','Baby Dragon – bấm để xem hướng dẫn');w.innerHTML=bdSVG('wave')+'<button type="button" class="bdx" aria-label="Ẩn Baby Dragon" title="Ẩn rồng">✕</button>';
   w.addEventListener('click',e=>{if(e.target.closest('.bdx')){e.stopPropagation();setHidden(true);sync();return}const s=w.querySelector('svg');s.classList.remove('jump');void s.getBoundingClientRect();s.classList.add('jump');start()});
   w.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();start()}});document.body.appendChild(w)}
+ if(onEx()&&!(S.prof.lv&&S.prof.lv[KEY2])&&!T&&window.__bdAuto2!==S.uid){window.__bdAuto2=S.uid;setTimeout(()=>{if(ok()&&!T&&onEx()&&!(S.prof.lv&&S.prof.lv[KEY2]))start()},1100)}
  const first=!(S.prof.lv&&S.prof.lv[KEY]);
  if(first&&(typeof route==='function'?route()==='home':true)&&!T&&window.__bdAuto!==S.uid){window.__bdAuto=S.uid;setTimeout(()=>{if(ok()&&!T&&!(S.prof.lv&&S.prof.lv[KEY]))start()},900)}
  else if(!first&&!hiVis&&typeof route==='function'&&route()==='home'){hiVis=true;const h=document.createElement('div');h.className='bdhi';h.textContent=`Chào ${name()}! Bấm vào mình nếu cần hướng dẫn nhé 👋`;document.body.appendChild(h);setTimeout(clearHi,6000)}}
