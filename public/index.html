@@ -220,6 +220,7 @@ footer{padding-block:30px 40px;color:var(--muted);font-size:.84rem;text-align:ce
 <link rel="stylesheet" href="ielts.css">
 <link rel="stylesheet" href="match.css">
 <link rel="stylesheet" href="extras.css">
+<link rel="stylesheet" href="mascot.css">
 </head>
 <body>
 <div id="app"></div>
@@ -239,7 +240,7 @@ const L2='ABCDEFGHIJ';
 const emH=e=>e?`<span class="em${/^\d+$/.test(e)?' n':''}">${e}</span>`:'';
 
 const S={recs:{},vlist:null,vf:'all',vstu:[],vopen:{},lessons:[],allL:[],grade:6,by:{},exL:{},db:null,user:null,uid:null,isT:false,isTA:false,loginMode:'main',notes:{},staff:null,staffLoaded:false,taCred:null,openL:{},ph:null,local:false,ready:false,
-  prof:null,profLoaded:false,cfg:{classes:[],assignments:[],announcement:'',checkin:null,ciByCls:{}},all:{},att:{},sel:null,tab:'vocab',cls:'',date:today(),msg:'',fail:''};
+  prof:null,profLoaded:false,cfg:{classes:[],assignments:[],announcement:'',checkin:null,ciByCls:{},mascotOff:false},all:{},att:{},sel:null,tab:'vocab',cls:'',date:today(),msg:'',fail:''};
 let X=null; // current exercise state
 let saving=false,dirty=false,saveT=null,pending=false;
 
@@ -351,7 +352,7 @@ async function flush(){
   saving=false;if(dirty)flush();
 }
 addEventListener('pagehide',()=>{if(dirty&&S.prof&&!S.isT&&API.tok){try{const{name,cls,ci,...rest}=S.prof;fetch('/api/progress',{method:'PUT',keepalive:true,headers:{'content-type':'application/json',authorization:'Bearer '+API.tok},body:JSON.stringify(rest)})}catch(e){}}});
-async function cfgOp(b){try{const r=await API.call('PUT','config',b);S.cfg=Object.assign({classes:[],assignments:[],announcement:'',checkin:null,ciByCls:{}},r.config||{})}catch(e){toast(e.message)}render()}
+async function cfgOp(b){try{const r=await API.call('PUT','config',b);S.cfg=Object.assign({classes:[],assignments:[],announcement:'',checkin:null,ciByCls:{},mascotOff:false},r.config||{})}catch(e){toast(e.message)}render()}
 async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Đã sao chép')}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Đã sao chép')}catch(_){toast('Không sao chép được, hãy chọn và copy thủ công')}ta.remove()}}
 function logout(){API.tok=null;lsSet(TK,null);S.user=null;S.prof=null;S.all={};S.att={};S.isT=false;S.isTA=false;S.notes={};S.staff=null;S.taCred=null;S.uid=null;S.creds=null;X=null;location.hash='';render()}
 
@@ -367,7 +368,7 @@ function applyMe(d){const isStaff=!!(d.user&&(d.user.role==='teacher'||d.user.ro
   if(!isStaff)setTimeout(()=>loadAi().then(()=>{if(!route().startsWith('ex-'))refresh();else if(X&&X.E)X.E.items.forEach((it,i)=>{if(it.t==='wr'||it.t==='sp')refreshItem(i)});if(aiHasPending())startAiPoll()}),0);
   if(!isStaff)setTimeout(()=>loadRecs().then(()=>{if(!route().startsWith('ex-'))refresh();else if(X&&X.E)X.E.items.forEach((it,i)=>{if(it.t==='rec')refreshItem(i)})}),0);
   S.user=d.user;S.isT=isStaff;S.isTA=d.user.role==='ta';S.uid=d.user.username;
-  S.cfg=Object.assign({classes:[],assignments:[],announcement:'',checkin:null,ciByCls:{}},d.config||{});
+  S.cfg=Object.assign({classes:[],assignments:[],announcement:'',checkin:null,ciByCls:{},mascotOff:false},d.config||{});
   if(!S.isT){S.prof=Object.assign({ex:{},lv:{},ci:{},days:[]},d.progress||{},{name:d.user.name,cls:d.user.cls});if(!S.prof.ex)S.prof.ex={};normRec(S.prof,true);S.att={};Object.entries(d.mine||{}).forEach(([dt,c])=>{S.att[dt]={[S.uid]:c}})}}
 async function loadTeacher(){const[st,at]=await Promise.all([API.call('GET','students'),API.call('GET','attendance')]);
   S.all={};st.students.forEach(x=>{S.all[x.username]=Object.assign({ex:{},lv:{},ci:{},days:[]},x.progress||{},{name:x.name,cls:x.cls,grade:x.grade||'',ptoken:x.ptoken||'',reports:x.reports||{}});normRec(S.all[x.username],false)});S.att=at.dates||{};S.notes=at.notes||{}}
@@ -767,6 +768,7 @@ function assignView(){const cl=S.cfg.classes||[],as=S.cfg.assignments||[];
    <div class="grid g2" style="gap:12px"><div class="field"><label for="as-c">Lớp</label><select id="as-c">${S.isTA?'':'<option value="">Tất cả lớp</option>'}${cl.map(c=>`<option>${esc(c)}</option>`).join('')}</select></div><div class="field"><label for="as-d">Hạn nộp</label><input type="date" id="as-d"></div></div>
    <button class="btn" data-act="addas">Giao bài</button></div>
   <div style="display:grid;gap:16px"><div class="card"><h3 style="margin-bottom:12px">Đã giao (${as.length})</h3>${as.length?as.map((a,i)=>{const st=Object.values(S.all).filter(p=>!a.cls||p.cls===a.cls);const pr=st.length?st.reduce((x,p)=>x+assignStat(p,a).pct,0)/st.length:0;return`<div style="padding:8px 0;border-top:1px solid var(--line)"><div class="row"><b>${esc(a.title)}</b><span class="sp"></span><button class="btn danger sm" data-delas="${esc(a.id)}">Xóa</button></div><div class="small muted">${a.cls?'Lớp '+esc(a.cls):'Tất cả lớp'}${a.due?' · hạn '+fmtD(a.due):''} · ${a.ex&&a.ex.length?a.ex.length+' phần':(a.lessons||[]).length+' bài'} · ${st.length} học sinh</div><div class="bar" style="margin-top:6px"><i style="width:${pr*100}%"></i></div></div>`}).join(''):'<p class="muted">Chưa giao bài nào.</p>'}</div>
+  ${S.isTA?'':`<div class="card"><h3 style="margin-bottom:6px">Linh vật Baby Dragon 🐲</h3><p class="muted small" style="margin:0 0 10px">Rồng hướng dẫn học sinh lần đầu đăng nhập và nằm ở góc màn hình. Tắt đi thì rồng biến mất với mọi học sinh.</p><button class="btn sm ${S.cfg.mascotOff?'':'ghost'}" data-act="mascot">${S.cfg.mascotOff?'Đang tắt · Bấm để bật':'Đang bật · Bấm để tắt'}</button></div>`}
   ${S.isTA?'':`<div class="card"><h3 style="margin-bottom:12px">Thông báo cho lớp</h3><div class="field"><textarea id="ann" rows="3" placeholder="Ví dụ: Thứ Sáu kiểm tra 15 phút Unit 4." aria-label="Thông báo">${esc(S.cfg.announcement||'')}</textarea></div><button class="btn sm" data-act="saveann">Lưu thông báo</button></div>
   <div class="card"><h3 style="margin-bottom:12px">Danh sách lớp</h3><div class="row" style="margin-bottom:10px">${cl.map(c=>`<span class="chip">${esc(c)} <button data-delcls="${esc(c)}" aria-label="Xóa lớp ${esc(c)}" style="border:0;background:none;cursor:pointer;color:inherit">×</button></span>`).join('')||'<span class="muted small">Chưa có lớp.</span>'}</div><div class="row"><input id="newcls" class="sel-in" placeholder="Tên lớp, ví dụ 6A" style="flex:1"><button class="btn sm" data-act="addcls">Thêm</button></div></div>`}</div></div></div>`}
 
@@ -872,6 +874,7 @@ document.addEventListener('click',async e=>{
   else if(act==='addas'){const ti=($('#as-t').value||'').trim();const exs=[...document.querySelectorAll('input[name=as-e]:checked')].map(x=>x.value);const ls=[...new Set(exs.map(id=>S.exL[id]))];if(!ti||!exs.length){toast('Nhập tiêu đề và chọn ít nhất một phần bài tập');return}
     const ac=$('#as-c').value;if(S.isTA&&!ac){toast('Hãy chọn lớp bạn phụ trách');return}
     cfgOp({op:'addas',a:{id:Date.now().toString(36),title:ti,lessons:ls,ex:exs,cls:ac,due:$('#as-d').value||''}}).then(()=>toast('Đã giao bài'))}
+  else if(act==='mascot'){cfgOp({op:'mascot',on:!!S.cfg.mascotOff}).then(()=>toast(S.cfg.mascotOff?'Đã tắt Baby Dragon':'Đã bật Baby Dragon'))}
   else if(act==='saveann'){cfgOp({op:'ann',text:($('#ann').value||'').trim()}).then(()=>toast('Đã lưu thông báo'))}
   else if(act==='addcls'){const v=($('#newcls').value||'').trim();if(v&&!(S.cfg.classes||[]).includes(v))cfgOp({op:'classes',classes:(S.cfg.classes||[]).concat([v])})}
   else if(act==='lm'){S.loginMode=D.m==='ta'?'ta':'main';S.fail='';try{history.replaceState(null,'',S.loginMode==='ta'?'#tro-giang':location.pathname+location.search)}catch(_){}render()}
@@ -934,6 +937,7 @@ init();
 </script>
 <script src="ielts.js"></script>
 <script src="extras.js"></script>
+<script src="mascot.js"></script>
 <script src="match.js"></script>
 </body>
 </html>

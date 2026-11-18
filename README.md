@@ -184,3 +184,11 @@ Khi có audio thì báo lại để thêm vào. Audio hiện có: Unit 1–8 ph�
 - **Bảng nhận xét Speaking** (Phát âm / Sử dụng từ vựng / Trả lời câu hỏi × Xuất sắc / Tốt / Đạt / Cần cải thiện) tick nhanh, bấm lại để bỏ tick; ô nhận xét đánh máy vẫn giữ. Nhận xét hiện trực tiếp trong bài làm của học viên và ở trang "Bản thu", kèm chuông báo.
 - Chưa làm trong bản này: mascot Baby Dragon và hướng dẫn lần đầu đăng nhập (để bản sau).
 - Lưu ý: Unit 3 Ex 6 nhắc "Video 3" nhưng thư mục chỉ có Video 1 và 2 (đã dùng ở Ex 2 và Ex 5).
+
+## Cập nhật v23 · Linh vật Baby Dragon
+- **Rồng Baby Dragon** (tay chân, đầu, mắt… vẽ bằng SVG, chuyển động 2D: bay lơ lửng, vẫy tay, vỗ cánh nhỏ, chớp mắt, vẫy đuôi). Màu lấy theo theme web.
+- **Lần đầu học sinh đăng nhập** rồng tự hướng dẫn 5 bước: chào → Bài được giao → chuông thông báo → Bản thu (nhận xét) → cách làm bài, Nộp bài, Bài kế tiếp/Bài trước. Chỉ hiện một lần (lưu theo tài khoản). Bấm vào rồng ở góc phải để xem lại.
+- Học sinh có thể ẩn rồng (nút ✕ khi rê chuột/chạm vào rồng) và bật lại bằng nút tròn nhỏ.
+- **Giáo viên** bật/tắt rồng cho tất cả học sinh ở trang *Giao bài → Linh vật Baby Dragon*. Rồng chỉ hiện ở tài khoản học sinh.
+- **Cách gỡ hẳn:** xóa 2 dòng `mascot.css` và `mascot.js` trong `public/index.html` (hai file này nằm riêng), hoặc dùng "Revert" commit trong GitHub Desktop.
+- File mới: `public/mascot.js`, `public/mascot.css`. Có sửa: `public/index.html`, `netlify/functions/api.mjs` (cờ `mascotOff` trong cấu hình).
