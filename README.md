@@ -216,3 +216,10 @@ Khi có audio thì báo lại để thêm vào. Audio hiện có: Unit 1–8 ph�
 - **Báo cáo phụ huynh**: không còn liệt kê từng bài; chỉ hiện **tổng điểm** của mỗi báo cáo + nhận xét của giáo viên (mục "Điểm các bài").
 - Chưa làm: website riêng khối 10 trọng tâm từ vựng (Quizlet) — chờ bạn gửi file bài tập bổ trợ (thư mục Google Drive không đọc được từ đây).
 - **Thanh menu giáo viên gọn hơn** (thêm vào v25, chỉ sửa `public/index.html`): Tổng quan, Học sinh, Điểm danh, Giao bài, Bản thu âm, Chấm IELTS, Trợ giảng, Bài học gom vào một nút "☰ …" bấm mở ra như mục chọn khối. Danh sách chọn khối ngắn lại (cao tối đa ~380px), cuộn được; trên điện thoại hai menu mở vừa màn hình.
+
+## Cập nhật v25b · Khóa bài chưa giao + Baby Dragon nhắc làm đủ bài
+Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netlify/functions/api.mjs`, `README.md` (cùng các thư mục `lop6`, `lop8`, `lop9` của v25).
+- **Giáo viên giao bài nào thì học sinh chỉ làm bài đó.** Học sinh có bài được giao (theo lớp) chỉ mở được các phần/bài tập đúng trong bài giao; bài khác hiện 🔒 "Chưa được giao", gõ đường dẫn trực tiếp cũng bị chặn. Nút Bài kế tiếp/Bài trước chỉ nhảy qua các bài được giao. Học sinh chưa có bài giao nào (hoặc lớp khác chưa được giao) vẫn làm tự do. Các bài đã làm xong vẫn xem lại được.
+- Công tắc **"Khóa bài chưa giao"** ở trang Giao bài (mặc định bật; tắt thì mọi học sinh làm tự do như trước). Mới có thêm trường `lockOff` trong cấu hình và thao tác `lock` ở máy chủ.
+- **Baby Dragon nhắc nhở:** sau khi nộp một bài mà sau ~3 giây học sinh chưa bấm Bài kế tiếp, và vẫn còn bài được giao chưa làm, rồng hiện lời nhắc "Còn N bài thầy giao chưa xong!" kèm nút "Làm bài kế tiếp →". Mở trang chủ khi còn bài chưa làm rồng cũng nhắc. Làm đủ bài được giao thì rồng thôi nhắc và các bài khác vẫn khóa. Học sinh ẩn rồng hoặc giáo viên tắt rồng thì không có nhắc nhở.
+- Lưu ý: việc khóa nằm ở giao diện (trang web); đủ dùng cho học sinh bình thường.

@@ -91,7 +91,7 @@ async function freeUsername(name) {
 const PW_ALPHA = "abcdefghjkmnpqrstuvwxyz23456789";
 const genPw = () => Array.from({ length: 6 }, () => PW_ALPHA[crypto.randomInt(PW_ALPHA.length)]).join("");
 
-const DEFAULT_CFG = { classes: [], assignments: [], announcement: "", checkin: null, ciByCls: {}, mascotOff: false };
+const DEFAULT_CFG = { classes: [], assignments: [], announcement: "", checkin: null, ciByCls: {}, mascotOff: false, lockOff: false };
 async function getCfg() {
   const c = (await DB.config().get("main", { type: "json" })) || {};
   return { ...DEFAULT_CFG, ...c };
@@ -102,10 +102,10 @@ function cfgFor(cfg, user) {
   if (user.role === "teacher") return cfg;
   if (user.role === "ta") {
     const mine = user.classes || [];
-    return { classes: mine, assignments: cfg.assignments.filter((a) => a.cls && mine.includes(a.cls)), announcement: cfg.announcement, mascotOff: !!cfg.mascotOff, checkin: null, ciByCls: Object.fromEntries(Object.entries(cfg.ciByCls || {}).filter(([c]) => mine.includes(c))) };
+    return { classes: mine, assignments: cfg.assignments.filter((a) => a.cls && mine.includes(a.cls)), announcement: cfg.announcement, mascotOff: !!cfg.mascotOff, lockOff: !!cfg.lockOff, checkin: null, ciByCls: Object.fromEntries(Object.entries(cfg.ciByCls || {}).filter(([c]) => mine.includes(c))) };
   }
   const open = (cfg.checkin && cfg.checkin.date === td) || (user.cls && cfg.ciByCls && cfg.ciByCls[user.cls] && cfg.ciByCls[user.cls].date === td);
-  return { classes: cfg.classes, assignments: cfg.assignments, announcement: cfg.announcement, mascotOff: !!cfg.mascotOff, checkin: open ? { date: td } : null, ciByCls: {} };
+  return { classes: cfg.classes, assignments: cfg.assignments, announcement: cfg.announcement, mascotOff: !!cfg.mascotOff, lockOff: !!cfg.lockOff, checkin: open ? { date: td } : null, ciByCls: {} };
 }
 const cleanAssign = (a) => ({
   id: str(a.id, 30) || Date.now().toString(36), title: str(a.title, 120), cls: str(a.cls, 20), due: isDate(a.due) ? a.due : "",
@@ -137,6 +137,7 @@ function applyCfgOp(cfg, user, b) {
   else if (op === "classes") cfg.classes = cleanClasses(b.classes);
   else if (op === "ann") cfg.announcement = str(b.text, 500);
   else if (op === "mascot") cfg.mascotOff = !b.on;
+  else if (op === "lock") cfg.lockOff = !b.on;
   else throw new Error("Thao tác không hợp lệ.");
   return cfg;
 }
