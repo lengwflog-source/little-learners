@@ -122,22 +122,8 @@ function sync(){
  if(onEx()&&!(S.prof.lv&&S.prof.lv[KEY2])&&!T&&window.__bdAuto2!==S.uid){window.__bdAuto2=S.uid;setTimeout(()=>{if(ok()&&!T&&onEx()&&!(S.prof.lv&&S.prof.lv[KEY2]))start()},1100)}
  const first=!(S.prof.lv&&S.prof.lv[KEY]);
  if(first&&(typeof route==='function'?route()==='home':true)&&!T&&window.__bdAuto!==S.uid){window.__bdAuto=S.uid;setTimeout(()=>{if(ok()&&!T&&!(S.prof.lv&&S.prof.lv[KEY]))start()},900)}
- else if(!first&&!hiVis&&!(pend()&&pend().length)&&typeof route==='function'&&route()==='home'){hiVis=true;const h=document.createElement('div');h.className='bdhi';h.textContent=`Chào ${name()}! Bấm vào mình nếu cần hướng dẫn nhé 👋`;document.body.appendChild(h);setTimeout(clearHi,6000)}}
-
-/* nhắc làm đủ bài được giao */
-function pend(){try{const K=typeof lockInfo==='function'&&lockInfo();return K?K.pend:null}catch(e){return null}}
-function clearRm(){const h=$1('.bdrm');h&&h.remove();if(window.__bdRt){clearTimeout(window.__bdRt);window.__bdRt=0}}
-function showRm(){if(T||!ok()||hidden())return;const pd=pend();if(!pd||!pd.length)return;clearRm();const cur=(typeof X!=='undefined'&&X&&X.E)?X.E.id:'';const n=pd.find(i=>i!==cur)||pd[0];
- const h=document.createElement('div');h.className='bdrm';h.setAttribute('role','status');
- h.innerHTML=`<button type="button" class="bdrx" aria-label="Đóng">✕</button><b>Còn ${pd.length} bài thầy giao chưa xong!</b><span>${name()} ơi, làm tiếp cho đủ số bài nhé 💪</span><a class="btn sm" href="#ex-${n}">Làm bài kế tiếp →</a>`;
- h.querySelector('.bdrx').onclick=clearRm;h.querySelector('a').onclick=clearRm;document.body.appendChild(h)}
-let rmKey='';
-function rmSync(){const r=typeof route==='function'?route():'';const pd=pend();
- if(!ok()||!pd||!pd.length){clearRm();rmKey='';return}
- if(r.startsWith('ex-')&&typeof X!=='undefined'&&X&&X.checked&&!X.practice&&!X.stu){const key='ex:'+X.E.id;if(rmKey!==key){rmKey=key;clearRm();window.__bdRt=setTimeout(()=>{if(route()===r&&X&&X.checked)showRm()},3000)}}
- else if(r==='home'){if(rmKey!=='home'){rmKey='home';clearRm();window.__bdRt=setTimeout(showRm,1800)}}
- else{rmKey=r;clearRm()}}
+ else if(!first&&!hiVis&&typeof route==='function'&&route()==='home'){hiVis=true;const h=document.createElement('div');h.className='bdhi';h.textContent=`Chào ${name()}! Bấm vào mình nếu cần hướng dẫn nhé 👋`;document.body.appendChild(h);setTimeout(clearHi,6000)}}
 const _r=window.render||render;
-render=function(){const x=_r.apply(this,arguments);try{sync()}catch(e){}try{rmSync()}catch(e){}return x};
+render=function(){const x=_r.apply(this,arguments);try{sync()}catch(e){}return x};
 setTimeout(()=>{try{sync()}catch(e){}},600);
 })();
