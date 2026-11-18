@@ -105,7 +105,7 @@ function ieWr(it, i) {
   const k = X.E.id + ':' + i, e = S.ai[k], min = it.minWords || 0;
   const head = `<div class="wrprompt"><div class="row"><span class="chip sky">Writing Task ${it.task || 2}</span><span class="muted small">Tối thiểu ${min} từ</span></div><p>${esc(it.prompt)}</p>${it.hint ? `<p class="muted small">${esc(it.hint)}</p>` : ''}</div>`;
   if (e && e.status === 'pending') return head + `<div class="fbtext" style="margin-block:10px">${esc(e.text).replace(/\n/g, '<br>')}</div>` + statusBox(e, i, 'wr');
-  if (e && e.status === 'done' && !X['redo' + k]) return head + fbHtml(e) + `<div class="row" style="margin-top:12px"><button class="btn ghost" data-ie="wrredo" data-ix="${i}">✎ Viết bài mới</button><span class="muted small">Bài mới sẽ được AI chấm lại.</span></div>`;
+  if (e && e.status === 'done' && !X['redo' + k]) return head + fbHtml(e) + (it.model && it.model.length ? `<details class="card" style="margin-top:12px"><summary><b>Xem bài mẫu của giám khảo</b></summary>${it.model.map(p => `<p>${esc(p)}</p>`).join('')}<p class="muted small">Đây chỉ là một cách viết tốt trong nhiều cách có thể.</p></details>` : '') + `<div class="row" style="margin-top:12px"><button class="btn ghost" data-ie="wrredo" data-ix="${i}">✎ Viết bài mới</button><span class="muted small">Bài mới sẽ được AI chấm lại.</span></div>`;
   const txt = X.ans[i] != null && typeof X.ans[i] === 'string' ? X.ans[i] : (e && e.text) || '';
   const n = wcount(txt);
   return head + (e && e.status === 'error' ? `<div class="banner err">${esc(e.err || '')}</div>` : '') +

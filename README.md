@@ -72,7 +72,7 @@ Tên miền riêng: *Domain management → Add a domain*.
 
 ## Lớp IELTS 1 (khối 9)
 - Học sinh/giáo viên chọn khối **IELTS 1** ở thanh chọn khối. Khi tạo học sinh, cột khối ghi **9** (hoặc chọn "IELTS 1" trong trang học sinh).
-- 8 Unit (Relationships … Natural World), mỗi Unit 11 bài: Vocabulary ×3, Grammar ×2, Reading, Listening, Audio và Video, Writing, Speaking Part 1, Speaking Part 2. Nội dung do mình soạn mới theo cấu trúc và chủ đề của lớp.
+- **Từ v20, nội dung IELTS 1 lấy từ bộ tài liệu BTBT IELTS 1 của bạn** (thay hẳn 8 Unit tự soạn trước đây): 10 Unit (Relationships, Places and buildings, Education and employment, Food and drink, Consumerism, Leisure time, Fame and the media, Natural world, Language, Science and technology). Mỗi Unit chia theo kỹ năng: Vocabulary, Grammar, Reading, Listening, Speaking, Writing (Unit 6–10 gộp Vocabulary & Grammar). Unit 7 và 8 có thêm phần "(bản 2)" từ file UNIT 7_KEY / UNIT 8_KEY, Unit 6–8 có thêm Writing (bổ sung) từ các file Writing Unit 6/7/8. Reading/Listening dạng thi (Exam practice) lấy từ website lớp của bạn, tự chấm và đổi ra band.
 - **Listening/Reading**: tự chấm, đổi ra band bằng bảng quy đổi tham khảo cho bài 40 câu (tỉ lệ đúng × 40). Trang Tiến độ và Trang chủ hiện Band ước tính 4 kỹ năng và Overall (làm tròn 0,5 theo quy tắc IELTS). Bảng nằm ở đầu `public/ielts.js` (`BL`, `BR`) nếu muốn đổi.
 - **Writing**: ô viết có đếm từ trực tiếp và gạch đỏ chính tả của trình duyệt. Khi nộp, AI chấm theo 4 tiêu chí (Task Response/Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy), đánh dấu lỗi ngay trong bài, giải thích bằng tiếng Việt và đưa bài viết đã cải thiện (giao diện 2 cột giống ảnh mẫu).
 - **Speaking**: học viên thu âm (lưu 7 ngày như bài phát âm), trình duyệt chuyển giọng nói thành chữ (Chrome/Safari), học viên sửa lỗi nhận dạng rồi gửi. AI chấm Fluency, Lexical Resource, Grammar, Pronunciation. **Pronunciation chỉ là ước lượng từ bản chữ**, giáo viên nên nghe lại và chỉnh.
@@ -87,7 +87,7 @@ Tên miền riêng: *Domain management → Add a domain*.
 - Hàm chấm chạy nền (Netlify background function, tối đa 15 phút), học viên thấy "AI đang chấm…" rồi kết quả tự hiện sau khoảng 10–40 giây.
 
 ### Audio và video của lớp
-Mỗi Unit có bài "Audio và Video của lớp". Hãy chép nguyên hai thư mục **AUDIO** và **VIDEO** (giữ tên thư mục UNIT 1…8 và tên file như đang có) vào `public/ielts/`, ví dụ `public/ielts/AUDIO/UNIT 1/Track 1.1.mp3` và `public/ielts/VIDEO/UNIT 1/Unit 1_Video 1.mp4`. Các file `Track 3.x` và `Track 4.x` hiện không có đuôi, hãy đổi tên thêm `.mp3` (hoặc để nguyên, trang cũng thử phát tên không đuôi). Danh sách file được khai báo trong `dev/gen_ielts.py` (biến `AUDIO`, `VIDEO`); nếu thêm file mới, báo mình để cập nhật. Tổng dung lượng audio và video khoảng 200MB, mỗi file dưới 100MB nên đẩy được qua GitHub.
+Các bài Listening/Speaking có gắn sẵn track nghe và video (ví dụ "Track 1.1", "Unit 1 · Video 1"). Hãy chép nguyên hai thư mục **AUDIO** và **VIDEO** từ thư mục BTBT IELTS 1 (giữ tên thư mục UNIT 1…8 và tên file như đang có) vào `public/ielts/`, ví dụ `public/ielts/AUDIO/UNIT 1/Track 1.1.mp3` và `public/ielts/VIDEO/UNIT 1/Unit 1_Video 1.mp4`. Các file `Track 3.x` và `Track 4.x` hiện không có đuôi, hãy đổi tên thêm `.mp3` (hoặc để nguyên, trang cũng thử phát tên không đuôi). Danh sách file được khai báo trong `dev/gen_ielts.py` (biến `AUDIO`, `VIDEO`); nếu thêm file mới, báo mình để cập nhật. Tổng dung lượng audio và video khoảng 200MB, mỗi file dưới 100MB nên đẩy được qua GitHub.
 - Bạn chịu trách nhiệm về quyền sử dụng các file nghe và video bạn tải lên.
 
 
@@ -153,3 +153,17 @@ Cần đẩy: `public/index.html`, `public/ielts.js`, `netlify/functions/api.mjs
 - Đã bỏ dòng thông báo nhỏ dưới "Chờ báo điểm cho phụ huynh".
 - Chân trang: mục **Liên hệ · Zalo / SĐT** → hiện QR Zalo (`public/zalo-qr.png`) và 0923 880 442 / 0941 741 420.
 - `netlify/functions/api.mjs`: cho phép khối "7".
+
+
+## Cập nhật v20 · IELTS 1 thay bằng tài liệu BTBT IELTS 1
+- `public/ielts/lessons.json` được tạo lại từ các file Unit 1–10 (Student + Key), UNIT 7/8 KEY, Writing Unit 6–8, Writing của Unit 1–5, Model text và website lớp. Đáp án lấy từ file Key; câu nào không có đáp án (sắp xếp từ không có lời giải, nối ● không có đáp án, bảng phân loại, câu hỏi theo hình/biểu đồ) thì không đưa vào bài tự chấm.
+- Writing Task 1/2 chấm bằng AI, có **bài mẫu của giám khảo** hiện sau khi AI chấm xong (nút "Xem bài mẫu của giám khảo"). Biểu đồ/bản đồ của đề Writing nằm trong `public/ielts/img/`.
+- Cần đẩy: `public/ielts/` (lessons.json, img/), `public/ielts.js`. Hai thư mục AUDIO và VIDEO vẫn tự chép vào `public/ielts/` như cũ (Unit 3 và 4 file không có đuôi .mp3 vẫn phát được).
+
+## Cập nhật v21 · Đưa thêm ~200 bài tập IELTS 1 còn thiếu (tự soạn đáp án)
+- Các bài trước đây bị bỏ vì không có đáp án (nối tranh, nối ● không có key, bảng phân loại, sắp xếp từ/đoạn, câu hỏi theo biểu đồ, Yes/No/Not Given, điền nhãn sơ đồ…) nay đã được đọc lại và soạn đáp án, đưa vào bài tự chấm. Tổng IELTS 1 hiện: 70 bài học, 464 bài tập, 2125 câu.
+- Ảnh trong các bài tập nối tranh/biểu đồ/sơ đồ nằm trong `public/ielts/img/` (đã che đáp án trong ảnh chụp LMS; biểu đồ được vẽ lại từ dữ liệu trong file Word).
+- Những đáp án **suy ra** (không có trong key) gồm: bài nghe có script thì lấy từ script; tranh/sơ đồ thì lấy theo hình; một số câu key bị lỗi chính tả hoặc mâu thuẫn đã sửa (ví dụ Unit 8 Ex 6 'can swim' = ability; Unit 10 biểu đồ Line A 2030 = 65%). Thầy nên xem lại các bài này.
+- 3 bài chưa chuyển: Unit 1 E.Listening Ex 5 (chỉ là phần giới thiệu), UNIT 7 KEY Listening Ex 2 (track 7.7–7.12) và UNIT 9 KEY Listening Ex 1 (track 9.1–9.8) vì không có script/đáp án.
+- Khi có bài Reading/Listening đầy đủ từ file Word, không còn thay bằng bản web nữa; bản web chỉ thêm các bài "Exam practice".
+- Cần đẩy: `public/ielts/` (lessons.json, img/), `public/ielts.js`, README.md. AUDIO/VIDEO vẫn tự chép vào `public/ielts/`.
