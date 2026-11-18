@@ -215,3 +215,4 @@ Khi có audio thì báo lại để thêm vào. Audio hiện có: Unit 1–8 ph�
 - Bỏ qua: bài tập dạng nhìn hình rồi viết/nối (không có hình dùng được), tự luận mở (được chuyển thành ghi chú tham khảo), file "HKI.8 LUYỆN TẬP" / "HKI.1 (BÀI TẬP LUYỆN TẬP)" dung lượng rất lớn, bản "To V - Ving" không có đáp án, file tạm `~$…`.
 - **Báo cáo phụ huynh**: không còn liệt kê từng bài; chỉ hiện **tổng điểm** của mỗi báo cáo + nhận xét của giáo viên (mục "Điểm các bài").
 - Chưa làm: website riêng khối 10 trọng tâm từ vựng (Quizlet) — chờ bạn gửi file bài tập bổ trợ (thư mục Google Drive không đọc được từ đây).
+- **Thanh menu giáo viên gọn hơn** (thêm vào v25, chỉ sửa `public/index.html`): Tổng quan, Học sinh, Điểm danh, Giao bài, Bản thu âm, Chấm IELTS, Trợ giảng, Bài học gom vào một nút "☰ …" bấm mở ra như mục chọn khối. Danh sách chọn khối ngắn lại (cao tối đa ~380px), cuộn được; trên điện thoại hai menu mở vừa màn hình.
