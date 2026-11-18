@@ -11,6 +11,7 @@ const TZ = process.env.TZ_NAME || "Asia/Ho_Chi_Minh";
 const store = (name) => getStore({ name, consistency: "strong" });
 const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config"), recmeta: () => store("recmeta"), recfiles: () => store("recfiles"), parent: () => store("parent"), reports: () => store("reports") };
 const MAX_AUDIO = 4 * 1024 * 1024, MAX_RECS = 150;
+const RUBRIC_KEYS = ["pron", "vocab", "answer"], RUBRIC_LV = ["A", "B", "C", "D"];
 const isEx = (v) => typeof v === "string" && /^[a-z0-9-]{3,40}$/.test(v);
 const isIdx = (v) => /^\d{1,3}$/.test(String(v));
 
@@ -69,7 +70,7 @@ async function auth(req) {
 }
 
 /* ---------- helpers ---------- */
-const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "", ...(u.role === "ta" ? { classes: u.classes || [] } : {}) });
+const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "", nseen: u.nseen || 0, ...(u.role === "ta" ? { classes: u.classes || [] } : {}) });
 const cleanClasses = (v) => [...new Set((Array.isArray(v) ? v : []).map((c) => str(c, 20)).filter(Boolean))].slice(0, 40);
 const cleanGrade = (g) => (["2", "3", "4", "5", "6", "7", "8", "9"].includes(String(g)) ? String(g) : "");
 const strip = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
@@ -116,6 +117,7 @@ function applyCfgOp(cfg, user, b) {
   const op = b.op, teacher = user.role === "teacher";
   if (op === "addas") {
     const a = cleanAssign(b.a || {});
+    a.at = Date.now();
     if (!a.title) throw new Error("Nhập tiêu đề bài giao.");
     if (!teacher && !taOk(user, a.cls)) throw new Error("Trợ giảng chỉ giao bài cho lớp mình phụ trách.");
     cfg.assignments = [...cfg.assignments.filter((x) => x.id !== a.id), a].slice(-100);
@@ -148,6 +150,8 @@ function cleanProgress(b, old) {
     out.ex[id] = o;
     if (/^ie-/.test(id) && r && typeof r === "object" && JSON.stringify(r.a || []) === JSON.stringify(o.a || []))
       out.ex[id] = { ...o, c: Math.max(0, Math.min(500, r.c | 0)), n: Math.max(0, Math.min(500, r.n | 0)) };
+    // Bài chỉ có thu âm: lần trước chấm 0 điểm do lỗi cũ, nay tính đủ điểm (chỉ nâng lên đủ, không đổi số câu).
+    else if (r && typeof r === "object" && r.fx === 1 && o.n > 0 && o.c < o.n) out.ex[id] = { ...o, c: o.n };
   }
   for (const id of Object.keys(ex).slice(0, 800)) {
     const r = ex[id];
@@ -250,6 +254,11 @@ async function route(req) {
     Object.assign(user, await hashPw(pw));
     await DB.users().setJSON(user.username, user);
     return J(200, { ok: true });
+  }
+  if (a === "notif" && b === "seen" && m === "PUT") {
+    user.nseen = Date.now();
+    await DB.users().setJSON(user.username, user);
+    return J(200, { nseen: user.nseen });
   }
   if (a === "config" && m === "GET") return J(200, { config: cfgFor(await getCfg(), user) });
   if (a === "progress" && m === "PUT") {
@@ -389,7 +398,10 @@ async function route(req) {
     const key = exId + ":" + Number(idx);
     if (!meta || !meta[key]) return fail(404, "Không tìm thấy bản thu.");
     const text = str(body.comment, 1000);
-    Object.assign(meta[key], { comment: text, commentAt: text ? Date.now() : 0, seen: !text });
+    const rubric = {};
+    for (const k of RUBRIC_KEYS) { const v = body.rubric && body.rubric[k]; if (RUBRIC_LV.includes(v)) rubric[k] = v; }
+    const has = !!text || Object.keys(rubric).length > 0;
+    Object.assign(meta[key], { comment: text, rubric, commentAt: has ? Date.now() : 0, seen: !has, by: has ? user.name : "" });
     await DB.recmeta().setJSON(who, meta);
     return J(200, { ok: true, meta: meta[key] });
   }
@@ -454,11 +466,13 @@ async function route(req) {
     if (!/^[\w.-]{1,30}$/.test(lessonId) || !exs.length) return fail(400, "Thiếu thông tin phần bài cần báo điểm.");
     const p = (await DB.progress().get(b, { type: "json" })) || {};
     const rows = []; let cc = 0, nn = 0;
+    const fixEx = new Set((Array.isArray(body.fixEx) ? body.fixEx : []).map((x) => str(x, 40)));
     for (const x of exs) {
       const r = p.ex && p.ex[x.id];
       if (!r) return fail(400, "Học sinh chưa làm xong mục \"" + x.title + "\", chưa thể báo điểm.");
-      rows.push({ id: x.id, title: x.title, c: r.c, n: r.n, t: r.t });
-      cc += r.c; nn += r.n;
+      const c = fixEx.has(x.id) && r.n > 0 ? r.n : r.c;
+      rows.push({ id: x.id, title: x.title, c, n: r.n, t: r.t });
+      cc += c; nn += r.n;
     }
     const rep = (await DB.reports().get(b, { type: "json" })) || {};
     rep[lessonId] = { lessonId, label, unit: str(body.unit, 80), rows, c: cc, n: nn, pct: nn ? cc / nn : null, note, at: Date.now(), by: user.name };

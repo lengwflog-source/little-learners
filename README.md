@@ -167,3 +167,20 @@ Cần đẩy: `public/index.html`, `public/ielts.js`, `netlify/functions/api.mjs
 - 3 bài chưa chuyển: Unit 1 E.Listening Ex 5 (chỉ là phần giới thiệu), UNIT 7 KEY Listening Ex 2 (track 7.7–7.12) và UNIT 9 KEY Listening Ex 1 (track 9.1–9.8) vì không có script/đáp án.
 - Khi có bài Reading/Listening đầy đủ từ file Word, không còn thay bằng bản web nữa; bản web chỉ thêm các bài "Exam practice".
 - Cần đẩy: `public/ielts/` (lessons.json, img/), `public/ielts.js`, README.md. AUDIO/VIDEO vẫn tự chép vào `public/ielts/`.
+
+### Bài nghe chưa có file audio (đã lọc khỏi web)
+23 bài tập cần nghe nhưng chưa có file audio nên không đưa lên web: Unit 4 (Ex 8, 9), Unit 5 (Ex 5, 6), Unit 6 (Ex 6), Unit 7 L&S (Ex 1, 2, 3, 7, 8), Unit 8 L&S (Ex 2, 3, 4, 7), Unit 9 L&S (Ex 1–4), Unit 10 L&S (Ex 1, 2, 3, 5, 6).
+Khi có audio thì báo lại để thêm vào. Audio hiện có: Unit 1–8 phần Listening của IELTS (Unit 8 lấy từ file nhúng trong unit 8 - Listening.docx).
+
+## Cập nhật v22
+**Cần đẩy lên GitHub:** toàn bộ thư mục (chép đè), gồm `netlify/functions/api.mjs`, `public/index.html`, `public/extras.js`, `public/extras.css`, `public/ef/lessons.json`, `public/ielts/`.
+- **Đánh số lại bài tập** 1-2-3-4 theo đúng thứ tự trong từng Unit (cả khối A1 và IELTS 1). Ở khối A1 số 17 dành cho "Kết quả", Unit test là 18.
+- **Bỏ bài "Practical English"** (ví dụ Checking in at a hotel) khỏi các Unit lẻ của A1 (Unit 1, 3, 5, 7, 9, 11).
+- **Bài thu âm "Listen, repeat and record"**: học viên đã thu âm xong thì tự tính đúng hết (15/15) và đánh dấu đã làm; kết quả cũ 0/15 của loại bài này được tự sửa khi mở lại.
+- **Nút "← Bài trước"** trong màn hình làm bài. Nút "Bài kế tiếp →" bị khóa cho đến khi học viên bấm **Nộp bài** (giáo viên/trợ giảng không bị khóa).
+- **Chuông thông báo** (góc phải thanh trên): học viên nhận khi có bài được giao và khi giáo viên nhận xét bản thu; giáo viên và trợ giảng nhận khi học viên nộp bài (trợ giảng chỉ thấy học viên lớp mình). Trạng thái "đã xem" lưu trên máy chủ nên không hiện lại sau khi tải trang.
+- **Trợ giảng** xem bài như giáo viên (xem đáp án, nội dung bài). Trang Giao bài có thêm liên kết "👁 Xem bài" để xem trước khi giao.
+- **Trang Bản thu âm của giáo viên**: lọc theo học sinh (bấm tên A, B, C… chỉ hiện bản thu của các bạn đó, hoặc "Hiện tất cả"), gom bản thu theo học sinh rồi theo bài, có nút "Nhận xét cả bài" để chấm một lần cho nhiều bản thu.
+- **Bảng nhận xét Speaking** (Phát âm / Sử dụng từ vựng / Trả lời câu hỏi × Xuất sắc / Tốt / Đạt / Cần cải thiện) tick nhanh, bấm lại để bỏ tick; ô nhận xét đánh máy vẫn giữ. Nhận xét hiện trực tiếp trong bài làm của học viên và ở trang "Bản thu", kèm chuông báo.
+- Chưa làm trong bản này: mascot Baby Dragon và hướng dẫn lần đầu đăng nhập (để bản sau).
+- Lưu ý: Unit 3 Ex 6 nhắc "Video 3" nhưng thư mục chỉ có Video 1 và 2 (đã dùng ở Ex 2 và Ex 5).
