@@ -204,3 +204,14 @@ Khi có audio thì báo lại để thêm vào. Audio hiện có: Unit 1–8 ph�
 - Chưa làm trong bản này: 7 đề mới còn lại (sẽ bổ sung theo từng đợt, mỗi đợt chỉ cần thay `public/thpt12/lessons.json`).
 - Lưu ý: nếu máy chủ Netlify chặn gọi ra ngoài thì nút Dịch từ báo "Chưa tra được từ", các tính năng khác vẫn dùng bình thường.
 - **Rồng hướng dẫn công cụ làm bài** (thêm vào v24, sửa `public/mascot.js`): lần đầu học sinh mở một bài có thanh công cụ, rồng tự giới thiệu 7 bước (bút highlight, Dịch từ, Kho từ vựng, cỡ chữ, chia đôi bài đọc/câu hỏi, Nộp bài). Chỉ hiện một lần (lưu `tour_ex_v1`); bấm vào rồng ở trang làm bài để xem lại. Ở trang chủ, hướng dẫn thêm bước Kho từ vựng cho khối 10-12.
+
+## Cập nhật v25 · Lớp 8, Lớp 9 (Học kì 1), Lớp 6 (Unit 1-2-3) + sửa báo cáo phụ huynh
+**Cần đẩy lên GitHub:** chép đè các file/thư mục sau: `public/index.html`, `netlify/functions/api.mjs`, `README.md`, và 3 thư mục mới `public/lop6/`, `public/lop8/`, `public/lop9/` (mỗi thư mục có `lessons.json` và `img/`).
+- **Lớp 9 · Global Success (HK1)**: 6 unit × 7 phần (Getting Started, A Closer Look 1+2, Communication, Skills 1+2, Looking Back, Practice 1, Practice 2) + Practice 3 (Unit 2), "Chuyển đổi câu: hiện tại hoàn thành" (Unit 5), "To V hay V-ing" (Unit 6), 5 đề ôn giữa kì 1, 6 đề ôn cuối kì 1. Khoảng 5.200 câu, 56 bộ bài.
+- **Lớp 8 · Global Success (HK1)**: 6 unit × 7 phần + Practice 3 (Unit 5), 5 đề ôn giữa kì 1, 5 đề ôn cuối kì 1. Khoảng 4.800 câu, 53 bộ bài.
+- **Lớp 6 · Unit 1-2-3 (HK1)**: 3 unit × 7 phần + 2 bài ngữ pháp Simple present (to be / động từ thường) + 5 đề ôn giữa kì 1. Khoảng 2.600 câu, 28 bộ bài. Hiện ở đầu danh sách Lớp 6 (trước Unit 4-5-6 cũ).
+- Cách tạo học sinh: khối **8** = Lớp 8 mới, khối **9** = Lớp 9 mới (Lớp 3 vẫn là khối "3", IELTS là "IE1.1"; trong web, Lớp 8/9 dùng mã nội bộ 108/109 nên không trùng dữ liệu cũ). Có trong ô chọn khối và import danh sách học sinh.
+- Mỗi bài có: từ vựng + phiên âm + nghĩa, bài nghe-đọc theo từ vựng (bấm ♪), bài tập chấm tự động (trắc nghiệm, điền từ, Đúng/Sai, viết câu…) lấy từ file Word của bạn; đáp án lấy từ phần "ĐÁP ÁN" (chữ in đậm/gạch chân) trong file.
+- Bỏ qua: bài tập dạng nhìn hình rồi viết/nối (không có hình dùng được), tự luận mở (được chuyển thành ghi chú tham khảo), file "HKI.8 LUYỆN TẬP" / "HKI.1 (BÀI TẬP LUYỆN TẬP)" dung lượng rất lớn, bản "To V - Ving" không có đáp án, file tạm `~$…`.
+- **Báo cáo phụ huynh**: không còn liệt kê từng bài; chỉ hiện **tổng điểm** của mỗi báo cáo + nhận xét của giáo viên (mục "Điểm các bài").
+- Chưa làm: website riêng khối 10 trọng tâm từ vựng (Quizlet) — chờ bạn gửi file bài tập bổ trợ (thư mục Google Drive không đọc được từ đây).
