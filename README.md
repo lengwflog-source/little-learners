@@ -240,3 +240,6 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 ## v28
 - Baby Dragon chuyển sang góc trái dưới (bong bóng lời nhắc cũng đổi hướng).
 - Nút "← Quay lại" ở góc trái phía trên nội dung của mọi mục (quay về trang trước; nếu không có thì về mục cha).
+
+## v28b
+- Sửa: bấm vào ảnh trong bài nối (match) giờ phóng to đúng (trước đây bài nối vẽ lại làm mất sự kiện). Bấm ảnh chỉ để phóng to, không chọn ô.

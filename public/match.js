@@ -111,6 +111,7 @@ function mtAll() { document.querySelectorAll('#app .mt').forEach(mtDraw); }
 
 /* ----- chạm / bàn phím ----- */
 document.addEventListener('click', (e) => {
+  if (e.target.tagName === 'IMG') return;
   if (MT.supp > Date.now() && e.target.closest('.mt')) { e.preventDefault(); e.stopPropagation(); return; }
   const rs = e.target.closest('[data-mtreset]');
   if (rs && X && !X.checked) {

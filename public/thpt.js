@@ -284,7 +284,7 @@ document.addEventListener('touchend',onPhraseEnd);
 /* ---------- phóng to ảnh ---------- */
 document.addEventListener('click',e=>{
   const im=e.target;
-  if(im&&im.tagName==='IMG'&&im.closest&&im.closest('.ex')&&!im.classList.contains('vp')&&!im.closest('.xtip')){
+  if(im&&im.tagName==='IMG'&&!im.classList.contains('vp')&&e.composedPath().some(n=>n.classList&&n.classList.contains('ex'))&&!e.composedPath().some(n=>n.classList&&n.classList.contains('xtip'))){
     if(TX.tr||TX.pen)return;
     const o=document.createElement('div');o.id='imgov';o.innerHTML='<img alt=""><button type="button" aria-label="Đóng">✕</button>';
     o.querySelector('img').src=im.currentSrc||im.src;o.addEventListener('click',()=>o.remove());document.body.appendChild(o);
