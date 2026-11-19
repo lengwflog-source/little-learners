@@ -258,3 +258,8 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Baby Dragon: "trợ lý của Mr. Phi Long"; giữ nguyên màu ở chế độ tối; bấm vào rồng có 2 mục Hướng dẫn / Q&A.
 - Q&A (chỉ Lớp 10, 11, 12 và IELTS): hỏi AI → học sinh chấm 1–5 sao → dưới 3 sao báo thầy, thầy trả lời trong khung chat (mục "Giải đáp" trong menu giáo viên, có lịch sử). Tự xóa sau 48 giờ. Nhắc mở Q&A sau ~1 phút làm bài. Cần ANTHROPIC_API_KEY trên Netlify (đã dùng cho chấm IELTS).
 - Điện thoại: menu 1 khung có mũi tên; làm bài thì tiêu đề cuộn đi, thanh công cụ dính trên; bài đọc (trên) và câu hỏi (dưới) chia đôi, mỗi phần cuộn riêng.
+
+## v31b
+- Sửa: menu "Tổng quan" của giáo viên bị ẩn trên điện thoại.
+- Sửa: xoay ngang điện thoại — trang cuộn bình thường, bài đọc bên trái dính khi cuộn, câu hỏi bên phải; không còn chồng chữ.
+- Chia đôi dọc (bài đọc trên / câu hỏi dưới): cuộn hết khung thì trang cuộn tiếp.
