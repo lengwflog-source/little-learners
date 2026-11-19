@@ -8,11 +8,20 @@ const strip=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ
 const keyOf=en=>String(en||'').trim().toLowerCase().replace(/\s+/g,' ').slice(0,50);
 const rnd=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 fetch('emoji.json').then(r=>r.ok?r.json():{}).then(j=>{FC.emoji=j;FC.dk=null;if(typeof route==='function'&&route()==='flash')render()}).catch(()=>{FC.emoji={}});
-function emojiFor(w){const M=FC.emoji||{};let x=w.toLowerCase().trim();const c=[x,x.replace(/^to /,''),x.replace(/^(a|an|the) /,'')];
-  c.slice().forEach(t=>{if(/s$/.test(t))c.push(t.slice(0,-1));if(/es$/.test(t))c.push(t.slice(0,-2));if(/ly$/.test(t))c.push(t.slice(0,-2));if(/ness$/.test(t))c.push(t.slice(0,-4));if(/ing$/.test(t)){c.push(t.slice(0,-3));c.push(t.slice(0,-3)+'e')}if(/ed$/.test(t)){c.push(t.slice(0,-2));c.push(t.slice(0,-1))}});
-  for(const t of c)if(M[t])return M[t];return''}
+const FWD=new Set('to sth sb the a an of on in at with for up off out one’s one\'s your my his her their someone something somebody be do does did make get have has had take give go keep put set run come turn pick down away over into from by about and or'.split(' '));
+function emojiFor(w){const M=FC.emoji||{};let x=w.toLowerCase().trim().replace(/\([^)]*\)/g,' ').replace(/[\/=].*$/,'').replace(/\s+/g,' ').trim();
+  const stems=t=>{const r=[t];if(/ies$/.test(t))r.push(t.slice(0,-3)+'y');if(/ves$/.test(t))r.push(t.slice(0,-3)+'f',t.slice(0,-3)+'fe');if(/s$/.test(t))r.push(t.slice(0,-1));if(/es$/.test(t))r.push(t.slice(0,-2));
+    if(/ly$/.test(t)){r.push(t.slice(0,-2));r.push(t.slice(0,-3)+'y')}if(/ness$/.test(t))r.push(t.slice(0,-4));if(/ing$/.test(t)){r.push(t.slice(0,-3));r.push(t.slice(0,-3)+'e');r.push(t.slice(0,-4))}if(/ed$/.test(t)){r.push(t.slice(0,-2));r.push(t.slice(0,-1));r.push(t.slice(0,-3))}
+    [['ation',['e','']],['ition',['e','']],['ion',['e','']],['ity',['','e']],['ities',['','e']],['ful',['']],['less',['']],['able',['','e']],['ible',['','e']],['ally',['','al']],['al',['','e']],['ment',['']],['ments',['']],['er',['','e']],['ers',['','e']],['or',['','e']],['ive',['','e']],['ous',['','e']],['ic',['']],['ize',['','e']],['ise',['','e']],['ising',['','e']],['izing',['','e']],['y',['']],['ist',['']],['ism',['']],['ant',['','e']],['ent',['','e']],['ance',['','e']],['ence',['','e']],['ability',['','e']],['ibility',['','e']],['iveness',['','e']]].forEach(([suf,add])=>{if(t.length>suf.length+2&&t.endsWith(suf)){const base=t.slice(0,-suf.length);add.forEach(ad=>r.push(base+ad))}});
+    ['un','dis','in','im','ir','il','non','over','under','re','mis'].forEach(p=>{if(t.length>p.length+3&&t.startsWith(p))r.push(t.slice(p.length))});return r};
+  const tryT=t=>{const c=[t,t.replace(/^to /,''),t.replace(/^(a|an|the) /,'')];c.slice().forEach(q=>stems(q).forEach(z=>c.push(z)));for(const q of c)if(M[q])return M[q];return''};
+  let e=tryT(x);if(e)return e;
+  const ws=x.split(' ').filter(q=>q&&!FWD.has(q));
+  if(ws.length>=1){const ph=ws.join(' ');e=tryT(ph);if(e)return e;for(let i=ws.length-1;i>=0;i--){e=tryT(ws[i]);if(e)return e}}
+  return''}
 function clean(v){
   let en=String(v.en||'').trim(),vi=String(v.vi||'').trim(),ipa=String(v.ipa||'').trim();
+  {const tk=en.split(/\s+/),ps=String(v.pos||'').trim();if(tk.length>=2&&/^[A-Za-z\-]+$/.test(tk[0])&&tk.every(t=>/^[A-Za-z\-]+$/.test(t))&&ps.split(/\s+/).length>=2&&!/phr|np/.test(ps)){en=tk[0];const m=ipa.match(/\/[^\/]+\//);if(m)ipa=m[0]}}
   if(!en||en.length>40||/[:=|+?]|[^\x00-ɏ’]/.test(en)||/^[^A-Za-z]/.test(en))return null;
   vi=vi.split('||')[0];
   const m=vi.match(/^\s*(\/[^\/]+\/)\s*(.*)$/);if(m){if(!ipa)ipa=m[1];vi=m[2]}

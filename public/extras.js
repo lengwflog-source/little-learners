@@ -34,6 +34,8 @@ function bellHtml(){
   const panel=BELL.open?`<div class="bellp" role="dialog" aria-label="Thông báo"><div class="bellh"><b>Thông báo</b><span class="sp"></span><button type="button" class="bellx" data-bell="close" aria-label="Đóng">✕</button></div>${list.length?list.map(x=>`<button type="button" class="belli ${x.fresh?'new':''}" data-bell="go" ${x.sel?`data-bsel="${esc(x.sel)}"`:`data-bgo="${esc(x.go)}"`}><span class="bi">${x.icon}</span><span class="bt"><span>${x.title}</span><small>${x.sub}</small></span>${x.fresh?'<i class="dot"></i>':''}</button>`).join(''):`<p class="muted small" style="padding:14px 16px;margin:0">${S.isT?'Chưa có học sinh nào nộp bài trong 7 ngày qua.':'Chưa có thông báo mới. Khi thầy/cô giao bài hoặc nhận xét bài thu âm, chuông sẽ báo ở đây.'}</p>`}</div>`:'';
   return`<div class="bellw"><button type="button" id="bell-btn" class="bellb ${b.fresh?'ring':''}" data-bell="toggle" aria-label="Thông báo${b.fresh?', '+b.fresh+' tin mới':''}" aria-expanded="${BELL.open}">${BELLSVG}${b.fresh?`<span class="bn">${b.fresh>9?'9+':b.fresh}</span>`:''}</button>${panel}</div>`}
 function refreshBell(){const el=document.querySelector('.bellw');if(el){el.outerHTML=bellHtml()}const b=bellItems();if(BELL.prev>=0&&b.fresh>BELL.prev&&!BELL.open)toast(S.isT?'🔔 Có học sinh vừa nộp bài':'🔔 Bạn có thông báo mới');BELL.prev=b.fresh}
+function gotoStudent(uid){const p=S.all&&S.all[uid];const g=p&&Number(p.grade);if(g&&g!==S.grade&&S.lessons!==undefined){try{setGrade(g);S.cls=''}catch(e){}}S.sel=uid;if(location.hash==='#t-student')render();else location.hash='t-student'}
+window.gotoStudent=gotoStudent;
 function bellClose(){if(!BELL.open)return;BELL.open=false;BELL.snap=null;refreshBell()}
 async function bellOpen(){
   const b=bellItems();BELL.open=true;BELL.snap=b.items;BELL.prev=0;refreshBell();
@@ -45,7 +47,7 @@ document.addEventListener('click',e=>{
   if(t){e.stopPropagation();const a=t.dataset.bell;
     if(a==='toggle'){BELL.open?bellClose():bellOpen();return}
     if(a==='close'){bellClose();return}
-    if(a==='go'){const sel=t.dataset.bsel,go=t.dataset.bgo;bellClose();if(sel){S.sel=sel;if(location.hash==='#t-student')render();else location.hash='t-student'}else if(go){location.hash=go}return}}
+    if(a==='go'){const sel=t.dataset.bsel,go=t.dataset.bgo;bellClose();if(sel){gotoStudent(sel)}else if(go){location.hash=go}return}}
   if(BELL.open&&!e.target.closest('.bellw'))bellClose()},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')bellClose()});
 setInterval(()=>{if(S.user&&!document.hidden)refreshBell()},60000);

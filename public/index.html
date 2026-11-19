@@ -225,6 +225,7 @@ footer{padding-block:30px 40px;color:var(--muted);font-size:.84rem;text-align:ce
 </style>
 <link rel="stylesheet" href="ielts.css">
 <link rel="stylesheet" href="tdragon.css">
+<link rel="stylesheet" href="flash.css">
 <link rel="stylesheet" href="match.css">
 <link rel="stylesheet" href="extras.css">
 <link rel="stylesheet" href="mascot.css">
@@ -293,7 +294,7 @@ const gradeSw=()=>{const gs=[12,11,10,109,108,7,6,5,4,2,8,3,9].filter(g=>S.allL.
 
 /* ---------- data helpers ---------- */
 const bankOK=()=>!S.isT&&!!S.user&&[10,11,12].includes(S.grade);
-const lessonUnits=()=>{const g=[];S.lessons.forEach(L=>{let u=g.find(x=>x.key===L.unit);if(!u){u={key:L.unit,title:(L.grade!==6||L.unit>=600)?L.unitTitle:(L.unit?'Unit '+L.unit:'Đề ôn tập HK1'),sub:L.grade===12?'Giải đề thi thử · chấm tự động · có lời giải':L.grade===10||L.grade===11?'Nội dung đang được cập nhật':L.grade===2||L.grade===8?'Bài tập có hình':(L.grade===7||L.grade===108||L.grade===109||(L.grade===6&&L.unit>=600))?'Từ vựng · Ngữ pháp · Bài tập':L.grade===5||L.grade===4?'Từ vựng · Ngữ pháp · Bài tập · Nghe':L.grade===9?'Vocabulary · Reading · Listening · Writing · Speaking':L.grade===3?'Từ vựng · Ngữ pháp · Nghe · Phát âm':(L.unit?L.unitTitle:'Ôn luyện cuối kì'),lessons:[]};g.push(u)}u.lessons.push(L)});return g};
+const lessonUnits=()=>{const g=[];S.lessons.forEach(L=>{let u=g.find(x=>x.key===L.unit);if(!u){u={key:L.unit,title:(L.grade!==6||L.unit>=600)?L.unitTitle:(L.unit?'Unit '+L.unit:'Đề ôn tập HK1'),sub:L.grade===12?'Giải đề thi thử · chấm tự động · có lời giải':L.grade===10?'Từ vựng · Ngữ pháp · Đoạn văn · Hội thoại · Đề test':L.grade===11?'Nội dung đang được cập nhật':L.grade===2||L.grade===8?'Bài tập có hình':(L.grade===7||L.grade===108||L.grade===109||(L.grade===6&&L.unit>=600))?'Từ vựng · Ngữ pháp · Bài tập':L.grade===5||L.grade===4?'Từ vựng · Ngữ pháp · Bài tập · Nghe':L.grade===9?'Vocabulary · Reading · Listening · Writing · Speaking':L.grade===3?'Từ vựng · Ngữ pháp · Nghe · Phát âm':(L.unit?L.unitTitle:'Ôn luyện cuối kì'),lessons:[]};g.push(u)}u.lessons.push(L)});return g};
 const exArr=p=>(p&&p.ex)||{};
 function lessonStat(p,L){const ex=exArr(p);let done=0,sum=0,cnt=0;for(const E of L.exercises){const r=ex[E.id];if(r){done++;if(r.n>0){sum+=r.c/r.n;cnt++}}}const total=L.exercises.length;return{done,total,pct:total?done/total:0,avg:cnt?sum/cnt:null}}
 function overall(p){let done=0,total=0,sum=0,cnt=0;const ex=exArr(p);for(const L of S.lessons)for(const E of L.exercises){total++;const r=ex[E.id];if(r){done++;if(r.n>0){sum+=r.c/r.n;cnt++}}}return{done,total,pct:total?done/total:0,avg:cnt?sum/cnt:null}}
@@ -410,7 +411,8 @@ async function init(){
   try{const r=await fetch('ef/lessons.json');if(r.ok){const e3=await r.json();e3.forEach(L=>{L.grade=3;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e3)}}catch(e){}
   try{const r=await fetch('lop3/lessons.json');if(r.ok){const e8=await r.json();e8.forEach(L=>{L.grade=8;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e8)}}catch(e){}
   try{const r=await fetch('thpt12/lessons.json');if(r.ok){const e12=await r.json();e12.forEach(L=>{L.grade=12;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e12)}}catch(e){}
-  [10,11].forEach(g=>S.allL.push({id:'g'+g+'-soon',grade:g,unit:1,unitTitle:'Lớp '+g,title:'Nội dung lớp '+g+' đang được cập nhật',sub:'Kho từ vựng cá nhân đã dùng được',label:'Lớp '+g,vocab:[],grammar:[],exercises:[]}));
+  try{const r=await fetch('lop10/lessons.json');if(r.ok){const g10=await r.json();g10.forEach(L=>{L.grade=10;L.label=(L.unitTitle?L.unitTitle+' · ':'')+L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(g10)}}catch(e){}
+  [11].forEach(g=>S.allL.push({id:'g'+g+'-soon',grade:g,unit:1,unitTitle:'Lớp '+g,title:'Nội dung lớp '+g+' đang được cập nhật',sub:'Kho từ vựng cá nhân đã dùng được',label:'Lớp '+g,vocab:[],grammar:[],exercises:[]}));
   try{const r=await fetch('ielts/lessons.json');if(r.ok){const e9=await r.json();e9.forEach(L=>{L.grade=9;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e9)}}catch(e){}
   S.allL.forEach(L=>{S.by[L.id]=L;L.exercises.forEach(E=>{S.exL[E.id]=L.id})});
   API.tok=lsGet(TK);
@@ -427,7 +429,7 @@ const hdr=()=>{const r=route(),I=(h,t,on)=>`<a href="#${h}" class="${on?'on':''}
   const TI=[['t-home','Tổng quan',r==='t-home'],['t-students','Học sinh',r.startsWith('t-student')],['t-attendance','Điểm danh',r==='t-attendance'],['t-assign','Giao bài',r==='t-assign'],['t-voice','Bản thu âm',r==='t-voice'],['t-qa','Giải đáp'+(typeof qaNavBadge==='function'?qaNavBadge():''),r==='t-qa']].concat(S.isTA?[]:[['t-ai','Chấm IELTS',r==='t-ai'],['t-ta','Trợ giảng',r==='t-ta']]).concat([['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')]]);
   const cur=TI.find(x=>x[2]);
   const navT=`<details class="gdd" id="ndd"><summary aria-label="Menu chính, đang ở ${cur?cur[1].replace(/<[^>]+>/g,''):'Menu'}">☰ ${cur?cur[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${TI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
-  const SI=[['home','Trang chủ',r==='home'],['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')],['progress','Tiến độ',r==='progress']].concat(bankOK()?[['vocab','Kho từ vựng',r==='vocab']]:[]).concat([['voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice']]);
+  const SI=[['home','Trang chủ',r==='home'],['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')],['flash','Flashcard',r==='flash'],['progress','Tiến độ',r==='progress']].concat(bankOK()?[['vocab','Kho từ vựng',r==='vocab']]:[]).concat([['voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice']]);
   const curS=SI.find(x=>x[2]);
   const navM=S.isT?'':`<details class="gdd navm" id="nmm"><summary aria-label="Menu chính, đang ở ${curS?curS[1].replace(/<[^>]+>/g,''):'Menu'}">☰ ${curS?curS[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${SI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
   const nav=S.isT?navT:SI.map(x=>I(x[0],x[1],x[2])).join('');
@@ -458,6 +460,7 @@ function render(){
     else if(r==='t-ta'&&S.isT&&!S.isTA)body=taView();
     else if(r==='voice'&&!S.isT)body=voiceView();
     else if(r==='vocab'&&bankOK()&&typeof vocabView==='function')body=vocabView();
+    else if(r==='flash'&&!S.isT&&typeof flashView==='function')body=flashView();
     else body=S.isT?teacherHome():homeView();
   }
   const keepY=scrollY;
@@ -729,7 +732,7 @@ function teacherHome(){const st=visibleStudents(),td=today();
   <div class="wrap"><div class="row" style="margin-block:10px"><span class="muted small">Lọc:</span>${clsSel()||(S.isTA?'<span class="muted small">Bạn chưa được phân công lớp nào. Hãy nhờ giáo viên phân lớp cho bạn.</span>':'<span class="muted small">Chưa có lớp. Thêm lớp ở mục Giao bài.</span>')}<span class="sp"></span><button class="btn ghost sm" data-act="exportp">Xuất CSV tiến độ</button></div>
   <div class="grid g4"><div class="card kpi"><b>${tot}</b><span>Học sinh</span></div><div class="card kpi"><b>${pct(avgDone)}</b><span>Hoàn thành trung bình</span></div><div class="card kpi"><b>${pct(avgSc)}</b><span>Điểm trung bình</span></div><div class="card kpi"><b>${present}/${tot}</b><span>Có mặt ${fmtD(td)}</span></div></div>
   <section class="blk"><div class="grid g2"><div class="card"><h3 style="margin-bottom:12px">Bài cần ôn lại</h3>${hard.length?hard.slice(0,6).map(h=>`<a class="row" style="text-decoration:none;padding:7px 0;border-top:1px solid var(--line)" href="#ex-${h.E.id}"><span><b>${esc(h.L.title)}</b> · ${esc(exTitle(h.E))}<br><span class="small muted">${h.n} học sinh đã làm</span></span><span class="sp"></span><span class="chip ${h.avg>=.8?'good':h.avg>=.5?'warn':'bad'}">${pct(h.avg)}</span></a>`).join(''):'<p class="muted">Chưa có bài làm nào để thống kê.</p>'}</div>
-  <div class="card"><h3 style="margin-bottom:12px">Hoạt động gần đây</h3>${active.length?active.map(x=>`<div class="row" style="padding:7px 0;border-top:1px solid var(--line)"><span class="avatar">${esc((x.p.name||'?')[0])}</span><span><b>${esc(x.p.name||'Chưa đặt tên')}</b><br><span class="small muted">${esc(x.p.cls||'')} · ${fmtT(x.p.last)}</span></span><span class="sp"></span><span class="chip">${pct(overall(x.p).pct)}</span></div>`).join(''):'<p class="muted">Chưa có học sinh nào đăng nhập. Chia sẻ liên kết của trang này cho học sinh để bắt đầu.</p>'}</div></div></section>${readyCard(st)}</div>`}
+  <div class="card"><h3 style="margin-bottom:12px">Hoạt động gần đây</h3>${active.length?active.map(x=>`<div class="row click" data-sel="${esc(x.uid)}" title="Bấm để xem hồ sơ" style="padding:7px 0;border-top:1px solid var(--line);cursor:pointer"><span class="avatar">${esc((x.p.name||'?')[0])}</span><span><b>${esc(x.p.name||'Chưa đặt tên')}</b><br><span class="small muted">${esc(x.p.cls||'')} · ${fmtT(x.p.last)}</span></span><span class="sp"></span><span class="chip">${pct(overall(x.p).pct)}</span></div>`).join(''):'<p class="muted">Chưa có học sinh nào đăng nhập. Chia sẻ liên kết của trang này cho học sinh để bắt đầu.</p>'}</div></div></section>${readyCard(st)}</div>`}
 function readyCard(st){const ready=[];st.forEach(x=>S.lessons.forEach(L=>{const s=lessonStat(x.p,L);if(s.total&&s.done===s.total&&!(x.p.reports||{})[L.id])ready.push({x,L,s})}));
   return`<section class="blk" style="padding-top:0"><div class="card"><h3 style="margin-bottom:4px">Chờ báo điểm cho phụ huynh</h3>${ready.length?ready.slice(0,10).map(r=>`<div class="row click" data-sel="${esc(r.x.uid)}" style="padding:8px 0;border-top:1px solid var(--line);cursor:pointer"><span><b>${esc(r.x.p.name||'')}</b> <span class="small muted">${esc(r.x.p.cls||'')}</span><br><span class="small">${esc(r.L.label)}</span></span><span class="sp"></span><span class="chip ${r.s.avg==null?'':r.s.avg>=.8?'good':r.s.avg>=.5?'warn':'bad'}">TB ${pct(r.s.avg)}</span><span class="chip sky">Báo điểm →</span></div>`).join('')+(ready.length>10?`<p class="small muted" style="margin-top:8px">và ${ready.length-10} phần khác…</p>`:''):'<p class="muted">Chưa có phần bài nào chờ báo điểm.</p>'}</div></section>`}
 
@@ -881,7 +884,7 @@ document.addEventListener('click',async e=>{
   if(D.tab){S.tab=D.tab;render();return}
   if(D.tabx){S.tab='ex';return}
   if(D.go){location.hash=D.go;return}
-  if(D.sel){S.sel=D.sel;if(location.hash==='#t-student')render();else location.hash='t-student';return}
+  if(D.sel){gotoStudent(D.sel);return}
   if(D.say){try{DLGTOK++;speechSynthesis.cancel();const male=D.g==='m';speechSynthesis.speak(mkUtt(D.say,male,D.rate?+D.rate:.8))}catch(_){}return}
   if(D.mark){const[uid,k]=D.mark.split('|');const d=S.date;const m=Object.assign({},S.att[d]||{});if(m[uid]===k)delete m[uid];else m[uid]=k;S.att[d]=m;render();putAtt(d,m);return}
   if(D.reset){const p=S.all[S.sel];if(!p)return;if(!confirm('Cho học sinh làm lại bài này? Kết quả cũ sẽ bị xóa và lần làm tới được tính là lần đầu.'))return;delete p.ex[D.reset];render();try{await API.call('PUT','students/'+encodeURIComponent(S.sel)+'/progress',{resetEx:D.reset});toast('Đã cho học sinh làm lại bài')}catch(err){toast(err.message)}return}
@@ -980,5 +983,6 @@ init();
 <script src="qa.js"></script>
 <script src="speak.js"></script>
 <script src="tdragon.js"></script>
+<script src="flash.js"></script>
 </body>
 </html>

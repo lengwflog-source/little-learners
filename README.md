@@ -306,3 +306,10 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Hình: ảnh có sẵn trong bài hoặc emoji (public/emoji.json, ~1600 từ); từ chưa có hình hiện chữ cái.
 - Baby Dragon giới thiệu mục Flashcard.
 - File mới: public/flash.js, public/flash.css, public/emoji.json; api.mjs lưu thêm trường fc.
+
+## v39
+- Lớp 10 (Global Success, 10 Unit) đã lên web: mỗi Unit có 3 bài học (Từ vựng · Ngữ pháp · Đoạn văn & Hội thoại) + 3 đề Test 01–03 (40 câu, tự chấm). Không đưa phần nghe/audio.
+- Từ vựng: từ + phiên âm + từ loại + nghĩa, cụm từ/cấu trúc; bài tập trắc nghiệm có giải thích ở phần ngữ pháp.
+- Bài tự soạn thêm cho mỗi Unit: 10 câu ngữ pháp, 1 đoạn đọc hiểu (5 câu), 3 câu sắp xếp hội thoại.
+- Flashcard: từ lớp 10 vào mục Flashcard (mỗi họ từ chỉ hiện từ chính); emoji phủ ~94% (emoji.json ~2150 mục, flash.js tự suy từ gốc/cụm từ).
+- File mới: public/lop10/lessons.json; sửa index.html (tải lớp 10, bảng ngữ pháp), flash.js, emoji.json.

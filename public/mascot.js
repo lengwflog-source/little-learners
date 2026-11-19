@@ -78,9 +78,10 @@ const spG=()=>[2,3,4,5,8].includes(Number(S.grade)),qaG=()=>[9,10,11,12].include
 function navLink(t){return[...document.querySelectorAll('.top a')].find(a=>(a.textContent||'').trim()===t)||null}
 function name(){return((S.prof&&S.prof.name)||'').split(' ').pop()||'bạn'}
 function vis(sel){return()=>{const e=[...document.querySelectorAll(sel)].find(x=>x.offsetParent!==null||getComputedStyle(x).position==='fixed');return e||null}}
+function okEl(x){if(!x.el)return true;const e=x.el();return !!(e&&e.getClientRects().length&&e.getBoundingClientRect().width>0)}
 function exSteps(){const r=[];
- r.push({pose:'wave',t:`Mình chỉ bạn <b>công cụ làm bài</b> nhé! 🧰`,s:'Thanh công cụ nằm ở <b>bên trái</b> màn hình và luôn đi theo bạn khi cuộn bài. Xem nhanh từng món nào!'});
- r.push({pose:'point',el:()=>$1('.xtb .xback'),t:'Nút <b>← Quay lại</b>',s:'Bấm để về danh sách bài học (Thư viện) bất cứ lúc nào.'});
+ r.push({pose:'wave',t:`Mình chỉ bạn <b>công cụ làm bài</b> nhé! 🧰`,s:(innerWidth<=640?'Thanh công cụ nằm <b>ở trên cùng</b> bài làm và luôn đi theo bạn khi cuộn bài. Xem nhanh từng món nào!':'Thanh công cụ nằm ở <b>bên trái</b> màn hình và luôn đi theo bạn khi cuộn bài. Xem nhanh từng món nào!')});
+ r.push({pose:'point',el:()=>{const b=$1('#backbtn');return b&&b.offsetParent!==null?b:$1('.xtb .xback')},t:'Nút <b>← Quay lại</b>',s:'Bấm để về danh sách bài học (Thư viện) bất cứ lúc nào.'});
  r.push({pose:'point',el:()=>$1('.xtb .xgrp'),t:'<b>Bút highlight</b> 🖍️',s:'Bấm bút, chọn màu <b>xanh lá</b> hoặc <b>vàng</b>, rồi kéo chọn chữ trong bài đọc hoặc câu hỏi để tô màu. Trên điện thoại: nhấn giữ rồi kéo. Nút tẩy để xóa chỗ đã tô.'});
  r.push({pose:'point',el:()=>$1('.xtb [data-xt="tr"]'),t:'<b>Dịch từ</b> 🔍',s:'Bấm nút này rồi chạm vào bất kỳ từ nào để xem nghĩa, loại từ và nghe phát âm. Bôi chọn cả câu cũng ra nghĩa cả câu. Muốn chọn đáp án thì nhớ <b>tắt</b> Dịch từ.'});
  if(typeof bankOK==='function'&&bankOK())r.push({pose:'cheer',el:menuBtn,t:'<b>Kho từ vựng</b> của bạn 📚',s:'Khi tra từ, bấm <b>Thêm vào kho từ vựng</b>. Các từ đã lưu nằm trong menu <b>Bài học ▾</b> ở trên cùng, bạn có thể ôn bằng thẻ lật và làm bài kiểm tra nhanh.'});
@@ -88,7 +89,7 @@ function exSteps(){const r=[];
  r.push({pose:'point',el:()=>$1('.xtb [data-xt="dock"]'),t:'<b>Ghim thanh công cụ</b> 📌',s:'Bấm để đổi chỗ thanh công cụ: Trái → Phải → Trên. Chọn chỗ nào tiện tay nhất cho bạn.'});
  r.push({pose:'point',el:vis('.xtabs,.xpas'),t:'Bài đọc và câu hỏi 📖',s:'Máy tính: bài đọc bên trái, câu hỏi bên phải. Điện thoại: bài đọc ở trên, câu hỏi ở dưới, mỗi phần tự cuộn riêng.'});
  r.push({pose:'cheer',t:'Nộp bài để mở phần tiếp theo ✅',s:'Làm xong một phần, bấm <b>Nộp bài</b> để xem đáp án và lời giải chi tiết từng câu. Nộp rồi mới sang được phần kế tiếp. Chúc bạn làm bài thật tốt!'});
- return r.filter(x=>!x.el||x.el())}
+ return r.filter(okEl)}
 function steps(){if(T&&T.ex)return exSteps();const r=[];
  r.push({pose:'wave',t:`Chào ${esc(name())}! Mình là <b>Baby Dragon</b> 🐲, trợ lý của <b>Mr. Phi Long</b>`,s:'Mình sẽ chỉ bạn cách học trên web này, chỉ mất một phút thôi!'});
  r.push({pose:'point',el:menuBtn,t:'Đây là <b>menu</b> ☰',s:'Bấm vào để mở tất cả các mục: <b>Bài học</b>, <b>Bản thu</b> (nhận xét của thầy/cô)'+(typeof bankOK==='function'&&bankOK()?' và <b>Kho từ vựng</b> của bạn':'')+'. Mọi thứ đều nằm trong ô này.'});
@@ -97,8 +98,9 @@ function steps(){if(T&&T.ex)return exSteps();const r=[];
  r.push({pose:'point',el:()=>$1('#bell-btn'),t:'Đây là <b>chuông thông báo</b> 🔔',s:'Có bài mới được giao hoặc thầy/cô vừa nhận xét, chuông sẽ báo ở đây.'});
  if(spG())r.push({pose:'cheer',t:'Đọc to và được chấm điểm 🎤',s:'Ở bài <b>Listen and repeat</b> và <b>Speaking cards</b>, bấm <b>Đọc thử</b> rồi đọc to. Máy chấm phát âm từ 50–100%. Mỗi mục chỉ đọc <b>1 lần</b> nên hãy nghe mẫu ♪ trước nhé!'});
  if(qaG())r.push({pose:'point',t:'Có thắc mắc? Hỏi mình nhé! 💬',s:'Bấm vào mình ở góc màn hình, chọn <b>Hỏi đáp (Q&A)</b> để hỏi bài. Nếu câu trả lời chưa ổn, bạn chấm dưới 3 sao để thầy/cô trả lời trực tiếp.'});
+ r.push({pose:'cheer',el:menuBtn,t:'Ôn từ vựng bằng <b>Flashcard</b> 🃏',s:'Mở menu ☰ → <b>Flashcard</b>: lật thẻ có hình, chơi game (chọn ABCD, nhìn hình chọn nghĩa, gõ nghĩa…). Nhớ tick <b>Đã thuộc</b> và <b>Đặt câu được</b> khi bạn làm được nhé!'});
  r.push({pose:'cheer',t:'Cách làm bài ✏️',s:'Làm xong từng bài, nhớ bấm <b>Nộp bài</b> để xem kết quả. Nộp rồi mới sang được <b>Bài kế tiếp</b>, và có nút <b>Bài trước</b> nếu muốn xem lại. Cố lên nhé!'});
- return r.filter(x=>!x.el||x.el())}
+ return r.filter(okEl)}
 function finish(){if(!T)return;const ISEX=T.ex;T.root.remove();T.spot&&T.spot.remove();window.removeEventListener('resize',T.rp);window.removeEventListener('scroll',T.rp,true);document.removeEventListener('keydown',T.kd);T=null;
  const K=ISEX?KEY2:KEY;if(S.prof){S.prof.lv=S.prof.lv||{};if(!S.prof.lv[K]){S.prof.lv[K]=Date.now();try{saveProf()}catch(e){}}}sync()}
 function place(){if(!T)return;const st=T.list[T.i];const el=st.el&&st.el();
@@ -133,7 +135,9 @@ function sync(){
  else if(!first&&!hiVis&&!(pend()&&pend().length)&&typeof route==='function'&&route()==='home'){hiVis=true;const h=document.createElement('div');h.className='bdhi';h.textContent=`Chào ${name()}! Bấm vào mình nếu cần hướng dẫn nhé 👋`;document.body.appendChild(h);setTimeout(clearHi,6000)}}
 
 /* nhắc làm đủ bài được giao */
-function pend(){try{const K=typeof lockInfo==='function'&&lockInfo();return K?K.pend:null}catch(e){return null}}
+function pend(){try{if(!S||S.isT||!S.prof)return null;const ass=myAssignments();if(!ass.length)return null;const set=new Set();
+ ass.forEach(a=>{if(a.ex&&a.ex.length)a.ex.forEach(i=>set.add(i));else(a.lessons||[]).forEach(l=>{const L=S.by[l];L&&L.exercises.forEach(E=>set.add(E.id))})});
+ const ex=exArr(S.prof),out=[];S.lessons.forEach(L=>L.exercises.forEach(E=>{if(set.has(E.id)&&!ex[E.id])out.push(E.id)}));return out}catch(e){return null}}
 function clearRm(){const h=$1('.bdrm');h&&h.remove();if(window.__bdRt){clearTimeout(window.__bdRt);window.__bdRt=0}}
 function showRm(){if(T||!ok()||hidden())return;const pd=pend();if(!pd||!pd.length)return;clearRm();const cur=(typeof X!=='undefined'&&X&&X.E)?X.E.id:'';const n=pd.find(i=>i!==cur)||pd[0];
  const h=document.createElement('div');h.className='bdrm';h.setAttribute('role','status');
@@ -143,7 +147,7 @@ let rmKey='';
 function rmSync(){const r=typeof route==='function'?route():'';const pd=pend();
  if(!ok()||!pd||!pd.length){clearRm();rmKey='';return}
  if(r.startsWith('ex-')&&typeof X!=='undefined'&&X&&X.checked&&!X.practice&&!X.stu){const key='ex:'+X.E.id;if(rmKey!==key){rmKey=key;clearRm();window.__bdRt=setTimeout(()=>{if(route()===r&&X&&X.checked)showRm()},3000)}}
- else if(r==='home'){if(rmKey!=='home'){rmKey='home';clearRm();window.__bdRt=setTimeout(showRm,1800)}}
+ else if(r==='home'||r==='lessons'){if(rmKey!==r){rmKey=r;clearRm();window.__bdRt=setTimeout(showRm,700)}}
  else{rmKey=r;clearRm()}}
 const _r=window.render||render;
 render=function(){const x=_r.apply(this,arguments);try{sync()}catch(e){}try{rmSync()}catch(e){}return x};
