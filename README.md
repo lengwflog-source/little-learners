@@ -223,3 +223,8 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Công tắc **"Khóa bài chưa giao"** ở trang Giao bài (mặc định bật; tắt thì mọi học sinh làm tự do như trước). Mới có thêm trường `lockOff` trong cấu hình và thao tác `lock` ở máy chủ.
 - **Baby Dragon nhắc nhở:** sau khi nộp một bài mà sau ~3 giây học sinh chưa bấm Bài kế tiếp, và vẫn còn bài được giao chưa làm, rồng hiện lời nhắc "Còn N bài thầy giao chưa xong!" kèm nút "Làm bài kế tiếp →". Mở trang chủ khi còn bài chưa làm rồng cũng nhắc. Làm đủ bài được giao thì rồng thôi nhắc và các bài khác vẫn khóa. Học sinh ẩn rồng hoặc giáo viên tắt rồng thì không có nhắc nhở.
 - Lưu ý: việc khóa nằm ở giao diện (trang web); đủ dùng cho học sinh bình thường.
+
+## v26 – Lớp 12: thêm Đề 04–10
+- 7 đề mới (t12-04 … t12-10), mỗi đề 40 câu, 6 phần; thứ tự các dạng bài (điền từ, sắp xếp câu, chọn câu điền vào đoạn, đọc hiểu) được đảo khác nhau giữa các đề.
+- Đề tự soạn bám cấu trúc đề tham khảo THPT 2025–2026; có giải thích cả 4 đáp án.
+- File thay đổi: public/thpt12/lessons.json
