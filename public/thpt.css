@@ -188,3 +188,11 @@ body.x-tr .ex .opt input{pointer-events:none}
   .top .nav.nd{flex:none;min-width:auto}
   .top .gdd>summary{padding:7px 11px;font-size:.88rem}
 }
+/* v33: thanh tiêu đề gọn một hàng (menu dạng ô có mũi tên ở mọi kích thước) */
+.gdd.navm{display:block}
+.top .nav:not(.nd){display:none}
+.top .wrap{flex-wrap:nowrap;gap:12px}
+.top .brand{flex:0 1 auto;min-width:0}
+.top .who{margin-left:auto;gap:8px;flex:none}
+@media (max-width:1100px){.top .brand span{display:none}}
+@media (max-width:760px){.top .who>span:not(.avatar){display:none}}

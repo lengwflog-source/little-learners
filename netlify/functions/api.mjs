@@ -378,7 +378,7 @@ async function route(req) {
       if (th.filter((t) => Date.now() - t.t < 24 * 3600 * 1000).length >= 20) return fail(429, "Hôm nay bạn đã hỏi nhiều rồi, mai hỏi tiếp nhé!");
       let ans;
       try { ans = await askClaudeQA(q, cleanMsg(body.ctx, 160)); }
-      catch (e) { return fail(503, e.message === "NO_KEY" ? "Baby Dragon chưa được cài khóa AI, bạn hãy hỏi thầy trực tiếp nhé." : "Baby Dragon đang bận, bạn thử lại sau ít phút nhé."); }
+      catch (e) { return fail(503, e.message === "NO_KEY" ? "Baby Dragon chưa được cài khóa AI, bạn hãy hỏi thầy trực tiếp nhé." : "Baby Dragon đang bận, bạn thử lại sau ít phút nhé. (mã lỗi: " + String(e.message).replace(/sk-[A-Za-z0-9_-]+/g, "").slice(0, 90) + ")"); }
       const t = { id: Date.now().toString(36) + crypto.randomBytes(2).toString("hex"), t: Date.now(), q, ctx: cleanMsg(body.ctx, 160), rate: 0, st: "ai", msgs: [{ r: "ai", x: ans.text, t: Date.now() }] };
       th.push(t);
       await save(user.username, th.slice(-30));

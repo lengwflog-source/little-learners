@@ -267,3 +267,13 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 ## v32
 - Lớp 12, đề 05–30: nâng từ vựng trong bài đọc/đoạn đục lỗ lên dải A2→C1 (≈10 chỗ mỗi đề: numerous, crucial, tackle, owing to, nevertheless…). Không đụng tới từ được hỏi trong câu hỏi/đáp án/lời giải.
 - Mục Giải đáp (giáo viên): thêm nút "Kiểm tra AI" để thử khóa ANTHROPIC_API_KEY.
+
+## v32b
+- Q&A: bỏ tham số temperature (một số mô hình mới không nhận), tự thử nhiều mô hình (haiku → sonnet), và khi lỗi thì hiện "mã lỗi" ngắn để dễ chẩn đoán.
+
+## v32c
+- Sửa lỗi "`temperature` is deprecated for this model": bỏ tham số này ở cả Q&A và chấm IELTS bằng AI.
+
+## v33 (gộp v31 → v32c)
+- Thanh tiêu đề gọn một hàng ở mọi kích thước: menu dạng ô có mũi tên (không còn hiện trùng 2 menu).
+- Gồm toàn bộ thay đổi v31, v31b, v32, v32b, v32c (Q&A, giao diện điện thoại, từ vựng đề 05–30, sửa lỗi temperature).
