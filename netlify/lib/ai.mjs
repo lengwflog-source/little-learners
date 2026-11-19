@@ -101,3 +101,26 @@ export async function callClaude(kind, d) {
   const txt = (j.content || []).map((c) => c.text || "").join("");
   return { fb: cleanFb(kind, parseJson(txt), d.text), model, usage: j.usage || null };
 }
+
+/* ---------- Q&A bé rồng: trả lời câu hỏi tiếng Anh của học sinh ---------- */
+export async function askClaudeQA(question, ctx) {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) throw new Error("NO_KEY");
+  const model = process.env.AI_QA_MODEL || process.env.AI_MODEL || "claude-haiku-5-5";
+  const system = `Bạn là Baby Dragon, trợ lý của thầy Phi Long (Mr. Phi Long) tại MR.LONG's ENGLISH HOUSE. Bạn giải đáp thắc mắc tiếng Anh (ngữ pháp, từ vựng, cách dùng, bài tập) cho học sinh Việt Nam từ lớp 2 đến lớp 12 và IELTS. Quy tắc: trả lời bằng tiếng Việt thân thiện, ngắn gọn, dễ hiểu (tối đa khoảng 180 từ); nêu quy tắc, 2-3 ví dụ tiếng Anh kèm nghĩa tiếng Việt; có thể dùng gạch đầu dòng đơn giản, không dùng bảng hay markdown phức tạp. Chỉ trả lời nội dung học tiếng Anh; nếu câu hỏi không liên quan, nhẹ nhàng mời học sinh hỏi về tiếng Anh. Nếu không chắc chắn, hãy nói rõ để học sinh nhờ thầy giải đáp thêm. Không bịa nguồn.`;
+  const user = (ctx ? "Học sinh đang làm bài: " + String(ctx).slice(0, 160) + "\n" : "") + "Câu hỏi của học sinh: " + String(question).slice(0, 600);
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
+    body: JSON.stringify({ model, max_tokens: 700, temperature: 0.3, system, messages: [{ role: "user", content: user }] }),
+    signal: AbortSignal.timeout(22000),
+  });
+  if (!r.ok) {
+    let m = ""; try { m = (await r.json()).error.message; } catch {}
+    throw new Error("API " + r.status + (m ? ": " + m : ""));
+  }
+  const j = await r.json();
+  const txt = (j.content || []).map((c) => c.text || "").join("").trim();
+  if (!txt) throw new Error("EMPTY");
+  return { text: txt.slice(0, 2500), model };
+}

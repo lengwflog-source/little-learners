@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#5a8a5c">
+<meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex,nofollow">
 <title>MR.LONG's ENGLISH HOUSE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -227,6 +228,7 @@ footer{padding-block:30px 40px;color:var(--muted);font-size:.84rem;text-align:ce
 <link rel="stylesheet" href="extras.css">
 <link rel="stylesheet" href="mascot.css">
 <link rel="stylesheet" href="thpt.css">
+<link rel="stylesheet" href="qa.css">
 </head>
 <body>
 <div id="app"></div>
@@ -421,13 +423,15 @@ async function init(){
 const route=()=>{const h=(location.hash||'').slice(1);return h||(S.isT?'t-home':'home')};
 addEventListener('hashchange',()=>{scrollTo(0,0);render()});
 const hdr=()=>{const r=route(),I=(h,t,on)=>`<a href="#${h}" class="${on?'on':''}">${t}</a>`;
-  const TI=[['t-home','Tổng quan',r==='t-home'],['t-students','Học sinh',r.startsWith('t-student')],['t-attendance','Điểm danh',r==='t-attendance'],['t-assign','Giao bài',r==='t-assign'],['t-voice','Bản thu âm',r==='t-voice']].concat(S.isTA?[]:[['t-ai','Chấm IELTS',r==='t-ai'],['t-ta','Trợ giảng',r==='t-ta']]).concat([['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')]]);
+  const TI=[['t-home','Tổng quan',r==='t-home'],['t-students','Học sinh',r.startsWith('t-student')],['t-attendance','Điểm danh',r==='t-attendance'],['t-assign','Giao bài',r==='t-assign'],['t-voice','Bản thu âm',r==='t-voice'],['t-qa','Giải đáp'+(typeof qaNavBadge==='function'?qaNavBadge():''),r==='t-qa']].concat(S.isTA?[]:[['t-ai','Chấm IELTS',r==='t-ai'],['t-ta','Trợ giảng',r==='t-ta']]).concat([['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')]]);
   const cur=TI.find(x=>x[2]);
-  const navT=`<details class="gdd" id="ndd"><summary aria-label="Menu chính, đang ở ${cur?cur[1]:'Menu'}">☰ ${cur?cur[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${TI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
-  const nav=S.isT?navT:
-    I('home','Trang chủ',r==='home')+I('lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-'))+I('progress','Tiến độ',r==='progress')+(bankOK()?I('vocab','Kho từ vựng',r==='vocab'):'')+I('voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice');
+  const navT=`<details class="gdd" id="ndd"><summary aria-label="Menu chính, đang ở ${cur?cur[1].replace(/<[^>]+>/g,''):'Menu'}">☰ ${cur?cur[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${TI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
+  const SI=[['home','Trang chủ',r==='home'],['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')],['progress','Tiến độ',r==='progress']].concat(bankOK()?[['vocab','Kho từ vựng',r==='vocab']]:[]).concat([['voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice']]);
+  const curS=SI.find(x=>x[2]);
+  const navM=S.isT?'':`<details class="gdd navm" id="nmm"><summary aria-label="Menu chính, đang ở ${curS?curS[1].replace(/<[^>]+>/g,''):'Menu'}">☰ ${curS?curS[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${SI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
+  const nav=S.isT?navT:SI.map(x=>I(x[0],x[1],x[2])).join('');
   const nm=S.user?S.user.name:'';
-  return`<header class="top"><div class="wrap"><a class="brand" href="#${S.isT?'t-home':'home'}">${LOGO}<div><b>MR.LONG's ENGLISH HOUSE</b><span>${S.user?(GS[S.grade]||''):'Học · Luyện · Tiến bộ'}</span></div></a>${S.ready&&S.user?`<nav class="nav ${S.isT?'nd':''}" aria-label="Menu chính">${nav}</nav>${gradeSw()}<div class="who">${typeof bellHtml==='function'?bellHtml():''}<span class="avatar" aria-hidden="true">${esc((nm[0]||'?').toUpperCase())}</span><span>${esc(nm)}</span><a class="btn ghost sm" href="#profile">Tài khoản</a></div>`:''}</div></div></header>`};
+  return`<header class="top"><div class="wrap"><a class="brand" href="#${S.isT?'t-home':'home'}">${LOGO}<div><b>MR.LONG's ENGLISH HOUSE</b><span>${S.user?(GS[S.grade]||''):'Học · Luyện · Tiến bộ'}</span></div></a>${S.ready&&S.user?`<nav class="nav ${S.isT?'nd':''}" aria-label="Menu chính">${nav}</nav>${navM}${gradeSw()}<div class="who">${typeof bellHtml==='function'?bellHtml():''}<span class="avatar" aria-hidden="true">${esc((nm[0]||'?').toUpperCase())}</span><span>${esc(nm)}</span><a class="btn ghost sm" href="#profile">Tài khoản</a></div>`:''}</div></div></header>`};
 
 function render(){
   if(S.ph){document.body.classList.remove('g2');$('#app').innerHTML=parentView();return}
@@ -448,6 +452,7 @@ function render(){
     else if(r==='t-attendance'&&S.isT)body=attendanceView();
     else if(r==='t-assign'&&S.isT)body=assignView();
     else if(r==='t-voice'&&S.isT)body=teacherVoiceView();
+    else if(r==='t-qa'&&S.isT&&typeof qaTeacherView==='function')body=qaTeacherView();
     else if(r==='t-ai'&&S.isT&&!S.isTA)body=ieTeacherAi();
     else if(r==='t-ta'&&S.isT&&!S.isTA)body=taView();
     else if(r==='voice'&&!S.isT)body=voiceView();
@@ -955,7 +960,7 @@ document.addEventListener('change',e=>{const t=e.target;
   if(t.id==='attd'){S.date=t.value||today();render();return}
   if(X&&t.dataset&&t.dataset.i!=null&&!X.checked){collect()}});
 document.addEventListener('click',e=>{const r=e.target.closest&&e.target.closest('input[data-rb]');if(r){if(r.dataset.was==='1'){r.checked=false;r.dataset.was='0'}else{document.querySelectorAll('input[data-rb="'+r.dataset.rb+'"][data-rk="'+r.dataset.rk+'"]').forEach(x=>x.dataset.was='0');r.dataset.was='1'}}});
-document.addEventListener('click',e=>{for(const id of ['gdd','ndd']){const d=document.getElementById(id);if(d&&d.open&&!d.contains(e.target))d.open=false}});
+document.addEventListener('click',e=>{for(const id of ['gdd','ndd','nmm']){const d=document.getElementById(id);if(d&&d.open&&!d.contains(e.target))d.open=false}});
 document.addEventListener('input',e=>{if(X&&e.target.dataset&&e.target.dataset.i!=null&&!X.checked){collect()}});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.target.id==='lg-pass'||e.target.id==='lg-user')){e.preventDefault();const b=$('[data-act=login],[data-act=setup]');if(b)b.click()}});
 init();
@@ -965,5 +970,6 @@ init();
 <script src="mascot.js"></script>
 <script src="match.js"></script>
 <script src="thpt.js"></script>
+<script src="qa.js"></script>
 </body>
 </html>

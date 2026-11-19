@@ -252,3 +252,9 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Phóng to ảnh: chạm/bấm vào bất kỳ ảnh nội dung nào (mọi lớp, kể cả lớp thêm sau này) đều phóng to; chỉ bỏ qua logo, rồng, mã QR, thanh công cụ.
 - Thanh công cụ highlight mặc định ở bên trái (lưu lựa chọn mới; vẫn đổi được Trái/Phải/Trên bằng nút 📌).
 - Đoạn đục lỗ đề 03 cũng được kéo dài (đề 01–02 là đề thật nên giữ nguyên).
+
+## v31
+- Nút Quay lại: luôn về Thư viện (Bài học) / Trang chủ, cuộn theo trang; trên điện thoại nằm ngay trong thanh công cụ.
+- Baby Dragon: "trợ lý của Mr. Phi Long"; giữ nguyên màu ở chế độ tối; bấm vào rồng có 2 mục Hướng dẫn / Q&A.
+- Q&A (chỉ Lớp 10, 11, 12 và IELTS): hỏi AI → học sinh chấm 1–5 sao → dưới 3 sao báo thầy, thầy trả lời trong khung chat (mục "Giải đáp" trong menu giáo viên, có lịch sử). Tự xóa sau 48 giờ. Nhắc mở Q&A sau ~1 phút làm bài. Cần ANTHROPIC_API_KEY trên Netlify (đã dùng cho chấm IELTS).
+- Điện thoại: menu 1 khung có mũi tên; làm bài thì tiêu đề cuộn đi, thanh công cụ dính trên; bài đọc (trên) và câu hỏi (dưới) chia đôi, mỗi phần cuộn riêng.

@@ -12,6 +12,7 @@ function bellItems(){
       if(!r||!r.t||now-r.t>7*864e5||!S.exL[id])return;const lid=S.exL[id],k=uid+'|'+lid;
       const x=g[k]=g[k]||{uid,name:p.name||uid,cls:p.cls||'',L:S.by[lid],n:0,c:0,q:0,t:0,fresh:0};
       x.n++;x.c+=r.c||0;x.q+=r.n||0;x.t=Math.max(x.t,r.t);if(r.t>seen)x.fresh++})});
+    if(typeof QT!=='undefined')QT.list.filter(q=>q.st==='wait').slice(0,10).forEach(q=>out.push({fresh:q.rateAt>seen,t:q.rateAt||q.t,icon:'❓',title:`<b>${esc(q.name||q.user)}</b> cần thầy/cô giải đáp`,sub:`${esc(q.q.slice(0,70))} · ${agoT(q.rateAt||q.t)}`,go:'t-qa'}));
     Object.values(g).sort((a,b)=>b.t-a.t).slice(0,30).forEach(x=>out.push({fresh:x.fresh>0,t:x.t,icon:'✅',
       title:`<b>${esc(x.name)}</b>${x.cls?' ('+esc(x.cls)+')':''} đã nộp ${x.n} phần`,
       sub:`${esc(x.L.title)}${x.q?' · '+x.c+'/'+x.q+' câu đúng':''} · ${agoT(x.t)}`,sel:x.uid}))

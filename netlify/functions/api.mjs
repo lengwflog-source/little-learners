@@ -3,7 +3,7 @@
 import { getStore } from "@netlify/blobs";
 import crypto from "node:crypto";
 import { REC_MS, fkey, purgeUser } from "../lib/rec.mjs";
-import { aiStore, jobSig, cleanFb, AI_KEEP_MS, MAX_PER_DAY } from "../lib/ai.mjs";
+import { aiStore, jobSig, cleanFb, AI_KEEP_MS, MAX_PER_DAY, askClaudeQA } from "../lib/ai.mjs";
 
 export const config = { path: "/api/*" };
 
@@ -359,6 +359,78 @@ async function route(req) {
     user.nseen = Date.now();
     await DB.users().setJSON(user.username, user);
     return J(200, { nseen: user.nseen });
+  }
+  /* ---------- Q&A bé rồng (dữ liệu tự xóa sau 48 giờ) ---------- */
+  if (a === "qa") {
+    const QA = store("qa"), KEEP = 48 * 3600 * 1000, live = (arr) => (Array.isArray(arr) ? arr : []).filter((t) => t && Date.now() - t.t < KEEP);
+    const load = async (u) => live(((await QA.get(u, { type: "json" })) || {}).th);
+    const save = (u, th) => (th.length ? QA.setJSON(u, { th }) : QA.delete(u));
+    const cleanMsg = (s, n) => String(s || "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, n);
+    if (b === "mine" && m === "GET") {
+      if (staff) return J(200, { threads: [] });
+      return J(200, { threads: await load(user.username) });
+    }
+    if (b === "ask" && m === "POST") {
+      if (staff) return fail(403, "Chỉ học sinh mới đặt câu hỏi cho Baby Dragon.");
+      const q = cleanMsg(body.q, 500);
+      if (q.length < 2) return fail(400, "Bạn hãy gõ câu hỏi nhé.");
+      const th = await load(user.username);
+      if (th.filter((t) => Date.now() - t.t < 24 * 3600 * 1000).length >= 20) return fail(429, "Hôm nay bạn đã hỏi nhiều rồi, mai hỏi tiếp nhé!");
+      let ans;
+      try { ans = await askClaudeQA(q, cleanMsg(body.ctx, 160)); }
+      catch (e) { return fail(503, e.message === "NO_KEY" ? "Baby Dragon chưa được cài khóa AI, bạn hãy hỏi thầy trực tiếp nhé." : "Baby Dragon đang bận, bạn thử lại sau ít phút nhé."); }
+      const t = { id: Date.now().toString(36) + crypto.randomBytes(2).toString("hex"), t: Date.now(), q, ctx: cleanMsg(body.ctx, 160), rate: 0, st: "ai", msgs: [{ r: "ai", x: ans.text, t: Date.now() }] };
+      th.push(t);
+      await save(user.username, th.slice(-30));
+      return J(200, { thread: t });
+    }
+    if (b === "rate" && m === "POST") {
+      if (staff) return fail(403, "Chỉ học sinh đánh giá.");
+      const th = await load(user.username), t = th.find((x) => x.id === str(body.id, 30));
+      if (!t) return fail(404, "Câu hỏi này đã hết hạn.");
+      const n = Math.round(Number(body.stars));
+      if (!(n >= 1 && n <= 5)) return fail(400, "Số sao từ 1 đến 5.");
+      t.rate = n; t.rateAt = Date.now();
+      if (t.st !== "replied") t.st = n < 3 ? "wait" : "done";
+      await save(user.username, th);
+      return J(200, { thread: t });
+    }
+    if (b === "seen" && m === "PUT") {
+      if (staff) return J(200, { ok: true });
+      const th = await load(user.username);
+      let ch = false;
+      for (const t of th) if (t.st === "replied" && !t.seen) { t.seen = true; ch = true; }
+      if (ch) await save(user.username, th);
+      return J(200, { ok: true });
+    }
+    if (b === "all" && m === "GET") {
+      if (!staff) return fail(403, "Chỉ giáo viên/trợ giảng.");
+      const { blobs } = await QA.list();
+      const out = [];
+      for (const bl of blobs) {
+        const th = await load(bl.key);
+        if (!th.length) { await QA.delete(bl.key); continue; }
+        const u = await DB.users().get(bl.key, { type: "json" });
+        if (!u || !taOk(user, u.cls || "")) { if (user.role === "teacher" && !u) { /* học sinh đã xóa */ } continue; }
+        for (const t of th) out.push({ ...t, user: u.username, name: u.name, cls: u.cls || "" });
+      }
+      out.sort((x, y) => y.t - x.t);
+      return J(200, { threads: out });
+    }
+    if (b === "reply" && m === "POST") {
+      if (!staff) return fail(403, "Chỉ giáo viên/trợ giảng.");
+      const uid = str(body.user, 32), text = cleanMsg(body.text, 1500);
+      if (!isUser(uid) || text.length < 1) return fail(400, "Hãy nhập nội dung trả lời.");
+      const stu = await DB.users().get(uid, { type: "json" });
+      if (!stu || !taOk(user, stu.cls || "")) return fail(403, "Bạn không có quyền trả lời học sinh này.");
+      const th = await load(uid), t = th.find((x) => x.id === str(body.id, 30));
+      if (!t) return fail(404, "Câu hỏi này đã hết hạn (dữ liệu tự xóa sau 48 giờ).");
+      t.msgs.push({ r: "teacher", x: text, t: Date.now(), by: user.name || "Thầy" });
+      t.st = "replied"; t.seen = false; t.repAt = Date.now();
+      await save(uid, th);
+      return J(200, { thread: { ...t, user: stu.username, name: stu.name, cls: stu.cls || "" } });
+    }
+    return fail(404, "Không có thao tác này.");
   }
   if (a === "config" && m === "GET") return J(200, { config: cfgFor(await getCfg(), user) });
   if (a === "progress" && m === "PUT") {

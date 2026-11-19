@@ -85,7 +85,7 @@ function exSteps(){const r=[];
  r.push({pose:'cheer',t:'Nộp bài để mở phần tiếp theo ✅',s:'Làm xong một phần, bấm <b>Nộp bài</b> để xem đáp án và lời giải chi tiết từng câu. Nộp rồi mới sang được phần kế tiếp. Chúc bạn làm bài thật tốt!'});
  return r.filter(x=>!x.el||x.el())}
 function steps(){if(T&&T.ex)return exSteps();const r=[];
- r.push({pose:'wave',t:`Chào ${esc(name())}! Mình là <b>Baby Dragon</b> 🐲`,s:'Mình sẽ chỉ bạn cách học trên web này, chỉ mất một phút thôi!'});
+ r.push({pose:'wave',t:`Chào ${esc(name())}! Mình là <b>Baby Dragon</b> 🐲, trợ lý của <b>Mr. Phi Long</b>`,s:'Mình sẽ chỉ bạn cách học trên web này, chỉ mất một phút thôi!'});
  r.push({pose:'point',el:assignCard,t:'Đây là <b>Bài được giao</b> từ thầy/cô 📘',s:'Bấm "Làm bài" để vào đúng các bài thầy/cô giao. Thanh xanh cho biết bạn đã làm được bao nhiêu.'});
  r.push({pose:'point',el:()=>$1('#bell-btn'),t:'Đây là <b>chuông thông báo</b> 🔔',s:'Có bài mới được giao hoặc thầy/cô vừa nhận xét bản thu của bạn, chuông sẽ báo ở đây.'});
  r.push({pose:'point',el:()=>navLink('Bản thu'),t:'Nhận xét của thầy/cô nằm ở <b>Bản thu</b> 🎤',s:'Bạn xem điểm Phát âm, Từ vựng, Trả lời câu hỏi và lời nhận xét ở đây, hoặc ngay trong bài làm.'});
@@ -108,6 +108,7 @@ function start(){if(T||!ok())return;const ex=onEx();T={ex};const list=steps();T=
  T.rp=()=>place();T.kd=e=>{if(e.key==='Escape')finish()};addEventListener('resize',T.rp);addEventListener('scroll',T.rp,true);document.addEventListener('keydown',T.kd);
  root.addEventListener('click',e=>{const a=e.target.closest('[data-bd]');if(!a)return;const k=a.dataset.bd;if(k==='skip')finish();else if(k==='prev'){T.i--;draw()}else{if(T.i>=T.list.length-1)finish();else{T.i++;draw()}}});
  draw();clearHi();const h=document.querySelector('.bdw');h&&(h.style.display='none')}
+window.bdStart=function(){start()};
 function clearHi(){const h=$1('.bdhi');h&&h.remove()}
 function sync(){
  const old=$1('.bdw'),mini=$1('.bdmini');
@@ -116,9 +117,9 @@ function sync(){
  if(old)old.style.display='';
  if(hidden()){old&&old.remove();clearHi();if(!mini){const m=document.createElement('button');m.type='button';m.className='bdmini';m.setAttribute('aria-label','Hiện Baby Dragon');m.innerHTML=bdSVG('stand').replace('viewBox="0 0 220 226"','viewBox="40 8 140 120"');m.onclick=()=>{setHidden(false);sync()};document.body.appendChild(m)}return}
  mini&&mini.remove();
- if(!old){const w=document.createElement('div');w.className='bdw';w.setAttribute('role','button');w.tabIndex=0;w.setAttribute('aria-label','Baby Dragon – bấm để xem hướng dẫn');w.innerHTML=bdSVG('wave')+'<button type="button" class="bdx" aria-label="Ẩn Baby Dragon" title="Ẩn rồng">✕</button>';
-  w.addEventListener('click',e=>{if(e.target.closest('.bdx')){e.stopPropagation();setHidden(true);sync();return}const s=w.querySelector('svg');s.classList.remove('jump');void s.getBoundingClientRect();s.classList.add('jump');start()});
-  w.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();start()}});document.body.appendChild(w)}
+ if(!old){const w=document.createElement('div');w.className='bdw';w.setAttribute('role','button');w.tabIndex=0;w.setAttribute('aria-label','Baby Dragon – bấm để xem hướng dẫn hoặc hỏi đáp Q&A');w.innerHTML=bdSVG('wave')+'<button type="button" class="bdx" aria-label="Ẩn Baby Dragon" title="Ẩn rồng">✕</button>';
+  w.addEventListener('click',e=>{if(e.target.closest('.bdx')){e.stopPropagation();setHidden(true);sync();return}const s=w.querySelector('svg');s.classList.remove('jump');void s.getBoundingClientRect();s.classList.add('jump');if(typeof window.bdMenu==='function'&&!S.isT)window.bdMenu(w);else start()});
+  w.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(typeof window.bdMenu==='function')window.bdMenu(w);else start()}});document.body.appendChild(w)}
  if(onEx()&&!(S.prof.lv&&S.prof.lv[KEY2])&&!T&&window.__bdAuto2!==S.uid){window.__bdAuto2=S.uid;setTimeout(()=>{if(ok()&&!T&&onEx()&&!(S.prof.lv&&S.prof.lv[KEY2]))start()},1100)}
  const first=!(S.prof.lv&&S.prof.lv[KEY]);
  if(first&&(typeof route==='function'?route()==='home':true)&&!T&&window.__bdAuto!==S.uid){window.__bdAuto=S.uid;setTimeout(()=>{if(ok()&&!T&&!(S.prof.lv&&S.prof.lv[KEY]))start()},900)}

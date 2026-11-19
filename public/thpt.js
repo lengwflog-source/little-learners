@@ -32,7 +32,7 @@ const IC={
 window.xtb=function(){
   DK.forEach(d=>document.body.classList.toggle('x-dock-'+d,dock===d));
   const on=k=>TX.pen===k?' on':'';
-  return `<div class="xtb" role="toolbar" aria-label="Công cụ làm bài">
+  return `<div class="xtb" role="toolbar" aria-label="Công cụ làm bài"><button type="button" class="xb xback" data-xt="back" aria-label="Quay lại thư viện" title="Quay lại"><span aria-hidden="true" style="font-size:1.15rem">←</span></button>
    <div class="xgrp" title="Bút highlight"><button type="button" class="xb${TX.pen?' on':''}" data-xt="pen" aria-label="Bút highlight" aria-pressed="${!!TX.pen}">${IC.pen}<span class="xl">Bút</span></button>
     <button type="button" class="xdot dg${on('g')}" data-xt="hl-g" aria-label="Tô xanh lá" title="Tô màu xanh lá"></button>
     <button type="button" class="xdot dy${on('y')}" data-xt="hl-y" aria-label="Tô vàng" title="Tô màu vàng"></button>
@@ -54,12 +54,14 @@ function syncBar(){
   document.body.classList.toggle('x-tr',TX.tr);
   DK.forEach(d=>document.body.classList.toggle('x-dock-'+d,dock===d));
   document.body.classList.toggle('x-pen',!!TX.pen);
+  setBars();
 }
 
 document.addEventListener('click',e=>{
   const bt=e.target.closest&&e.target.closest('[data-xt]');
   if(bt){
     const k=bt.dataset.xt;
+    if(k==='back'){window.goBack();return}
     if(k==='pen'){TX.pen=TX.pen?null:'g'}
     else if(k==='hl-g'||k==='hl-y'||k==='hl-x'){const c=k.slice(3);TX.pen=TX.pen===c?null:c}
     else if(k==='dock'){dock=DK[(DK.indexOf(dock)+1)%DK.length];lss('ll-dock2',dock)}
@@ -394,21 +396,27 @@ window.examSummary=function(L,p){
 };
 
 /* ---------- nút quay lại (góc trái trên) ---------- */
-let navN=0;addEventListener('hashchange',()=>{navN++});
+window.goBack=function(){
+  const r=route();let to;
+  if(r.startsWith('ex-')||r.startsWith('lesson-'))to='lessons';
+  else to=S.isT?'t-home':'home';
+  if(r===to){scrollTo({top:0,behavior:'smooth'});return}
+  location.hash='#'+to;
+};
+function setBars(){
+  const root=document.documentElement,top=document.querySelector('.top');
+  const st=top&&getComputedStyle(top).position==='sticky';
+  root.style.setProperty('--bbt',((st?top.offsetHeight:0)+8)+'px');
+  const tb=document.querySelector('.xtb');root.style.setProperty('--tbh',(tb?tb.offsetHeight:0)+'px');
+}
+addEventListener('resize',setBars);
 function backBtn(){
   const old=document.getElementById('backbtn');if(old)old.remove();
   const r=route();
   if(typeof S==='undefined'||!S.user||!r||r==='home'||r==='t-home')return;
   const w=[...document.querySelectorAll('#app .wrap')].find(x=>!x.closest('.top,header,nav'));if(!w)return;
   const b=document.createElement('button');b.type='button';b.id='backbtn';b.className='backbtn';b.innerHTML='<span aria-hidden="true">←</span> Quay lại';
-  b.onclick=()=>{
-    if(navN>0&&history.length>1){history.back();return}
-    let to=S.isT?'t-home':'home';
-    const m=/^ex-(.+)$/.exec(r);
-    if(m&&typeof X!=='undefined'&&X&&X.L)to='lesson-'+X.L.id;
-    else if(/^lesson-/.test(r))to='lessons';
-    location.hash='#'+to;
-  };
+  b.onclick=()=>window.goBack();
   w.insertBefore(b,w.firstChild);
 }
 
@@ -419,6 +427,7 @@ window.render=function(){
   try{backBtn()}catch(e){}
   try{
     document.body.classList.toggle('x-tr',TX.tr&&route().startsWith('ex-'));
+    document.body.classList.toggle('x-ex',route().startsWith('ex-'));setBars();setTimeout(setBars,300);
     if(!route().startsWith('ex-')){if(tip)hideTip();TX.pen=TX.pen&&null}
     paintAll();
     if(bankOK()&&!VB.words&&!VB.loading)VB.load();
