@@ -277,3 +277,6 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 ## v33 (gộp v31 → v32c)
 - Thanh tiêu đề gọn một hàng ở mọi kích thước: menu dạng ô có mũi tên (không còn hiện trùng 2 menu).
 - Gồm toàn bộ thay đổi v31, v31b, v32, v32b, v32c (Q&A, giao diện điện thoại, từ vựng đề 05–30, sửa lỗi temperature).
+
+## v34
+- Android: chọn chữ bằng nhấn giữ + kéo handle giờ cũng tự dịch cả câu (theo dõi selectionchange, chờ ngừng kéo ~0,7 giây). iPhone giữ nguyên.
