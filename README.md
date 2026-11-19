@@ -236,3 +236,7 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Lời băng (Listening script) chỉ hiện sau khi học sinh nộp bài.
 - Ảnh trong bài to hơn, chạm vào để phóng to.
 - Header: nút chọn lớp nằm sát nút "Bài học"; trang đăng nhập bỏ dòng "tiếng Anh lớp 6".
+
+## v28
+- Baby Dragon chuyển sang góc trái dưới (bong bóng lời nhắc cũng đổi hướng).
+- Nút "← Quay lại" ở góc trái phía trên nội dung của mọi mục (quay về trang trước; nếu không có thì về mục cha).

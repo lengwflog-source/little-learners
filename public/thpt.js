@@ -384,10 +384,30 @@ window.examSummary=function(L,p){
   return`<div class="card exsum"><div class="es-n"><b>${done}/${L.exercises.length}</b><span>phần đã nộp</span></div><div class="es-n"><b>${c}/${tot}</b><span>câu đúng</span></div><div class="es-n"><b>${done===L.exercises.length?sc.toFixed(1).replace('.0',''):'—'}</b><span>điểm /10${done===L.exercises.length?'':' (khi nộp đủ)'}</span></div></div>`;
 };
 
+/* ---------- nút quay lại (góc trái trên) ---------- */
+let navN=0;addEventListener('hashchange',()=>{navN++});
+function backBtn(){
+  const old=document.getElementById('backbtn');if(old)old.remove();
+  const r=route();
+  if(typeof S==='undefined'||!S.user||!r||r==='home'||r==='t-home')return;
+  const w=[...document.querySelectorAll('#app .wrap')].find(x=>!x.closest('.top,header,nav'));if(!w)return;
+  const b=document.createElement('button');b.type='button';b.id='backbtn';b.className='backbtn';b.innerHTML='<span aria-hidden="true">←</span> Quay lại';
+  b.onclick=()=>{
+    if(navN>0&&history.length>1){history.back();return}
+    let to=S.isT?'t-home':'home';
+    const m=/^ex-(.+)$/.exec(r);
+    if(m&&typeof X!=='undefined'&&X&&X.L)to='lesson-'+X.L.id;
+    else if(/^lesson-/.test(r))to='lessons';
+    location.hash='#'+to;
+  };
+  w.insertBefore(b,w.firstChild);
+}
+
 /* ---------- gắn vào render ---------- */
 const _render=window.render;
 window.render=function(){
   _render.apply(this,arguments);
+  try{backBtn()}catch(e){}
   try{
     document.body.classList.toggle('x-tr',TX.tr&&route().startsWith('ex-'));
     if(!route().startsWith('ex-')){if(tip)hideTip();TX.pen=TX.pen&&null}

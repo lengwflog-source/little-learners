@@ -28,14 +28,14 @@
 @keyframes bdJump{0%,100%{transform:translateY(0) scale(1)}40%{transform:translateY(-22px) scale(1.05)}70%{transform:translateY(-4px) scale(.98)}}
 @media (prefers-reduced-motion:reduce){.bd *{animation:none!important}}
 /* ---- layout / tour ---- */
-.bdw{position:fixed;right:12px;bottom:12px;width:92px;z-index:45;cursor:pointer;filter:drop-shadow(0 6px 10px rgba(61,107,69,.25));background:none;border:0;padding:0}
+.bdw{position:fixed;left:12px;bottom:12px;width:92px;z-index:45;cursor:pointer;filter:drop-shadow(0 6px 10px rgba(61,107,69,.25));background:none;border:0;padding:0}
 .bdw:focus-visible{outline:3px solid var(--sun);border-radius:16px}
-.bdw .bdx{position:absolute;top:-6px;right:-4px;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:var(--surface);color:var(--muted);font:800 12px/1 var(--body);cursor:pointer;display:none}
+.bdw .bdx{position:absolute;top:-6px;left:-4px;right:auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:var(--surface);color:var(--muted);font:800 12px/1 var(--body);cursor:pointer;display:none}
 .bdw:hover .bdx,.bdw:focus-within .bdx{display:block}
-.bdmini{position:fixed;right:12px;bottom:12px;width:46px;height:46px;border-radius:50%;border:2px solid var(--leaf);background:var(--surface);z-index:45;cursor:pointer;padding:3px;box-shadow:var(--shadow)}
+.bdmini{position:fixed;left:12px;bottom:12px;width:46px;height:46px;border-radius:50%;border:2px solid var(--leaf);background:var(--surface);z-index:45;cursor:pointer;padding:3px;box-shadow:var(--shadow)}
 .bdmini svg{width:100%;height:100%}
-.bdhi{position:fixed;right:110px;bottom:46px;max-width:210px;background:var(--surface);color:var(--ink);border:2.5px solid var(--leaf);border-radius:16px;padding:8px 12px;font:700 .86rem/1.35 var(--body);z-index:45;box-shadow:var(--shadow);animation:bdPop .4s ease both}
-.bdhi:after{content:"";position:absolute;right:-12px;bottom:14px;border:7px solid transparent;border-left:11px solid var(--leaf)}
+.bdhi{position:fixed;left:110px;bottom:46px;max-width:210px;background:var(--surface);color:var(--ink);border:2.5px solid var(--leaf);border-radius:16px;padding:8px 12px;font:700 .86rem/1.35 var(--body);z-index:45;box-shadow:var(--shadow);animation:bdPop .4s ease both}
+.bdhi:after{content:"";position:absolute;left:-12px;bottom:14px;border:7px solid transparent;border-right:11px solid var(--leaf)}
 @keyframes bdPop{from{opacity:0;transform:translateY(6px) scale(.96)}}
 .bdspot{position:fixed;z-index:70;border-radius:18px;box-shadow:0 0 0 4px var(--sun),0 0 0 9999px rgba(24,48,32,.58);pointer-events:none;transition:all .35s ease}
 .bdshade{position:fixed;inset:0;z-index:69;background:rgba(24,48,32,.58)}
@@ -52,8 +52,8 @@
 .bdtour .bdk{background:var(--mint);color:var(--primary-deep)}
 @media(max-width:640px){.bdtour{left:8px;right:8px;width:auto;bottom:8px}.bdtour .bdg{width:96px}.bdw{width:76px;bottom:70px}.bdmini{bottom:70px}.bdhi{display:none}}
 
-.bdrm{position:fixed;right:110px;bottom:46px;width:240px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;background:var(--surface);color:var(--ink);border:2.5px solid var(--leaf);border-radius:16px;padding:10px 14px 12px;font:600 .86rem/1.35 var(--body);z-index:46;box-shadow:var(--shadow);animation:bdPop .4s ease both}
-.bdrm:after{content:"";position:absolute;right:-12px;bottom:14px;border:7px solid transparent;border-left:11px solid var(--leaf)}
+.bdrm{position:fixed;left:110px;bottom:46px;width:240px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;background:var(--surface);color:var(--ink);border:2.5px solid var(--leaf);border-radius:16px;padding:10px 14px 12px;font:600 .86rem/1.35 var(--body);z-index:46;box-shadow:var(--shadow);animation:bdPop .4s ease both}
+.bdrm:after{content:"";position:absolute;left:-12px;bottom:14px;border:7px solid transparent;border-right:11px solid var(--leaf)}
 .bdrm b{font-weight:800}.bdrm .btn{text-decoration:none}
 .bdrx{position:absolute;top:4px;right:6px;border:0;background:none;cursor:pointer;color:var(--muted);font-size:.9rem}
 @media(max-width:640px){.bdrm{left:10px;right:10px;width:auto;bottom:160px}.bdrm:after{display:none}}
