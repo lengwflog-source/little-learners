@@ -52,7 +52,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
 .brand b{font-family:var(--display);font-size:1.05rem;line-height:1.1;display:block;letter-spacing:.01em}
 .brand span{font-size:.7rem;color:var(--muted);display:block;line-height:1.1}
-.nav{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.nav{display:flex;gap:4px;flex:0 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none}
+.top .wrap>.gdd{flex:none}.top .who{margin-left:auto}
 .nav a{padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.92rem;white-space:nowrap;color:var(--muted)}
 .nav a:hover{background:var(--bg)}.nav a.on{background:var(--mint);color:var(--primary-deep)}
 .who{display:flex;align-items:center;gap:10px;margin-left:auto;font-size:.9rem}
@@ -120,7 +121,7 @@ section.blk{padding-block:34px}
 .passage{background:var(--butter);border-radius:16px;padding:14px 18px;margin-bottom:14px;max-height:340px;overflow:auto;font-size:.98rem}
 .boxw{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:12px;border:2px dashed var(--leaf);border-radius:16px}
 .boxw span{background:var(--mint);padding:3px 12px;border-radius:99px;font-weight:700}
-.pics{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}.pics img,.item img{max-height:190px;border-radius:12px;background:#fff;border:1px solid var(--line)}
+.pics{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}.pics img,.item img{max-height:320px;max-width:100%;cursor:zoom-in;border-radius:12px;background:#fff;border:1px solid var(--line)}
 .item{padding:14px 0;border-top:1px solid var(--line)}
 .item:first-child{border-top:0}
 .q{display:flex;gap:12px;align-items:flex-start}
@@ -185,7 +186,7 @@ body.g2{font-size:18px}
 body.g2 .instr{font-size:1.3rem}
 body.g2 .opt{padding:12px 16px;font-size:1.05rem;border-radius:16px}
 body.g2 .item{padding:20px 0}
-body.g2 .item img{max-height:160px}
+body.g2 .item img{max-height:260px}
 body.g2 .blank,body.g2 .txt,body.g2 .sel-in{font-size:1.1rem}
 body.g2 .btn{font-size:1.05rem;padding:13px 26px}
 body.g2 .num{background:var(--butter);width:32px;height:32px;font-size:.95rem}
@@ -426,7 +427,7 @@ const hdr=()=>{const r=route(),I=(h,t,on)=>`<a href="#${h}" class="${on?'on':''}
   const nav=S.isT?navT:
     I('home','Trang chủ',r==='home')+I('lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-'))+I('progress','Tiến độ',r==='progress')+(bankOK()?I('vocab','Kho từ vựng',r==='vocab'):'')+I('voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice');
   const nm=S.user?S.user.name:'';
-  return`<header class="top"><div class="wrap"><a class="brand" href="#${S.isT?'t-home':'home'}">${LOGO}<div><b>MR.LONG's ENGLISH HOUSE</b><span>${GS[S.grade]||GS[6]}</span></div></a>${S.ready&&S.user?`<nav class="nav ${S.isT?'nd':''}" aria-label="Menu chính">${nav}</nav><div class="who">${gradeSw()}${typeof bellHtml==='function'?bellHtml():''}<span class="avatar" aria-hidden="true">${esc((nm[0]||'?').toUpperCase())}</span><span>${esc(nm)}</span><a class="btn ghost sm" href="#profile">Tài khoản</a></div>`:''}</div></div></header>`};
+  return`<header class="top"><div class="wrap"><a class="brand" href="#${S.isT?'t-home':'home'}">${LOGO}<div><b>MR.LONG's ENGLISH HOUSE</b><span>${S.user?(GS[S.grade]||''):'Học · Luyện · Tiến bộ'}</span></div></a>${S.ready&&S.user?`<nav class="nav ${S.isT?'nd':''}" aria-label="Menu chính">${nav}</nav>${gradeSw()}<div class="who">${typeof bellHtml==='function'?bellHtml():''}<span class="avatar" aria-hidden="true">${esc((nm[0]||'?').toUpperCase())}</span><span>${esc(nm)}</span><a class="btn ghost sm" href="#profile">Tài khoản</a></div>`:''}</div></div></header>`};
 
 function render(){
   if(S.ph){document.body.classList.remove('g2');$('#app').innerHTML=parentView();return}
@@ -454,14 +455,14 @@ function render(){
     else body=S.isT?teacherHome():homeView();
   }
   const keepY=scrollY;
-  $('#app').innerHTML=hdr()+(S.fail&&S.ready?`<div class="wrap"><div class="banner err">${esc(S.fail)}</div></div>`:'')+(!S.isT&&r==='home'&&unseen()?`<div class="wrap"><div class="banner">💬 Thầy/cô vừa nhận xét ${unseen()} bản thu âm của bạn. <a href="#voice"><b>Xem ngay</b></a></div></div>`:'')+body+`<footer><div class="wrap">MR.LONG's ENGLISH HOUSE · ${S.grade===6?'Tiếng Anh 6 · Học kì 1':GS[S.grade]}<div class="ct"><a href="#" data-act="contact">📞 Liên hệ · Zalo / SĐT</a></div></div></footer>`;
+  $('#app').innerHTML=hdr()+(S.fail&&S.ready?`<div class="wrap"><div class="banner err">${esc(S.fail)}</div></div>`:'')+(!S.isT&&r==='home'&&unseen()?`<div class="wrap"><div class="banner">💬 Thầy/cô vừa nhận xét ${unseen()} bản thu âm của bạn. <a href="#voice"><b>Xem ngay</b></a></div></div>`:'')+body+`<footer><div class="wrap">MR.LONG's ENGLISH HOUSE${S.user?' · '+(S.grade===6?'Tiếng Anh 6 · Học kì 1':(GS[S.grade]||'')):''}<div class="ct"><a href="#" data-act="contact">📞 Liên hệ · Zalo / SĐT</a></div></div></footer>`;
   if(r.startsWith('ex-')===false)scrollTo(0,keepY);
 }
 
 /* ---------- views: student ---------- */
 function ringHtml(p,t){const v=Math.round((p||0)*100);return`<div class="ring" style="--p:${v}" aria-label="${v}%"><i>${t==null?v+'%':t}</i></div>`}
 function loginView(){const setup=S.needSetup;
-  return`<section class="hero"><div class="wrap"><div><div class="eyebrow">Học · Luyện · Tiến bộ</div><h1>Chào mừng đến<br><span>MR.LONG's ENGLISH HOUSE</span></h1><p class="lead">Làm bài tập tiếng Anh lớp 6, lưu tiến trình và theo dõi bài học cùng giáo viên.</p></div>${ART}</div>${WAVE}</section>
+  return`<section class="hero"><div class="wrap"><div><div class="eyebrow">Học · Luyện · Tiến bộ</div><h1>Chào mừng đến<br><span>MR.LONG's ENGLISH HOUSE</span></h1></div>${ART}</div>${WAVE}</section>
   <div class="wrap"><div class="card welcome">${setup?`<h3>Tạo tài khoản giáo viên</h3><p class="muted small" style="margin:6px 0 16px">Đây là lần chạy đầu tiên. Tài khoản này quản lý toàn bộ lớp học.</p>
   <div class="field"><label for="lg-name">Họ và tên</label><input id="lg-name" autocomplete="name" placeholder="Cô Lan"></div>
   <div class="field"><label for="lg-user">Tên đăng nhập</label><input id="lg-user" autocomplete="username" autocapitalize="off" placeholder="colan"></div>
@@ -597,7 +598,7 @@ function exView(rid){const[id,su]=String(rid).split('@');{const K=lockInfo();if(
   const{E,L}=X;
   if(L.seq&&!S.isT&&!X.checked){const k=L.exercises.indexOf(E),pv=L.exercises[k-1];if(pv&&!(S.prof&&S.prof.ex&&S.prof.ex[pv.id]))return`<div class="wrap" style="padding:40px 16px"><div class="card" style="max-width:560px;margin:auto;text-align:center"><div style="font-size:2.4rem">🔒</div><h3 style="margin:6px 0">Phần này chưa mở</h3><p class="muted">Bạn cần <b>nộp bài</b> phần trước (${esc(exTitle(pv))}) rồi mới làm được phần này.</p><a class="btn" href="#ex-${pv.id}">Về phần trước</a></div></div>`}
   const reveal=X.checked||X.show;const g=reveal?(X.g||gradeEx(E,X.ans)):null;const SP=!!(E.split&&E.passage);
-  return`<div class="wrap${SP?' xwide':''}" style="padding-block:24px 0"><div class="ex"><div class="crumb"><a href="#lessons">Bài học</a> / <a href="#lesson-${L.id}" data-tabx="ex">${esc(L.title)}</a> / ${esc(exTitle(E))}</div>${X.stu&&S.all[X.stu]?`<div class="stubanner">👀 Bài làm lần đầu của <b>${esc(S.all[X.stu].name||X.stu)}</b>${S.all[X.stu].cls?' · lớp '+esc(S.all[X.stu].cls):''}. Câu đúng màu xanh, câu sai màu đỏ. <a href="#t-student" data-sel="${esc(X.stu)}">← Về hồ sơ bé</a></div>`:''}
+  return`<div class="wrap${SP?' xwide':''}" style="padding-block:24px 0"><div class="ex${SP?' xs':''}"><div class="crumb"><a href="#lessons">Bài học</a> / <a href="#lesson-${L.id}" data-tabx="ex">${esc(L.title)}</a> / ${esc(exTitle(E))}</div>${X.stu&&S.all[X.stu]?`<div class="stubanner">👀 Bài làm lần đầu của <b>${esc(S.all[X.stu].name||X.stu)}</b>${S.all[X.stu].cls?' · lớp '+esc(S.all[X.stu].cls):''}. Câu đúng màu xanh, câu sai màu đỏ. <a href="#t-student" data-sel="${esc(X.stu)}">← Về hồ sơ bé</a></div>`:''}
   <h2>${esc(exTitle(E))}</h2>${X.practice?'<div class="lockn">✏️ <b>Chế độ luyện tập</b>: lần này không được tính điểm. Điểm chính thức là lần làm đầu tiên.</div>':''}<p class="instr">${E.instruction||''}</p>${typeof xtb==='function'?xtb():''}
   ${SP?`<div class="xtabs"><button type="button" data-xp="p" class="${X.pane==='q'?'':'on'}">📖 Bài đọc</button><button type="button" data-xp="q" class="${X.pane==='q'?'on':''}">✏️ Câu hỏi (${E.items.length})</button></div><div class="xsplit" data-pane="${X.pane==='q'?'q':'p'}"><div class="xpas" data-hr="p"><div class="passage">${E.passage}</div>${reveal&&E.tr?`<details class="xtr"><summary>📝 Bản dịch tiếng Việt</summary><div>${E.tr}</div></details>`:''}</div><div class="xqs">`:''}
   ${E.box?`<div class="boxw">${E.box.map(w=>`<span>${esc(w)}</span>`).join('')}</div>`:''}
@@ -628,7 +629,7 @@ function itemHtml(it,i,done,res){const a=X.ans[i];const ok=res?res.every(Boolean
   else if(it.t==='cat')body=it.words.map((w,k)=>`<div class="mrow"><span><b>${esc(w)}</b></span><select class="sel-in ${done&&res?(res[k]?'ok-in':'bad-in'):''}" data-i="${i}" data-k="${k}" ${done?'disabled':''}><option value="">–</option>${it.cats.map((c,j)=>`<option value="${j}" ${String((a||[])[k])===String(j)?'selected':''}>${esc(c)}</option>`).join('')}</select></div>`).join('');
   else if(it.t==='say')body=`<div class="srow"><button class="say big" data-say="${esc(it.w)}" aria-label="Nghe" title="Nghe">♪</button>${emH(it.em)}<b>${esc(it.w)}</b><span class="muted small">${esc(it.vi||'')}</span></div>`;
   else if(it.t==='card')body=`<div class="fcard" data-flip tabindex="0" role="button" aria-label="Lật thẻ"><div class="ff">${emH(it.em)}<small>Bấm để lật thẻ · ${esc(it.vi||'')}</small></div><div class="fb"><b>${esc(it.w)}</b>${it.s?`<p>${esc(it.s)}</p>`:''}<button class="say" data-say="${esc(it.s||it.w)}" aria-label="Nghe" title="Nghe">♪</button><small>Nói to lên nhé!</small></div></div>`;
-  else if(it.t==='note')body=`<div class="prose">${it.html}</div>`;
+  else if(it.t==='note')body=(!S.isT&&!X.checked&&/Xem lời băng|Listening script/i.test(it.html||''))?`<div class="prose lockscript">🔒 Lời băng (Listening script) sẽ hiện sau khi em nộp bài.</div>`:`<div class="prose">${it.html}</div>`;
   else if(it.t==='build'){const ch=Array.isArray(a)?a:[];const used=new Set(ch);body=`<div class="bans ${done&&res?(ok?'ok-in':'bad-in'):''}">${ch.length?ch.map(k=>`<button class="tok on" data-br="${i}:${k}" ${done?'disabled':''}>${esc(it.tokens[k])}</button>`).join(''):'<span class="muted small">Bấm vào các thẻ bên dưới để ghép…</span>'}</div><div class="bpool">${it.tokens.map((w,k)=>used.has(k)?'':`<button class="tok" data-bt="${i}:${k}" ${done?'disabled':''}>${esc(w)}</button>`).join('')}</div>`}
   else if(it.t==='ws'){const f=Array.isArray(a)?a:[];const hl=new Set();f.forEach(w=>{const p=it.pos[w];if(p)for(let n=0;n<w.length;n++)hl.add((p[0]+p[2]*n)+','+(p[1]+p[3]*n))});const sel=X.wsSel&&X.wsSel.i===i?X.wsSel:null;
     body=`<div class="wsw"><div class="wsg" style="--n:${it.grid[0].length}">${it.grid.map((row,r)=>[...row].map((ch,c)=>`<button class="wsc ${hl.has(r+','+c)?'hit':''} ${sel&&sel.r===r&&sel.c===c?'sel':''}" data-wc="${i}:${r}:${c}" ${done?'disabled':''} aria-label="${ch}">${ch}</button>`).join('')).join('')}</div><div class="wsl"><b class="small muted">Tìm ${it.words.length} từ (bấm chữ đầu, rồi bấm chữ cuối):</b>${it.words.map(w=>`<span class="wsw1 ${f.includes(w)?'got':''}">${emH(it.emo&&it.emo[w])}${esc(w)}</span>`).join('')}</div></div>`}

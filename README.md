@@ -228,3 +228,11 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - 7 đề mới (t12-04 … t12-10), mỗi đề 40 câu, 6 phần; thứ tự các dạng bài (điền từ, sắp xếp câu, chọn câu điền vào đoạn, đọc hiểu) được đảo khác nhau giữa các đề.
 - Đề tự soạn bám cấu trúc đề tham khảo THPT 2025–2026; có giải thích cả 4 đáp án.
 - File thay đổi: public/thpt12/lessons.json
+
+## v27
+- Lớp 12: thêm Đề 11–30 (20 đề, mỗi đề 40 câu, có lời giải; thứ tự các dạng bài được đảo).
+- Giao diện làm bài: khung đoạn văn rộng hơn; thanh công cụ ghim bên phải/trái/trên (nút 📌, nhớ lựa chọn); cỡ chữ áp dụng cho mọi khối lớp.
+- Dịch: bôi chọn một câu/vùng khi bật "Dịch từ" để dịch cả câu (API mới `GET /api/trs?s=`).
+- Lời băng (Listening script) chỉ hiện sau khi học sinh nộp bài.
+- Ảnh trong bài to hơn, chạm vào để phóng to.
+- Header: nút chọn lớp nằm sát nút "Bài học"; trang đăng nhập bỏ dòng "tiếng Anh lớp 6".

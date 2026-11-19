@@ -15,6 +15,8 @@ applyFs();
 
 /* ---------- trạng thái công cụ ---------- */
 const TX={tr:false,pen:null};
+const DK=['r','l','t'];let dock=lsg('ll-dock');if(!DK.includes(dock))dock='r';
+const DKN={r:'Phải',l:'Trái',t:'Trên'};
 const HL={};   // eid -> [{r,s,e,c}]
 const hlKey=eid=>'ll-hl-'+(typeof S!=='undefined'&&S.uid||'x')+'-'+eid;
 function hlGet(eid){if(!HL[eid]){let v=[];try{v=JSON.parse(lsg(hlKey(eid))||'[]')}catch(e){}HL[eid]=Array.isArray(v)?v:[]}return HL[eid]}
@@ -28,6 +30,7 @@ const IC={
  era:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l5 5-10.5 10.5H6L3 15.5z"/><path d="M8 10l6 6M10 20h10"/></svg>'
 };
 window.xtb=function(){
+  DK.forEach(d=>document.body.classList.toggle('x-dock-'+d,dock===d));
   const on=k=>TX.pen===k?' on':'';
   return `<div class="xtb" role="toolbar" aria-label="Công cụ làm bài">
    <div class="xgrp" title="Bút highlight"><button type="button" class="xb${TX.pen?' on':''}" data-xt="pen" aria-label="Bút highlight" aria-pressed="${!!TX.pen}">${IC.pen}<span class="xl">Bút</span></button>
@@ -36,10 +39,11 @@ window.xtb=function(){
     <button type="button" class="xb sm${on('x')}" data-xt="hl-x" aria-label="Xóa tô màu" title="Xóa tô màu">${IC.era}</button></div>
    <button type="button" class="xb${TX.tr?' on':''}" data-xt="tr" aria-pressed="${TX.tr}" title="Dịch từ">${IC.tr}<span class="xl">Dịch từ</span></button>
    <div class="xgrp" title="Cỡ chữ"><button type="button" class="xb sm" data-xt="fs-" aria-label="Giảm cỡ chữ"${fsi===0?' disabled':''}><b style="font-size:.85rem">A</b><i>▾</i></button><button type="button" class="xb sm" data-xt="fs+" aria-label="Tăng cỡ chữ"${fsi===FS.length-1?' disabled':''}><b style="font-size:1.15rem">A</b><i>▴</i></button></div>
+   <button type="button" class="xb" data-xt="dock" title="Ghim thanh công cụ: Phải → Trái → Trên"><span aria-hidden="true">📌</span><span class="xl">${DKN[dock]}</span></button>
    <span class="xhint" id="xhint">${hint()}</span></div>`;
 };
 function hint(){
-  if(TX.tr)return touch()?'Chạm vào một từ để xem nghĩa.':'Đưa chuột vào từ rồi bấm để xem nghĩa. Muốn chọn đáp án, hãy tắt “Dịch từ”.';
+  if(TX.tr)return touch()?'Chạm một từ để xem nghĩa; nhấn giữ và kéo để dịch cả câu.':'Bấm vào một từ để xem nghĩa, hoặc bôi chọn cả câu/vùng để dịch. Muốn chọn đáp án, hãy tắt “Dịch từ”.';
   if(TX.pen==='x')return 'Bôi chọn hoặc chạm vào chỗ đã tô để xóa.';
   if(TX.pen)return touch()?'Nhấn giữ rồi kéo để chọn chữ, chữ sẽ được tô màu.':'Kéo chuột chọn chữ trong bài đọc hoặc đề để tô màu.';
   return '';
@@ -48,6 +52,7 @@ function syncBar(){
   const b=document.querySelector('.xtb');if(!b)return;
   b.outerHTML=xtb();
   document.body.classList.toggle('x-tr',TX.tr);
+  DK.forEach(d=>document.body.classList.toggle('x-dock-'+d,dock===d));
   document.body.classList.toggle('x-pen',!!TX.pen);
 }
 
@@ -57,6 +62,7 @@ document.addEventListener('click',e=>{
     const k=bt.dataset.xt;
     if(k==='pen'){TX.pen=TX.pen?null:'g'}
     else if(k==='hl-g'||k==='hl-y'||k==='hl-x'){const c=k.slice(3);TX.pen=TX.pen===c?null:c}
+    else if(k==='dock'){dock=DK[(DK.indexOf(dock)+1)%DK.length];lss('ll-dock',dock)}
     else if(k==='tr'){TX.tr=!TX.tr;if(TX.tr&&TX.pen)TX.pen=null;if(!TX.tr)hideTip()}
     else if(k==='fs-'||k==='fs+'){fsi=Math.max(0,Math.min(FS.length-1,fsi+(k==='fs+'?1:-1)));lss('ll-fs',String(fsi));applyFs()}
     if(k!=='tr'&&TX.pen&&TX.tr){TX.tr=false;hideTip()}
@@ -226,6 +232,7 @@ document.addEventListener('click',e=>{
     return;
   }
   if(t.closest&&t.closest('.xtb'))return;
+  if(selPhrase()){e.preventDefault();e.stopPropagation();return}
   const hit=wordAt(e.clientX,e.clientY);
   if(!hit){hideTip();return}
   e.preventDefault();e.stopPropagation();
@@ -245,6 +252,46 @@ document.addEventListener('mousemove',e=>{
   })
 });
 addEventListener('scroll',()=>{if(tip&&tipFor&&innerWidth>700)hideTip()},{passive:true,capture:true});
+
+
+/* ---------- dịch cả câu / vùng bôi chọn ---------- */
+function selPhrase(){
+  const sel=getSelection();if(!sel||sel.isCollapsed||!sel.rangeCount)return null;
+  const rg=sel.getRangeAt(0);const n=rg.commonAncestorContainer;const el=n.nodeType===1?n:n.parentElement;
+  if(!el||!el.closest||!el.closest('.ex')||el.closest('.xtb,.xtip,.actbar,input,textarea,button'))return null;
+  const t=sel.toString().replace(/\s+/g,' ').trim();
+  if(t.length<3||!/[A-Za-z]/.test(t)||!/\s/.test(t))return null;
+  return{t:t.slice(0,600),rect:rg.getBoundingClientRect()};
+}
+const TSC={};
+function showPhrase(p){
+  if(!tip){tip=document.createElement('div');tip.className='xtip';tip.setAttribute('role','dialog');tip.setAttribute('aria-label','Dịch câu');document.body.appendChild(tip)}
+  const mine=tipFor={w:'',phrase:true,rect:p.rect};
+  const draw=(vi,err)=>{if(tipFor!==mine||!tip)return;tip.innerHTML='<div class="xth"><b class="xw">Dịch câu</b><span class="sp"></span><button type="button" class="xb sm" data-xk="close" aria-label="Đóng">✕</button></div><div class="xmain" style="font-weight:600;color:var(--muted);margin-bottom:6px">'+E_(p.t)+'</div>'+(err?'<div class="xerr">'+E_(err)+'</div>':'<div class="xmain">'+E_(vi||'')+'</div>');placeTip(p.rect)};
+  if(TSC[p.t]){draw(TSC[p.t]);return}
+  tip.innerHTML='<div class="xl-load"><i></i><i></i><i></i> Đang dịch…</div>';placeTip(p.rect);
+  if(typeof S!=='undefined'&&S.local){draw('', 'Đang chạy thử không có máy chủ nên chưa dịch được.');return}
+  API.call('GET','trs?s='+encodeURIComponent(p.t)).then(r=>{TSC[p.t]=r.vi;draw(r.vi)}).catch(e=>draw('',e.message||'Không dịch được.'));
+}
+function onPhraseEnd(e){
+  if(!TX.tr)return;
+  if(e.target.closest&&e.target.closest('.xtip,.xtb'))return;
+  setTimeout(()=>{const p=selPhrase();if(p)showPhrase(p)},60);
+}
+document.addEventListener('mouseup',onPhraseEnd);
+document.addEventListener('touchend',onPhraseEnd);
+
+/* ---------- phóng to ảnh ---------- */
+document.addEventListener('click',e=>{
+  const im=e.target;
+  if(im&&im.tagName==='IMG'&&im.closest&&im.closest('.ex')&&!im.classList.contains('vp')&&!im.closest('.xtip')){
+    if(TX.tr||TX.pen)return;
+    const o=document.createElement('div');o.id='imgov';o.innerHTML='<img alt=""><button type="button" aria-label="Đóng">✕</button>';
+    o.querySelector('img').src=im.currentSrc||im.src;o.addEventListener('click',()=>o.remove());document.body.appendChild(o);
+    e.preventDefault();e.stopPropagation();
+  }
+},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const o=document.getElementById('imgov');if(o)o.remove()}});
 
 /* ---------- Kho từ vựng cá nhân ---------- */
 const VB={words:null,loading:null,saveT:0,

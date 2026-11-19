@@ -322,6 +322,28 @@ async function route(req) {
     if (!r) return fail(404, "Chưa tra được từ này. Thử lại sau nhé.");
     return J(200, r);
   }
+  if (a === "trs" && m === "GET") {
+    const s = String(url.searchParams.get("s") || "").replace(/\s+/g, " ").trim().slice(0, 600);
+    if (s.length < 2 || !/[A-Za-z]/.test(s)) return fail(400, "Đoạn cần dịch không hợp lệ.");
+    const ck = "S:" + s.toLowerCase();
+    if (TRC.has(ck)) return J(200, TRC.get(ck));
+    let vi = "";
+    try {
+      const j = await getJ("https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=" + encodeURIComponent(s), 7000);
+      vi = (Array.isArray(j) && Array.isArray(j[0]) ? j[0] : []).map((x) => (x && x[0]) || "").join("").trim();
+    } catch {}
+    if (!vi) {
+      try {
+        const j = await getJ("https://api.mymemory.translated.net/get?langpair=en|vi&q=" + encodeURIComponent(s), 7000);
+        vi = String((j.responseData || {}).translatedText || "").trim();
+      } catch {}
+    }
+    if (!vi) return fail(404, "Chưa dịch được đoạn này. Thử lại sau nhé.");
+    const out = { s, vi };
+    if (TRC.size > 3000) TRC.clear();
+    TRC.set(ck, out);
+    return J(200, out);
+  }
   if (a === "vocab" && m === "GET") {
     if (staff) return J(200, { words: [] });
     const v = (await DB.vocab().get(user.username, { type: "json" })) || { words: [] };
