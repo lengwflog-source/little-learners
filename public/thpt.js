@@ -15,7 +15,7 @@ applyFs();
 
 /* ---------- trạng thái công cụ ---------- */
 const TX={tr:false,pen:null};
-const DK=['r','l','t'];let dock=lsg('ll-dock');if(!DK.includes(dock))dock='r';
+const DK=['l','r','t'];let dock=lsg('ll-dock2');if(!DK.includes(dock))dock='l';
 const DKN={r:'Phải',l:'Trái',t:'Trên'};
 const HL={};   // eid -> [{r,s,e,c}]
 const hlKey=eid=>'ll-hl-'+(typeof S!=='undefined'&&S.uid||'x')+'-'+eid;
@@ -39,7 +39,7 @@ window.xtb=function(){
     <button type="button" class="xb sm${on('x')}" data-xt="hl-x" aria-label="Xóa tô màu" title="Xóa tô màu">${IC.era}</button></div>
    <button type="button" class="xb${TX.tr?' on':''}" data-xt="tr" aria-pressed="${TX.tr}" title="Dịch từ">${IC.tr}<span class="xl">Dịch từ</span></button>
    <div class="xgrp" title="Cỡ chữ"><button type="button" class="xb sm" data-xt="fs-" aria-label="Giảm cỡ chữ"${fsi===0?' disabled':''}><b style="font-size:.85rem">A</b><i>▾</i></button><button type="button" class="xb sm" data-xt="fs+" aria-label="Tăng cỡ chữ"${fsi===FS.length-1?' disabled':''}><b style="font-size:1.15rem">A</b><i>▴</i></button></div>
-   <button type="button" class="xb" data-xt="dock" title="Ghim thanh công cụ: Phải → Trái → Trên"><span aria-hidden="true">📌</span><span class="xl">${DKN[dock]}</span></button>
+   <button type="button" class="xb" data-xt="dock" title="Ghim thanh công cụ: Trái → Phải → Trên"><span aria-hidden="true">📌</span><span class="xl">${DKN[dock]}</span></button>
    <span class="xhint" id="xhint">${hint()}</span></div>`;
 };
 function hint(){
@@ -62,7 +62,7 @@ document.addEventListener('click',e=>{
     const k=bt.dataset.xt;
     if(k==='pen'){TX.pen=TX.pen?null:'g'}
     else if(k==='hl-g'||k==='hl-y'||k==='hl-x'){const c=k.slice(3);TX.pen=TX.pen===c?null:c}
-    else if(k==='dock'){dock=DK[(DK.indexOf(dock)+1)%DK.length];lss('ll-dock',dock)}
+    else if(k==='dock'){dock=DK[(DK.indexOf(dock)+1)%DK.length];lss('ll-dock2',dock)}
     else if(k==='tr'){TX.tr=!TX.tr;if(TX.tr&&TX.pen)TX.pen=null;if(!TX.tr)hideTip()}
     else if(k==='fs-'||k==='fs+'){fsi=Math.max(0,Math.min(FS.length-1,fsi+(k==='fs+'?1:-1)));lss('ll-fs',String(fsi));applyFs()}
     if(k!=='tr'&&TX.pen&&TX.tr){TX.tr=false;hideTip()}
@@ -282,9 +282,18 @@ document.addEventListener('mouseup',onPhraseEnd);
 document.addEventListener('touchend',onPhraseEnd);
 
 /* ---------- phóng to ảnh ---------- */
+function zoomable(im){
+  if(!im||im.tagName!=='IMG')return false;
+  const path=e_path(im);
+  if(path.some(n=>n.id==='imgov'||(n.classList&&(n.classList.contains('xtip')||n.classList.contains('xtb')||n.classList.contains('top')||n.classList.contains('mascot')||n.classList.contains('nozoom')))||(n.tagName&&/^(HEADER|NAV|BUTTON)$/.test(n.tagName))))return false;
+  if(/zalo-qr|mascot|dragon|logo/i.test(im.getAttribute('src')||''))return false;
+  const r=im.getBoundingClientRect();if(r.width<36||r.height<36)return false;
+  return true;
+}
+function e_path(n){const p=[];while(n){p.push(n);n=n.parentNode||n.host}return p}
 document.addEventListener('click',e=>{
-  const im=e.target;
-  if(im&&im.tagName==='IMG'&&!im.classList.contains('vp')&&e.composedPath().some(n=>n.classList&&n.classList.contains('ex'))&&!e.composedPath().some(n=>n.classList&&n.classList.contains('xtip'))){
+  const im=e.composedPath?e.composedPath()[0]:e.target;
+  if(zoomable(im)){
     if(TX.tr||TX.pen)return;
     const o=document.createElement('div');o.id='imgov';o.innerHTML='<img alt=""><button type="button" aria-label="Đóng">✕</button>';
     o.querySelector('img').src=im.currentSrc||im.src;o.addEventListener('click',()=>o.remove());document.body.appendChild(o);

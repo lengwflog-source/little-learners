@@ -243,3 +243,12 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 
 ## v28b
 - Sửa: bấm vào ảnh trong bài nối (match) giờ phóng to đúng (trước đây bài nối vẽ lại làm mất sự kiện). Bấm ảnh chỉ để phóng to, không chọn ô.
+
+## v29
+- Đoạn đục lỗ (cloze) của đề 04–30 lớp 12 được kéo dài (~150–190 từ, 3–4 đoạn), văn phong tin/thông báo như tài liệu "GIẢI ĐỀ BUỔI 1" (nội dung tự soạn, không chép lại).
+- Chỉ cần ghi đè `public/thpt12/lessons.json` (chọn Merge).
+
+## v30
+- Phóng to ảnh: chạm/bấm vào bất kỳ ảnh nội dung nào (mọi lớp, kể cả lớp thêm sau này) đều phóng to; chỉ bỏ qua logo, rồng, mã QR, thanh công cụ.
+- Thanh công cụ highlight mặc định ở bên trái (lưu lựa chọn mới; vẫn đổi được Trái/Phải/Trên bằng nút 📌).
+- Đoạn đục lỗ đề 03 cũng được kéo dài (đề 01–02 là đề thật nên giữ nguyên).
