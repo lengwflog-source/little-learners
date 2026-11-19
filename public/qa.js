@@ -146,7 +146,7 @@ window.qaTeacherView=function(){
   if(!QT.loaded&&!QT.busy){QT.busy=true;qaTLoad().finally(()=>{QT.busy=false})}
   return `<div class="wrap" style="padding-block:28px 60px"><div class="eyebrow">Giải đáp</div><h1 style="margin:.1em 0 .2em">Hỏi – đáp của học sinh</h1>
   <p class="muted" style="max-width:62ch">Học sinh hỏi Baby Dragon rồi tự đánh giá mức hiểu từ 1 đến 5 sao. Dưới 3 sao thì câu hỏi hiện ở mục <b>Cần trả lời</b> để thầy/cô giải đáp ngay trong khung chat. Từ 3 sao trở lên không cần trả lời nhưng vẫn lưu ở <b>Tất cả</b> để xem lại. Toàn bộ dữ liệu tự xóa sau 48 giờ.</p>
-  <div class="seg" style="margin:14px 0"><button type="button" class="${QT.f==='wait'?'on':''}" data-qf="wait">Cần trả lời (<span id="qa-cw">${qaWait()}</span>)</button><button type="button" class="${QT.f==='all'?'on':''}" data-qf="all">Tất cả (<span id="qa-ca">${QT.list.length}</span>)</button><button type="button" class="btn ghost sm" data-qa="reload" style="margin-left:8px">↻ Tải lại</button></div>
+  <div class="seg" style="margin:14px 0"><button type="button" class="${QT.f==='wait'?'on':''}" data-qf="wait">Cần trả lời (<span id="qa-cw">${qaWait()}</span>)</button><button type="button" class="${QT.f==='all'?'on':''}" data-qf="all">Tất cả (<span id="qa-ca">${QT.list.length}</span>)</button><button type="button" class="btn ghost sm" data-qa="reload" style="margin-left:8px">↻ Tải lại</button><button type="button" class="btn ghost sm" data-qa="health">🔧 Kiểm tra AI</button></div>
   <div id="qa-list" class="qalist">${QT.loaded?'':'<div class="sk"></div>'}</div></div>`;
 };
 
@@ -160,6 +160,7 @@ document.addEventListener('click',e=>{
   if(a==='rmx'){const h=t.closest('.bdqa');h&&h.remove();return}
   if(a==='rate'){qaRate(t.dataset.id,+t.dataset.n);return}
   if(a==='reload'){qaTLoad();return}
+  if(a==='health'){t.disabled=true;toast('Đang kiểm tra AI…');API.call('GET','qa/health').then(r=>{toast((r.ok?'✅ ':'⚠️ ')+r.msg)}).catch(e=>toast(e.message||'Không kiểm tra được.')).finally(()=>{t.disabled=false});return}
   if(a==='send'){
     const id=t.dataset.id,box=document.querySelector('#qa-list textarea[data-qd="'+id+'"]'),text=box?box.value.trim():'';
     if(!text){toast('Hãy nhập nội dung trả lời.');return}

@@ -403,6 +403,12 @@ async function route(req) {
       if (ch) await save(user.username, th);
       return J(200, { ok: true });
     }
+    if (b === "health" && m === "GET") {
+      if (!staff) return fail(403, "Chỉ giáo viên/trợ giảng.");
+      if (!process.env.ANTHROPIC_API_KEY) return J(200, { ok: false, hasKey: false, msg: "Chưa có ANTHROPIC_API_KEY trên Netlify (hoặc chưa deploy lại sau khi thêm)." });
+      try { const r = await askClaudeQA("Say hello in one short Vietnamese sentence.", ""); return J(200, { ok: true, hasKey: true, model: r.model, msg: "AI hoạt động bình thường." }); }
+      catch (e) { return J(200, { ok: false, hasKey: true, msg: "Có khóa nhưng gọi AI lỗi: " + String(e.message).slice(0, 200) + " (kiểm tra khóa còn hiệu lực và tài khoản API còn tiền)." }); }
+    }
     if (b === "all" && m === "GET") {
       if (!staff) return fail(403, "Chỉ giáo viên/trợ giảng.");
       const { blobs } = await QA.list();

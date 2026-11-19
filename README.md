@@ -263,3 +263,7 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Sửa: menu "Tổng quan" của giáo viên bị ẩn trên điện thoại.
 - Sửa: xoay ngang điện thoại — trang cuộn bình thường, bài đọc bên trái dính khi cuộn, câu hỏi bên phải; không còn chồng chữ.
 - Chia đôi dọc (bài đọc trên / câu hỏi dưới): cuộn hết khung thì trang cuộn tiếp.
+
+## v32
+- Lớp 12, đề 05–30: nâng từ vựng trong bài đọc/đoạn đục lỗ lên dải A2→C1 (≈10 chỗ mỗi đề: numerous, crucial, tackle, owing to, nevertheless…). Không đụng tới từ được hỏi trong câu hỏi/đáp án/lời giải.
+- Mục Giải đáp (giáo viên): thêm nút "Kiểm tra AI" để thử khóa ANTHROPIC_API_KEY.
