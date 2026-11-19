@@ -295,3 +295,7 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Hướng dẫn Baby Dragon cập nhật theo giao diện mới.
 - IELTS: Q&A có thêm tab 🎤 Luyện nói (nhập câu hỏi, nói, AI chấm band; giới hạn 3 lượt/ngày, đổi bằng biến QA_SPEAK_LIMIT; dữ liệu tự xóa sau 48 giờ, GV xem được trong mục Giải đáp).
 - Giáo viên/trợ giảng: Baby Dragon góc trái dưới, bấm để chuyển nhanh đến Tổng quan, Học sinh, Điểm danh, Giao bài, Bản thu âm, Giải đáp, Chấm IELTS, Trợ giảng, Bài học (tdragon.js/css).
+
+## v37
+- Bấm vào học viên ở 'Hoạt động gần đây' để mở hồ sơ; bấm học viên ở chuông tự chuyển sang đúng lớp của bé.
+- Baby Dragon: sửa bước giới thiệu nút Quay lại (máy tính), bỏ bước nút ghim thanh công cụ trên điện thoại; nhắc bài chưa làm hiện ngay ở trang chủ/Bài học (không phụ thuộc chế độ khóa).
