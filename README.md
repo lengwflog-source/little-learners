@@ -299,3 +299,10 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 ## v37
 - Bấm vào học viên ở 'Hoạt động gần đây' để mở hồ sơ; bấm học viên ở chuông tự chuyển sang đúng lớp của bé.
 - Baby Dragon: sửa bước giới thiệu nút Quay lại (máy tính), bỏ bước nút ghim thanh công cụ trên điện thoại; nhắc bài chưa làm hiện ngay ở trang chủ/Bài học (không phụ thuộc chế độ khóa).
+
+## v38
+- Mục Flashcard (menu ☰ → Flashcard) cho học sinh mọi khối có từ vựng: thẻ lật, 6 kiểu game (ABCD, nhìn Anh chọn Việt, nhìn hình chọn nghĩa, nhìn chữ ghi nghĩa, nhìn hình ghi nghĩa, nghe chọn từ) + chế độ Trộn.
+- Mỗi từ có nút "Đã thuộc" và "Đặt câu được" (lưu theo học sinh, giáo viên thấy thống kê ở hồ sơ bé).
+- Hình: ảnh có sẵn trong bài hoặc emoji (public/emoji.json, ~1600 từ); từ chưa có hình hiện chữ cái.
+- Baby Dragon giới thiệu mục Flashcard.
+- File mới: public/flash.js, public/flash.css, public/emoji.json; api.mjs lưu thêm trường fc.

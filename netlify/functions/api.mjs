@@ -163,6 +163,9 @@ function cleanProgress(b, old) {
   }
   const lv = b && typeof b.lv === "object" && b.lv ? b.lv : {};
   for (const id of Object.keys(lv).slice(0, 100)) if (/^[\w.-]{1,40}$/.test(id)) out.lv[id] = Number(lv[id]) || Date.now();
+  /* flashcard từ vựng: key = từ viết thường, giá trị bit 1 = đã thuộc, 2 = đặt câu được */
+  out.fc = {};
+  if (b && b.fc && typeof b.fc === "object") for (const k of Object.keys(b.fc).slice(0, 3000)) { const v = Number(b.fc[k]) & 3; if (v && /^[a-z0-9][a-z0-9 '’.,&-]{0,49}$/.test(k)) out.fc[k] = v; }
   out.days = (Array.isArray(b && b.days) ? b.days : []).filter(isDate).slice(-120);
   return out;
 }
