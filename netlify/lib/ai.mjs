@@ -134,3 +134,41 @@ export async function askClaudeQA(question, ctx) {
   }
   throw new Error(lastErr || "UNKNOWN");
 }
+
+/* ---------- IELTS: luyện nói tự do trong Q&A (chấm nhanh từ bản chữ nhận dạng giọng nói) ---------- */
+export async function gradeSpeakPractice(question, text, secs) {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) throw new Error("NO_KEY");
+  const models = [...new Set([process.env.AI_QA_MODEL, process.env.AI_MODEL, "claude-haiku-5-5", "claude-sonnet-5-5"].filter(Boolean))];
+  const system = `You are a careful, encouraging IELTS Speaking examiner for Vietnamese learners at about band 3.0-5.5. Reply with ONE JSON object only, no markdown. Write explanations in Vietnamese; keep quoted English exactly as in the transcript.\n\n${RUBRIC_S}`;
+  const wc = (text.match(/[A-Za-z0-9'’-]+/g) || []).length;
+  const user = `The student practised this speaking question on their own: "${question}"\nThey spoke about ${secs || "?"} seconds (${wc} words, transcribed by automatic speech recognition; do not penalise obvious recognition errors).\nTRANSCRIPT:\n"""\n${text}\n"""\nReturn JSON exactly: {"bands":{"FC":n,"LR":n,"GRA":n,"PR":n},"summary":"3-4 câu nhận xét tiếng Việt: điểm mạnh và việc cần cải thiện","corrections":[{"quote":"exact substring of transcript","fix":"better wording","note":"giải thích ngắn tiếng Việt"}],"model":"a short model answer at about band 6.0 (60-90 words)"}\nAt most 5 corrections; each quote must occur verbatim in the transcript.`;
+  let lastErr = "";
+  for (const model of models) {
+    let r;
+    try {
+      r = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
+        body: JSON.stringify({ model, max_tokens: 1200, system, messages: [{ role: "user", content: user }] }),
+        signal: AbortSignal.timeout(22000),
+      });
+    } catch (e) { lastErr = "NET " + String(e.message).slice(0, 80); continue; }
+    if (!r.ok) {
+      let m = ""; try { m = (await r.json()).error.message; } catch {}
+      lastErr = "API " + r.status + (m ? ": " + m : "");
+      if (r.status === 401 || r.status === 403 || r.status === 429) break;
+      continue;
+    }
+    try {
+      const j = await r.json();
+      const raw = parseJson((j.content || []).map((c) => c.text || "").join(""));
+      const bands = {}; const v = [];
+      for (const k of CRIT.sp) { bands[k] = clampBand(raw.bands && raw.bands[k]); v.push(bands[k]); }
+      const fix = (Array.isArray(raw.corrections) ? raw.corrections : []).filter((c) => c && typeof c.quote === "string" && c.quote && text.includes(c.quote)).slice(0, 5)
+        .map((c) => ({ quote: c.quote.slice(0, 140), fix: String(c.fix || "").slice(0, 200), note: String(c.note || "").slice(0, 250) }));
+      return { bands, overall: round05(v.reduce((a, b) => a + b, 0) / v.length), summary: String(raw.summary || "").slice(0, 900), corrections: fix, model: String(raw.model || "").slice(0, 900) };
+    } catch (e) { lastErr = "PARSE " + String(e.message).slice(0, 60); }
+  }
+  throw new Error(lastErr || "UNKNOWN");
+}

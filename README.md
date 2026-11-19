@@ -280,3 +280,18 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 
 ## v34
 - Android: chọn chữ bằng nhấn giữ + kéo handle giờ cũng tự dịch cả câu (theo dõi selectionchange, chờ ngừng kéo ~0,7 giây). iPhone giữ nguyên.
+
+## v35
+- Lớp 6, 7, 8, 9: chèn lại hình minh họa vào đúng bài (Getting Started và các bài khác), hình được thu nhỏ (bấm vào vẫn phóng to). Hình đặt ngay cạnh từng câu khi mỗi câu có hình riêng.
+- Sửa các câu bị dính đề bài của bài kế tiếp vào đáp án (ví dụ "c. Write the correct word.", "B. Choose the correct answer").
+- Thêm các bài hình trước đây bị bỏ: Look at the pictures, Dictionary entry, bảng hình có từ.
+- Bổ sung đáp án cho các câu hình/biển báo bị thiếu đáp án trong file gốc.
+
+## v36
+- Báo điểm theo phần: GV tick phần đã xong + nhập điểm, hệ thống tự tính % / điểm trung bình.
+- Listen and repeat / Speaking (khối 2-3-4-5): học sinh đọc bằng giọng nói, AI chấm phát âm 50–100%, mỗi mục chỉ 1 lần, không lưu file âm thanh, kết quả tự xóa sau 3 ngày (cần Chrome Android / Safari iPhone + cho phép micro).
+- Khối 6-7-8-9: rà lại đáp án; tự soạn đáp án cho câu chưa có (âm, trọng âm, đuôi -s/-ed, trắc nghiệm); câu mơ hồ đã BỎ HẲN khỏi bài.
+- Giao bài quá hạn tự ẩn khỏi trang Giao bài của GV.
+- Hướng dẫn Baby Dragon cập nhật theo giao diện mới.
+- IELTS: Q&A có thêm tab 🎤 Luyện nói (nhập câu hỏi, nói, AI chấm band; giới hạn 3 lượt/ngày, đổi bằng biến QA_SPEAK_LIMIT; dữ liệu tự xóa sau 48 giờ, GV xem được trong mục Giải đáp).
+- Giáo viên/trợ giảng: Baby Dragon góc trái dưới, bấm để chuyển nhanh đến Tổng quan, Học sinh, Điểm danh, Giao bài, Bản thu âm, Giải đáp, Chấm IELTS, Trợ giảng, Bài học (tdragon.js/css).

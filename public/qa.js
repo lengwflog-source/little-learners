@@ -4,6 +4,8 @@
 /* Q&A chỉ mở cho Lớp 10, 11, 12 và IELTS (không áp dụng cho Lớp 2–9) */
 const qaOn=()=>{try{return !S.isT&&[9,10,11,12].includes(Number(S.grade))}catch(e){return false}};
 const QA={th:[],loaded:false,open:false,busy:false,tick:0,rmFor:'',rmT:0};
+const qaIelts=()=>{try{return Number(S.grade)===9}catch(e){return false}};
+const QV={lim:3,rec:null,text:'',interim:'',on:false,t0:0,secs:0,busy:false,tm:0};
 const QT={list:[],loaded:false,f:'wait',draft:{},busy:false};
 const qaCtx=()=>{try{return typeof X!=='undefined'&&X&&X.E&&route().startsWith('ex-')?((X.L?X.L.title+' · ':'')+exTitle(X.E)):''}catch(e){return''}};
 const qaStars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
@@ -47,6 +49,12 @@ function qaOpen(){
   p=document.createElement('div');p.id='qap';p.className='qap';p.setAttribute('role','dialog');p.setAttribute('aria-label','Hỏi đáp với Baby Dragon');
   p.innerHTML=`<div class="qah"><span class="qadg">${typeof bdSVG==='function'?bdSVG('wave').replace('viewBox="0 0 220 226"','viewBox="40 8 140 120"'):'🐲'}</span><div><b>Q&amp;A · Baby Dragon</b><small>Trợ lý của Mr. Phi Long</small></div><span class="sp"></span><button type="button" class="qax" data-qa="close" aria-label="Đóng">✕</button></div>
   <div class="qal" id="qal" aria-live="polite"></div>
+  ${qaIelts()?`<div class="qamode" role="tablist"><button type="button" class="on" data-qa="mode" data-m="txt">💬 Hỏi chữ</button><button type="button" data-qa="mode" data-m="voice">🎤 Luyện nói</button></div>
+  <div class="qavo" id="qavo" hidden><textarea id="qavq" rows="2" maxlength="300" placeholder="Nhập câu hỏi speaking bạn muốn luyện. Ví dụ: Describe a place you like to visit."></textarea>
+  <div class="qavr"><button type="button" class="btn ghost" id="qavm" data-qa="mic">🎤 Bắt đầu nói</button><span class="qavt" id="qavt"></span></div>
+  <div class="qavx" id="qavx" aria-live="polite"></div>
+  <button type="button" class="btn" id="qavs" data-qa="vsend" disabled>Gửi chấm điểm</button>
+  <small class="muted">Chỉ gửi bản chữ nhận dạng được, không lưu file ghi âm. Mỗi ngày tối đa ${QV.lim} lượt. Dùng Chrome (Android) hoặc Safari (iPhone).</small></div>`:''}
   <form class="qaf" id="qaf"><textarea id="qaq" rows="2" maxlength="500" placeholder="Bạn muốn hỏi gì? Ví dụ: Khi nào dùng thì hiện tại hoàn thành?"></textarea><button type="submit" class="btn" id="qas">Gửi</button></form>
   <div class="qan">Tin nhắn trong Q&amp;A sẽ tự xóa sau 48 giờ.</div>`;
   document.body.appendChild(p);
@@ -59,7 +67,7 @@ function qaOpen(){
   setTimeout(()=>{const q=document.getElementById('qaq');q&&q.focus({preventScroll:true})},120);
   clearInterval(QA.tick);QA.tick=setInterval(()=>{if(QA.open&&!document.hidden&&QA.th.some(t=>t.st==='wait'))qaLoad()},20000);
 }
-function qaClose(){const p=document.getElementById('qap');p&&p.remove();QA.open=false;document.body.classList.remove('qa-open');clearInterval(QA.tick)}
+function qaClose(){try{qvStop()}catch(e){}const p=document.getElementById('qap');p&&p.remove();QA.open=false;document.body.classList.remove('qa-open');clearInterval(QA.tick)}
 function qaMarkSeen(){
   if(!QA.open)return;
   if(QA.th.some(t=>t.st==='replied'&&!t.seen)){setTimeout(()=>{if(!QA.open)return;QA.th.forEach(t=>{if(t.st==='replied')t.seen=true});API.call('PUT','qa/seen',{}).catch(()=>{});qaBadge()},1500)}
@@ -70,15 +78,16 @@ function qaPaint(scrollEnd){
   let h='';
   if(!QA.th.length)h+=`<div class="qaem"><b>Xin chào ${esc(((S.user&&S.user.name)||'').split(' ').pop()||'bạn')}! 👋</b><span>Bạn đang thắc mắc về ngữ pháp, từ vựng hay một câu hỏi trong bài? Hãy gõ câu hỏi ở dưới, mình sẽ giải thích ngay!</span></div>`;
   h+=QA.th.map(t=>{
-    let s=`<div class="qam me"><div class="qab">${esc(t.q)}</div></div>`;
+    let s=`<div class="qam me"><div class="qab">${t.sp?'🎤 ':''}${esc(t.q)}</div></div>`;
+    if(t.sp)s+=qaSpHtml(t);
     (t.msgs||[]).forEach(m=>{
       if(m.r==='ai')s+=`<div class="qam bot"><div class="qab"><b class="qaw">Baby Dragon</b>${qaFmt(m.x)}</div></div>`;
       else s+=`<div class="qam tch"><div class="qab"><b class="qaw">👨‍🏫 ${esc(m.by||'Thầy Long')}</b>${qaFmt(m.x)}</div></div>`;
     });
     if(t.pend)s+=`<div class="qam bot"><div class="qab qadots"><i></i><i></i><i></i></div></div>`;
-    if(!t.rate&&!t.pend&&t.st!=='replied'){
+    if(!t.sp&&!t.rate&&!t.pend&&t.st!=='replied'){
       s+=`<div class="qar"><div>Bạn hiểu câu trả lời chưa?</div><div class="qastars" role="group" aria-label="Chọn số sao">${[1,2,3,4,5].map(n=>`<button type="button" data-qa="rate" data-id="${t.id}" data-n="${n}" aria-label="${n} sao">★<small>${n}</small></button>`).join('')}</div><small>1 = chưa hiểu · 5 = hiểu rồi</small></div>`;
-    }else if(t.rate){
+    }else if(t.rate&&!t.sp){
       s+=`<div class="qarr"><span class="qast">${qaStars(t.rate)}</span> ${t.st==='wait'?'Mình đã báo thầy Long. Thầy sẽ trả lời ngay tại đây nhé 🙏':(t.st==='replied'?'':'Hay quá, bạn đã hiểu rồi 🎉')}</div>`;
     }
     return `<div class="qat" data-id="${t.id}">${s}<div class="qatm">${qaTime(t.t)} · ${qaLeft(t.t)}</div></div>`}).join('');
@@ -97,6 +106,57 @@ async function qaRate(id,n){
   const t=QA.th.find(x=>x.id===id);if(!t)return;t.rate=n;t.st=t.st==='replied'?'replied':(n<3?'wait':'done');qaPaint(true);
   try{const r=await API.call('POST','qa/rate',{id,stars:n});Object.assign(t,r.thread)}catch(e){toast(e.message||'Chưa lưu được đánh giá.')}
   qaPaint(true);
+}
+
+
+/* ---------- IELTS: luyện nói bằng giọng nói ---------- */
+function qaSpHtml(t){
+  const f=(t.sp&&t.sp.fb)||{},b=f.bands||{};
+  const bd=['FC','LR','GRA','PR'].map(k=>`<span class="qbd"><b>${b[k]!=null?b[k]:'–'}</b><small>${k}</small></span>`).join('');
+  const cr=(f.corrections||[]).map(c=>`<li>“${esc(c.quote)}” → <b>${esc(c.fix)}</b><br><small>${esc(c.note||'')}</small></li>`).join('');
+  return `<div class="qam bot"><div class="qab"><b class="qaw">Giám khảo AI</b><div class="qbands"><span class="qbo"><b>${f.overall!=null?f.overall:'–'}</b><small>Band</small></span>${bd}</div>${qaFmt(f.summary||'')}${cr?`<ul class="qcr">${cr}</ul>`:''}${f.model?`<details><summary>Bài mẫu tham khảo</summary>${qaFmt(f.model)}</details>`:''}<small class="muted">PR chỉ là ước lượng từ bản chữ nhận dạng. Thầy sẽ xem kết quả và có thể nhận xét thêm.</small><details><summary>Lời bạn đã nói</summary>${esc(t.sp.text||'')}</details></div></div>`;
+}
+function qvSet(){
+  const x=document.getElementById('qavx'),b=document.getElementById('qavs'),m=document.getElementById('qavm'),t=document.getElementById('qavt');
+  if(!x)return;
+  const full=(QV.text+' '+QV.interim).trim();
+  x.textContent=full||(QV.on?'Đang nghe… hãy nói tiếng Anh':'');
+  const w=(QV.text.match(/[A-Za-z']+/g)||[]).length;
+  if(b)b.disabled=QV.on||QV.busy||w<8;
+  if(m)m.textContent=QV.on?'⏹ Dừng':(QV.text?'🎤 Nói lại':'🎤 Bắt đầu nói');
+  if(t)t.textContent=QV.on?Math.round((Date.now()-QV.t0)/1000)+'s':(QV.text?w+' từ':'');
+}
+function qvStop(){QV.on=false;clearInterval(QV.tm);if(QV.rec){try{QV.rec.onend=null;QV.rec.stop()}catch(e){}QV.rec=null}QV.secs=Math.round((Date.now()-QV.t0)/1000);QV.interim='';qvSet()}
+function qvStart(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('Trình duyệt chưa hỗ trợ nhận dạng giọng nói. Hãy dùng Chrome (Android) hoặc Safari (iPhone).');return}
+  if(QV.on){qvStop();return}
+  QV.text='';QV.interim='';
+  const r=new SR();r.lang='en-US';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
+  r.onresult=e=>{let fin='',itm='';for(let i=e.resultIndex;i<e.results.length;i++){const a=e.results[i];if(a.isFinal)fin+=a[0].transcript+' ';else itm+=a[0].transcript}
+    if(fin)QV.text=(QV.text+' '+fin).replace(/\s+/g,' ').trim();QV.interim=itm;qvSet();
+    if(Date.now()-QV.t0>150000)qvStop()};
+  r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){toast('Bạn cần cho phép micro để nói nhé.');qvStop()}else if(e.error==='no-speech'){}else if(e.error!=='aborted'){toast('Chưa nghe rõ ('+e.error+'). Bạn thử lại nhé.');qvStop()}};
+  r.onend=()=>{if(QV.on&&QV.rec===r){try{r.start()}catch(e){qvStop()}}};
+  QV.rec=r;QV.on=true;QV.t0=Date.now();
+  try{r.start()}catch(e){QV.on=false;toast('Không bật được micro.');return}
+  clearInterval(QV.tm);QV.tm=setInterval(qvSet,1000);qvSet();
+}
+async function qvSend(){
+  const qe=document.getElementById('qavq');const q=qe?qe.value.trim():'';
+  if(q.length<5){toast('Hãy nhập câu hỏi speaking bạn muốn luyện.');qe&&qe.focus();return}
+  if(QV.busy)return;QV.busy=true;qvSet();
+  const x=document.getElementById('qavx');x&&(x.textContent='⏳ Giám khảo AI đang chấm…');
+  try{const r=await API.call('POST','qa/speak',{q,text:QV.text,secs:QV.secs});QA.th.push(r.thread);QV.text='';QV.interim='';qe.value='';
+    toast('Đã chấm xong ✔ Còn '+r.left+' lượt hôm nay.');qaPaint(true);const L=document.getElementById('qal');L&&(L.scrollTop=L.scrollHeight)}
+  catch(e){toast(e.message||'Chưa chấm được, bạn thử lại nhé.')}
+  QV.busy=false;qvSet();
+}
+function qvMode(m){
+  const v=document.getElementById('qavo'),f=document.getElementById('qaf');if(!v||!f)return;
+  if(m!=='voice')qvStop();
+  v.hidden=m!=='voice';f.hidden=m==='voice';
+  document.querySelectorAll('.qamode button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
 }
 
 /* ---------- nhắc sau ~1 phút làm bài ---------- */
@@ -128,9 +188,9 @@ const qaBadgeHtml=()=>{const n=qaWait();return` <span class="qbadge badge"${n?''
 window.qaNavBadge=qaBadgeHtml;
 function qaCard(t){
   const msgs=(t.msgs||[]).map(m=>m.r==='ai'?`<div class="qtm ai"><b>Baby Dragon</b>${qaFmt(m.x)}</div>`:`<div class="qtm tc"><b>${esc(m.by||'Giáo viên')}</b>${qaFmt(m.x)}<small>${qaTime(m.t)}</small></div>`).join('');
-  const chip=t.st==='wait'?'<span class="qchip w">Cần trả lời</span>':t.st==='replied'?'<span class="qchip r">Đã trả lời</span>':t.rate?'<span class="qchip g">Hiểu rồi</span>':'<span class="qchip">Chưa đánh giá</span>';
+  const chip=t.sp?'<span class="qchip g">Luyện nói'+(t.sp.fb&&t.sp.fb.overall!=null?' · Band '+t.sp.fb.overall:'')+'</span>':t.st==='wait'?'<span class="qchip w">Cần trả lời</span>':t.st==='replied'?'<span class="qchip r">Đã trả lời</span>':t.rate?'<span class="qchip g">Hiểu rồi</span>':'<span class="qchip">Chưa đánh giá</span>';
   return `<div class="card qtc ${t.st==='wait'?'wait':''}" data-id="${t.id}"><div class="qth"><div><b>${esc(t.name||t.user)}</b>${t.cls?' <span class="muted">('+esc(t.cls)+')</span>':''}<div class="muted small">${qaTime(t.t)} · ${qaLeft(t.t)}${t.ctx?' · '+esc(t.ctx):''}</div></div><span class="sp"></span>${t.rate?`<span class="qast" title="Học sinh tự đánh giá mức hiểu">${qaStars(t.rate)}</span>`:''}${chip}</div>
-   <div class="qtm st"><b>Câu hỏi</b>${esc(t.q)}</div>${msgs}
+   <div class="qtm st"><b>Câu hỏi</b>${esc(t.q)}</div>${t.sp?`<div class="qtm ai"><b>Học viên nói (bản chữ)</b>${esc(t.sp.text||'')}</div>`+(t.sp.fb?`<div class="qtm ai"><b>AI chấm: Band ${t.sp.fb.overall}</b> FC ${t.sp.fb.bands.FC} · LR ${t.sp.fb.bands.LR} · GRA ${t.sp.fb.bands.GRA} · PR ${t.sp.fb.bands.PR}<br>${qaFmt(t.sp.fb.summary||'')}</div>`:''):''}${msgs}
    <div class="qtr"><textarea rows="2" maxlength="1500" data-qd="${t.id}" placeholder="Trả lời cho ${esc((t.name||'').split(' ').pop()||'học sinh')}…">${esc(QT.draft[t.id]||'')}</textarea><button type="button" class="btn sm" data-qa="send" data-u="${esc(t.user)}" data-id="${t.id}">${t.st==='replied'?'Gửi thêm':'Gửi trả lời'}</button></div></div>`;
 }
 function qaTPaint(){
@@ -155,6 +215,9 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('[data-qa],[data-qf]');if(!t)return;
   if(t.dataset.qf){QT.f=t.dataset.qf;qaTPaint();return}
   const a=t.dataset.qa;
+  if(a==='mode'){qvMode(t.dataset.m);return}
+  if(a==='mic'){qvStart();return}
+  if(a==='vsend'){qvSend();return}
   if(a==='close'){qaClose();return}
   if(a==='open'){const h=t.closest('.bdqa');h&&h.remove();qaOpen();return}
   if(a==='rmx'){const h=t.closest('.bdqa');h&&h.remove();return}

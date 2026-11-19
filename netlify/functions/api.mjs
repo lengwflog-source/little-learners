@@ -3,7 +3,7 @@
 import { getStore } from "@netlify/blobs";
 import crypto from "node:crypto";
 import { REC_MS, fkey, purgeUser } from "../lib/rec.mjs";
-import { aiStore, jobSig, cleanFb, AI_KEEP_MS, MAX_PER_DAY, askClaudeQA } from "../lib/ai.mjs";
+import { aiStore, jobSig, cleanFb, AI_KEEP_MS, MAX_PER_DAY, askClaudeQA, gradeSpeakPractice } from "../lib/ai.mjs";
 
 export const config = { path: "/api/*" };
 
@@ -384,6 +384,24 @@ async function route(req) {
       await save(user.username, th.slice(-30));
       return J(200, { thread: t });
     }
+    if (b === "speak" && m === "POST") {
+      if (staff) return fail(403, "Chỉ học viên mới luyện nói.");
+      if (Number(user.grade) !== 9 && String(user.grade) !== "9") return fail(403, "Luyện nói bằng giọng nói chỉ dành cho khóa IELTS.");
+      const q = cleanMsg(body.q, 300), text = cleanMsg(body.text, 3000), secs = Math.min(300, Math.max(0, Number(body.secs) || 0));
+      if (q.length < 5) return fail(400, "Bạn hãy nhập câu hỏi speaking muốn luyện nhé.");
+      if ((text.match(/[A-Za-z']+/g) || []).length < 8) return fail(400, "Chưa nhận dạng đủ lời nói (cần ít nhất 8 từ). Hãy nói to, rõ và thử lại (dùng Chrome hoặc Safari).");
+      const LIM = Number(process.env.QA_SPEAK_LIMIT || 3);
+      const th = await load(user.username);
+      const used = th.filter((t) => t.sp && Date.now() - t.t < 24 * 3600 * 1000).length;
+      if (used >= LIM) return fail(429, "Mỗi ngày bạn được luyện nói với AI " + LIM + " lần. Hôm nay đã hết lượt, mai luyện tiếp nhé!");
+      let fb;
+      try { fb = await gradeSpeakPractice(q, text, secs); }
+      catch (e) { return fail(503, e.message === "NO_KEY" ? "Chưa cài khóa AI, bạn hãy nhờ thầy." : "AI đang bận, bạn thử lại sau ít phút nhé. (mã lỗi: " + String(e.message).replace(/sk-[A-Za-z0-9_-]+/g, "").slice(0, 90) + ")"); }
+      const t = { id: Date.now().toString(36) + crypto.randomBytes(2).toString("hex"), t: Date.now(), q, ctx: "Luyện nói IELTS", rate: 5, st: "done", sp: { text, secs, fb }, msgs: [] };
+      th.push(t);
+      await save(user.username, th.slice(-30));
+      return J(200, { thread: t, left: LIM - used - 1 });
+    }
     if (b === "rate" && m === "POST") {
       if (staff) return fail(403, "Chỉ học sinh đánh giá.");
       const th = await load(user.username), t = th.find((x) => x.id === str(body.id, 30));
@@ -550,6 +568,25 @@ async function route(req) {
     return J(200, { ok: true });
   }
 
+  /* ---------- chấm phát âm (mỗi bé đọc 1 lần / mục, không lưu file âm thanh, tự xóa sau 3 ngày) ---------- */
+  const SPK = store("speak"), SPK_KEEP = 3 * 24 * 3600 * 1000;
+  const spLive = (d) => Object.fromEntries(Object.entries((d && d.r) || {}).filter(([, v]) => v && Date.now() - v.t < SPK_KEEP));
+  if (a === "speak" && b === "mine" && m === "GET") {
+    if (staff) return J(200, { r: {} });
+    return J(200, { r: spLive(await SPK.get(user.username, { type: "json" })) });
+  }
+  if (a === "speak" && b === "result" && m === "POST") {
+    if (staff) return fail(403, "Chỉ học sinh mới nộp kết quả đọc.");
+    const key = str(body.key, 60);
+    if (!/^[\w.-]{3,50}:\d{1,3}$/.test(key)) return fail(400, "Yêu cầu không hợp lệ.");
+    const cur = spLive(await SPK.get(user.username, { type: "json" }));
+    if (cur[key]) return J(200, { already: true, rec: cur[key] });
+    const sc = Math.max(50, Math.min(100, Math.round(Number(body.score) || 50)));
+    cur[key] = { s: sc, h: str(body.heard, 80), w: str(body.target, 80), t: Date.now() };
+    await SPK.setJSON(user.username, { r: cur });
+    return J(200, { rec: cur[key] });
+  }
+
   /* ---------- giáo viên và trợ giảng (trợ giảng chỉ thấy lớp mình phụ trách) ---------- */
   if (!staff) return fail(403, "Bạn không có quyền thực hiện thao tác này.");
   const myStudents = async () => (await listAll(DB.users())).map(([, u]) => u).filter((u) => u && u.role === "student" && taOk(user, u.cls));
@@ -610,6 +647,11 @@ async function route(req) {
     if (body.notes) for (const [u, v] of Object.entries(body.notes)) { const t = str(v, 400); if (!isUser(u) || !inScope(u)) continue; if (t) notes[u] = t; else delete notes[u]; }
     await DB.attendance().setJSON(b, { date: b, marks, notes });
     return J(200, { ok: true });
+  }
+  if (a === "speak" && b === "all" && m === "GET") {
+    const out = {};
+    for (const u of await myStudents()) { const r = spLive(await SPK.get(u.username, { type: "json" })); if (Object.keys(r).length) out[u.username] = r; }
+    return J(200, { all: out });
   }
   if (a === "students" && !b && m === "GET") {
     const prog = Object.fromEntries(await listAll(DB.progress()));

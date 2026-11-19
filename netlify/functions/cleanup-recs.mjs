@@ -16,6 +16,12 @@ export default async () => {
     const th = (d.th || []).filter((t) => t && Date.now() - t.t < 48 * 3600 * 1000);
     if (!th.length) await qa.delete(b.key); else if (th.length !== (d.th || []).length) await qa.setJSON(b.key, { th });
   }
+  const sp = getStore({ name: "speak", consistency: "strong" });
+  for (const b of (await sp.list()).blobs) {
+    const d = (await sp.get(b.key, { type: "json" })) || {};
+    const r = Object.fromEntries(Object.entries(d.r || {}).filter(([, v]) => v && Date.now() - v.t < 3 * 24 * 3600 * 1000));
+    if (!Object.keys(r).length) await sp.delete(b.key); else if (Object.keys(r).length !== Object.keys(d.r || {}).length) await sp.setJSON(b.key, { r });
+  }
   console.log("cleanup-recs: checked", n, "students");
   return new Response("ok");
 };

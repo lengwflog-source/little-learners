@@ -51,3 +51,17 @@ body.qa-open .bdw{display:none}
 .qtm b{display:block;font-size:.76rem;color:var(--primary-deep);margin-bottom:2px}
 .qtm.st{background:var(--mint)}.qtm.tc{background:#fff4c9;color:#3b3200}.qtm.tc small{display:block;color:#7a5d00;opacity:.8}
 .qtr{display:flex;gap:8px;align-items:flex-end}.qtr textarea{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:9px 11px;font:600 .92rem var(--body);background:var(--bg);color:var(--ink);resize:vertical}
+
+.qamode{display:flex;gap:6px;padding:8px 12px 0}
+.qamode button{flex:1;padding:8px;border-radius:999px;border:1px solid var(--line,#d8d4c8);background:transparent;font:inherit;cursor:pointer}
+.qamode button.on{background:var(--ink,#1d3b2f);color:#fff}
+.qavo{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.qavo[hidden],.qaf[hidden]{display:none}
+.qavo textarea{width:100%;font:inherit;padding:8px;border-radius:10px;border:1px solid var(--line,#d8d4c8);resize:none}
+.qavr{display:flex;align-items:center;gap:10px}
+.qavx{min-height:44px;max-height:120px;overflow:auto;background:rgba(0,0,0,.04);border-radius:10px;padding:8px;font-size:.92rem}
+.qbands{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.qbo,.qbd{display:inline-flex;flex-direction:column;align-items:center;padding:4px 10px;border-radius:10px;background:rgba(0,0,0,.06)}
+.qbo{background:#1d3b2f;color:#fff}
+.qbo b{font-size:1.2rem}
+.qcr{margin:6px 0 6px 18px;padding:0}
