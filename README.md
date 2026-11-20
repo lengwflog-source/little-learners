@@ -327,3 +327,16 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Giáo viên – Giao bài: bài quá hạn gom vào mục "📁 Bài đã giao (n)" thu gọn, bấm mở mới thấy; bấm tên bài giao sẽ mở thẳng bài học đó.
 - Giáo viên – bấm tên học sinh (Hoạt động gần đây, bảng học sinh, chuông 🔔) mở hồ sơ, tự bung đúng Unit và cuộn tới phần em vừa hoàn thành gần nhất; mục đó được tô sáng.
 - File sửa thêm: public/extras.js.
+- Khối 6 (Unit 1): các bài điền công thức 'Câu khẳng định / phủ định / nghi vấn' (to be và động từ thường) đã chuyển sang tab Ngữ pháp.
+
+## v41
+- Bỏ bài hỏi–đáp (lớp 6–9) và dạng Not given (chỉ True/False).
+- Tên bài đổi thành "Ex 1 · Tiếng Việt…" theo thứ tự; bài chia thì có công thức + dấu hiệu nhận biết.
+- Bài có khung từ: kéo thả (hoặc chạm cụm từ rồi chạm chỗ trống); đoạn từ dính liền được tách thành từng cụm.
+- Tab WORDFORM (lớp 8, 9): bảng + luyện 10–20 câu, mỗi lần bộ câu khác nhau, có công thức từng câu.
+- Từ vựng lộn xộn (dòng bắt đầu bằng "|") đã xóa; công thức lớp 8 Unit 3, 6 đưa vào Ngữ pháp.
+- Kho từ vựng + Flashcard: thêm game Xếp chữ, Điền chữ thiếu, Nhìn nghĩa viết từ, Nghe và viết, MIX 35 câu.
+- Quay lại danh sách bài giữ đúng vị trí; đổi lớp ở Giao bài vẫn ở Giao bài.
+- Đã dạy / Chưa dạy từng mục (giáo viên), Giao bài mới chỉ hiện mục đã dạy và chưa giao; nút đặt lại và trả bài quá hạn (cần cập nhật netlify/functions/api.mjs).
+- Ghi chú chữ (giáo viên + lớp IELTS) và nút thùng rác xóa hết ghi chú/tô màu.
+- Ex nối hình (u5-gs-1b) cắt thành 8 hình riêng.

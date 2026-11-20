@@ -102,10 +102,10 @@ function cfgFor(cfg, user) {
   if (user.role === "teacher") return cfg;
   if (user.role === "ta") {
     const mine = user.classes || [];
-    return { classes: mine, assignments: cfg.assignments.filter((a) => a.cls && mine.includes(a.cls)), announcement: cfg.announcement, mascotOff: !!cfg.mascotOff, lockOff: !!cfg.lockOff, checkin: null, ciByCls: Object.fromEntries(Object.entries(cfg.ciByCls || {}).filter(([c]) => mine.includes(c))) };
+    return { classes: mine, assignments: cfg.assignments.filter((a) => a.cls && mine.includes(a.cls)), announcement: cfg.announcement, mascotOff: !!cfg.mascotOff, lockOff: !!cfg.lockOff, taught: cfg.taught || {}, checkin: null, ciByCls: Object.fromEntries(Object.entries(cfg.ciByCls || {}).filter(([c]) => mine.includes(c))) };
   }
   const open = (cfg.checkin && cfg.checkin.date === td) || (user.cls && cfg.ciByCls && cfg.ciByCls[user.cls] && cfg.ciByCls[user.cls].date === td);
-  return { classes: cfg.classes, assignments: cfg.assignments, announcement: cfg.announcement, mascotOff: !!cfg.mascotOff, lockOff: !!cfg.lockOff, checkin: open ? { date: td } : null, ciByCls: {} };
+  return { classes: cfg.classes, assignments: cfg.assignments, announcement: cfg.announcement, mascotOff: !!cfg.mascotOff, lockOff: !!cfg.lockOff, taught: cfg.taught || {}, checkin: open ? { date: td } : null, ciByCls: {} };
 }
 const cleanAssign = (a) => ({
   id: str(a.id, 30) || Date.now().toString(36), title: str(a.title, 120), cls: str(a.cls, 20), due: isDate(a.due) ? a.due : "",
@@ -133,6 +133,14 @@ function applyCfgOp(cfg, user, b) {
       cfg.ciByCls = { ...(cfg.ciByCls || {}) };
       for (const c of cl) { if (on) cfg.ciByCls[c] = { date: today(), code }; else delete cfg.ciByCls[c]; }
     }
+  } else if (op === "taught") {
+    const id = str(b.id, 40); cfg.taught = { ...(cfg.taught || {}) };
+    if (id) { if (b.on) cfg.taught[id] = 1; else delete cfg.taught[id]; }
+  } else if (op === "taughtreset") {
+    cfg.taught = {};
+  } else if (op === "delover") {
+    const td = today();
+    cfg.assignments = cfg.assignments.filter((a) => !(a.due && String(a.due) < td && (teacher || taOk(user, a.cls))));
   } else if (!teacher) throw new Error("Bạn không có quyền thực hiện thao tác này.");
   else if (op === "classes") cfg.classes = cleanClasses(b.classes);
   else if (op === "ann") cfg.announcement = str(b.text, 500);

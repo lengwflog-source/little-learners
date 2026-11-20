@@ -14,7 +14,7 @@ function applyFs(){document.documentElement.style.setProperty('--xfs',FS[fsi])}
 applyFs();
 
 /* ---------- trạng thái công cụ ---------- */
-const TX={tr:false,pen:null};
+const TX={tr:false,pen:null,note:false};
 const DK=['l','r','t'];let dock=lsg('ll-dock2');if(!DK.includes(dock))dock='l';
 const DKN={r:'Phải',l:'Trái',t:'Trên'};
 const HL={};   // eid -> [{r,s,e,c}]
@@ -39,10 +39,13 @@ window.xtb=function(){
     <button type="button" class="xb sm${on('x')}" data-xt="hl-x" aria-label="Xóa tô màu" title="Xóa tô màu">${IC.era}</button></div>
    <button type="button" class="xb${TX.tr?' on':''}" data-xt="tr" aria-pressed="${TX.tr}" title="Dịch từ">${IC.tr}<span class="xl">Dịch từ</span></button>
    <div class="xgrp" title="Cỡ chữ"><button type="button" class="xb sm" data-xt="fs-" aria-label="Giảm cỡ chữ"${fsi===0?' disabled':''}><b style="font-size:.85rem">A</b><i>▾</i></button><button type="button" class="xb sm" data-xt="fs+" aria-label="Tăng cỡ chữ"${fsi===FS.length-1?' disabled':''}><b style="font-size:1.15rem">A</b><i>▴</i></button></div>
+   ${noteOK()?`<button type="button" class="xb${TX.note?' on':''}" data-xt="note" aria-pressed="${!!TX.note}" title="Thêm ghi chú chữ (bấm vào chỗ muốn ghi)"><b style="font:700 1.1rem Georgia,serif">T</b><span class="xl">Ghi chú</span></button>`:''}
+   <button type="button" class="xb" data-xt="clear" title="Xóa hết ghi chú và vùng tô màu ở trang này"><span aria-hidden="true">🗑️</span><span class="xl">Xóa hết</span></button>
    <button type="button" class="xb" data-xt="dock" title="Ghim thanh công cụ: Trái → Phải → Trên"><span aria-hidden="true">📌</span><span class="xl">${DKN[dock]}</span></button>
    <span class="xhint" id="xhint">${hint()}</span></div>`;
 };
 function hint(){
+  if(TX.note)return 'Bấm vào chỗ trống trong bài để thêm ghi chú. Kéo thanh trên cùng của ghi chú để di chuyển; đổi màu và cỡ chữ bằng các nút nhỏ.';
   if(TX.tr)return touch()?'Chạm một từ để xem nghĩa; nhấn giữ và kéo để dịch cả câu.':'Bấm vào một từ để xem nghĩa, hoặc bôi chọn cả câu/vùng để dịch. Muốn chọn đáp án, hãy tắt “Dịch từ”.';
   if(TX.pen==='x')return 'Bôi chọn hoặc chạm vào chỗ đã tô để xóa.';
   if(TX.pen)return touch()?'Nhấn giữ rồi kéo để chọn chữ, chữ sẽ được tô màu.':'Kéo chuột chọn chữ trong bài đọc hoặc đề để tô màu.';
@@ -53,7 +56,7 @@ function syncBar(){
   b.outerHTML=xtb();
   document.body.classList.toggle('x-tr',TX.tr);
   DK.forEach(d=>document.body.classList.toggle('x-dock-'+d,dock===d));
-  document.body.classList.toggle('x-pen',!!TX.pen);
+  document.body.classList.toggle('x-pen',!!TX.pen);document.body.classList.toggle('x-note',!!TX.note);
   setBars();
 }
 
@@ -62,10 +65,12 @@ document.addEventListener('click',e=>{
   if(bt){
     const k=bt.dataset.xt;
     if(k==='back'){window.goBack();return}
-    if(k==='pen'){TX.pen=TX.pen?null:'g'}
-    else if(k==='hl-g'||k==='hl-y'||k==='hl-x'){const c=k.slice(3);TX.pen=TX.pen===c?null:c}
+    if(k==='pen'){TX.pen=TX.pen?null:'g';if(TX.pen)TX.note=false}
+    else if(k==='hl-g'||k==='hl-y'||k==='hl-x'){const c=k.slice(3);TX.pen=TX.pen===c?null:c;if(TX.pen)TX.note=false}
+    else if(k==='note'){TX.note=!TX.note;if(TX.note){TX.pen=null;if(TX.tr){TX.tr=false;hideTip()}}}
+    else if(k==='clear'){const eid=curEid();if(eid&&confirm('Xóa tất cả ghi chú và vùng tô màu ở trang này?')){hlSet(eid,[]);ntSet(eid,[]);paintAll();ntRender()}}
     else if(k==='dock'){dock=DK[(DK.indexOf(dock)+1)%DK.length];lss('ll-dock2',dock)}
-    else if(k==='tr'){TX.tr=!TX.tr;if(TX.tr&&TX.pen)TX.pen=null;if(!TX.tr)hideTip()}
+    else if(k==='tr'){TX.tr=!TX.tr;if(TX.tr){TX.pen=null;TX.note=false}if(!TX.tr)hideTip()}
     else if(k==='fs-'||k==='fs+'){fsi=Math.max(0,Math.min(FS.length-1,fsi+(k==='fs+'?1:-1)));lss('ll-fs',String(fsi));applyFs()}
     if(k!=='tr'&&TX.pen&&TX.tr){TX.tr=false;hideTip()}
     syncBar();return;
@@ -73,6 +78,45 @@ document.addEventListener('click',e=>{
   const tp=e.target.closest&&e.target.closest('[data-xp]');
   if(tp){const sp=document.querySelector('.xsplit');if(sp){sp.dataset.pane=tp.dataset.xp;if(typeof X!=='undefined'&&X)X.pane=tp.dataset.xp;$$('.xtabs button').forEach(b=>b.classList.toggle('on',b===tp));if(tp.dataset.xp==='q')scrollTo({top:0,behavior:'instant'})}return}
 },false);
+
+/* ---------- ghi chú chữ (giáo viên + lớp IELTS) ---------- */
+const NT={};const ntKey=eid=>'ll-nt-'+(typeof S!=='undefined'&&S.uid||'x')+'-'+eid;
+function ntGet(eid){if(!NT[eid]){let v=[];try{v=JSON.parse(lsg(ntKey(eid))||'[]')}catch(e){}NT[eid]=Array.isArray(v)?v:[]}return NT[eid]}
+function ntSet(eid,v){NT[eid]=v;lss(ntKey(eid),JSON.stringify(v))}
+const NTC=['#1d2b22','#c0392b','#1f6fb5','#b7791f','#2e7d4f','#8e44ad'];
+function noteOK(){return typeof S!=='undefined'&&!!S.user&&(S.isT||S.grade===9)}
+function ntSave(eid,id,patch){const l=ntGet(eid);const n=l.find(x=>x.id===id);if(n){Object.assign(n,patch);ntSet(eid,l)}}
+function ntRender(){
+  document.querySelectorAll('.ntl').forEach(n=>n.remove());
+  const eid=curEid(),ex=document.querySelector('.ex');if(!eid||!ex||!noteOK())return;
+  ex.style.position='relative';
+  ntGet(eid).forEach(n=>{
+    const d=document.createElement('div');d.className='ntl';d.dataset.nid=n.id;d.style.left=n.x+'px';d.style.top=n.y+'px';
+    d.innerHTML='<div class="nth"><span class="ntg" title="Kéo để di chuyển">⠿</span><button type="button" data-nt="col" title="Đổi màu">●</button><button type="button" data-nt="sm" title="Chữ nhỏ hơn">A−</button><button type="button" data-nt="lg" title="Chữ to hơn">A+</button><button type="button" data-nt="del" title="Xóa ghi chú">✕</button></div><div class="ntt" contenteditable="true" spellcheck="false"></div>';
+    const t=d.querySelector('.ntt');t.textContent=n.t||'';t.style.color=n.c||NTC[0];t.style.fontSize=(n.s||18)+'px';d.querySelector('[data-nt=col]').style.color=n.c||NTC[0];
+    ex.appendChild(d)});
+}
+function ntAdd(x,y){const eid=curEid();if(!eid)return;const id='n'+Date.now().toString(36);const l=ntGet(eid);l.push({id,x:Math.max(0,Math.round(x)),y:Math.max(0,Math.round(y)),t:'',c:NTC[0],s:18});ntSet(eid,l);ntRender();const t=document.querySelector('.ntl[data-nid="'+id+'"] .ntt');if(t)t.focus()}
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('[data-nt]');
+  if(b){const d=b.closest('.ntl'),eid=curEid();if(!d||!eid)return;const id=d.dataset.nid,n=ntGet(eid).find(x=>x.id===id);if(!n)return;const a=b.dataset.nt;
+    if(a==='del'){ntSet(eid,ntGet(eid).filter(x=>x.id!==id));d.remove()}
+    else if(a==='col'){const c=NTC[(NTC.indexOf(n.c||NTC[0])+1)%NTC.length];ntSave(eid,id,{c});d.querySelector('.ntt').style.color=c;b.style.color=c}
+    else{const s=Math.max(11,Math.min(48,(n.s||18)+(a==='lg'?3:-3)));ntSave(eid,id,{s});d.querySelector('.ntt').style.fontSize=s+'px'}
+    return}
+  if(!TX.note||!noteOK())return;
+  const ex=e.target.closest&&e.target.closest('.ex');if(!ex)return;
+  if(e.target.closest('.xtb,.ntl,button,a,input,textarea,select,label,summary,.actbar'))return;
+  const r=ex.getBoundingClientRect();ntAdd(e.clientX-r.left,e.clientY-r.top);
+},false);
+document.addEventListener('input',e=>{const t=e.target;if(t.classList&&t.classList.contains('ntt')){const d=t.closest('.ntl'),eid=curEid();if(d&&eid)ntSave(eid,d.dataset.nid,{t:t.textContent})}});
+document.addEventListener('focusout',e=>{const t=e.target;if(t.classList&&t.classList.contains('ntt')&&!t.textContent.trim()){const d=t.closest('.ntl'),eid=curEid();if(d&&eid){ntSet(eid,ntGet(eid).filter(x=>x.id!==d.dataset.nid));d.remove()}}});
+(function(){let dr=null;
+  document.addEventListener('pointerdown',e=>{const g=e.target.closest&&e.target.closest('.ntg');if(!g)return;const d=g.closest('.ntl');dr={d,sx:e.clientX,sy:e.clientY,ox:parseFloat(d.style.left)||0,oy:parseFloat(d.style.top)||0};e.preventDefault();try{g.setPointerCapture(e.pointerId)}catch(_){}});
+  document.addEventListener('pointermove',e=>{if(!dr)return;dr.d.style.left=Math.max(0,dr.ox+e.clientX-dr.sx)+'px';dr.d.style.top=Math.max(0,dr.oy+e.clientY-dr.sy)+'px'});
+  const end=()=>{if(!dr)return;const eid=curEid();if(eid)ntSave(eid,dr.d.dataset.nid,{x:parseFloat(dr.d.style.left)||0,y:parseFloat(dr.d.style.top)||0});dr=null};
+  document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
+})();
 
 /* ---------- highlight ---------- */
 function rootOf(n){const el=n&&(n.nodeType===1?n:n.parentElement);return el&&el.closest?el.closest('[data-hr]'):null}
@@ -280,6 +324,13 @@ function onPhraseEnd(e){
   if(e.target.closest&&e.target.closest('.xtip,.xtb'))return;
   setTimeout(()=>{const p=selPhrase();if(p)showPhrase(p)},60);
 }
+let trSelT=0,trLast='';
+/* Android: chọn chữ bằng nhấn giữ + kéo không phát touchend, nên theo dõi selectionchange (chờ ngừng kéo ~0,7 giây rồi dịch) */
+document.addEventListener('selectionchange',()=>{
+  if(!TX.tr||!touch())return;
+  clearTimeout(trSelT);
+  trSelT=setTimeout(()=>{const p=selPhrase();if(!p){trLast='';return}if(p.t===trLast&&tip&&tip.isConnected&&tip.style.display!=='none')return;trLast=p.t;showPhrase(p)},700);
+});
 document.addEventListener('mouseup',onPhraseEnd);
 document.addEventListener('touchend',onPhraseEnd);
 
@@ -342,6 +393,7 @@ window.vocabView=function(){
    <div class="vb-tools"><input id="vb-q" class="sel-in" type="search" placeholder="Tìm từ hoặc nghĩa…" value="${E_(VS.q)}" aria-label="Tìm từ">
    <select id="vb-f" class="sel-in" aria-label="Lọc"><option value="all" ${VS.f==='all'?'selected':''}>Tất cả</option><option value="new" ${VS.f==='new'?'selected':''}>Chưa thuộc</option><option value="known" ${VS.f==='known'?'selected':''}>Đã thuộc</option></select>
    <button class="btn" data-vb="cards" ${all.length<1?'disabled':''}>🃏 Ôn bằng thẻ</button><button class="btn ghost" data-vb="quiz" ${all.length<4?'disabled title="Cần ít nhất 4 từ"':''}>📝 Kiểm tra nhanh</button></div></div>
+  ${all.length>=4?`<div class="fc-go" style="margin:10px 0">${[['abcd','🔤 Trắc nghiệm ABCD'],['scr','🔀 Xếp chữ cái'],['gap','🕳️ Điền chữ thiếu'],['vi2type','🇻🇳→🇬🇧 Nhìn nghĩa viết từ'],['spell','👂 Nghe và viết'],['listen','🎧 Nghe chọn từ'],['mix','🎲 Trộn (10 câu)'],['big','🏁 Luyện tập MIX (35 câu)']].map(g=>`<button class="btn ghost" data-vb="game" data-m="${g[0]}">${g[1]}</button>`).join('')}</div>`:''}
   ${!VB.words&&VB.loading?'<div class="sk" style="margin-top:14px"></div>':!all.length?`<div class="card" style="margin-top:14px;text-align:center"><div style="font-size:2.2rem">📚</div><p><b>Kho từ vựng đang trống.</b></p><p class="muted">Vào một bài tập, bấm nút <b>Dịch từ</b> trên thanh công cụ, chạm vào từ chưa biết rồi bấm <b>Thêm vào kho từ vựng</b>.</p><a class="btn" href="#lessons">Đi làm bài</a></div>`:
   `<div class="vb-list">${list.map(x=>`<div class="card vb-item ${x.k?'known':''}"><div class="vb-h"><b class="vb-w">${E_(x.w)}</b>${x.ipa?`<span class="xipa">${E_(x.ipa)}</span>`:''}<button class="say" data-say="${E_(x.w)}" aria-label="Nghe">♪</button>${x.pos?`<span class="chip">${E_(x.pos)}</span>`:''}<span class="sp"></span><span class="muted small">${dateS(x.t)}</span></div>
    <div class="vb-vi">${E_(x.vi)}</div>${x.ctx?`<div class="vb-ctx">“${E_(x.ctx)}”</div>`:''}
@@ -371,6 +423,7 @@ document.addEventListener('change',e=>{if(e.target.id==='vb-f'){VS.f=e.target.va
 document.addEventListener('click',e=>{
   const b=e.target.closest&&e.target.closest('[data-vb]');if(!b)return;
   const a=b.dataset.vb;const W=VB.words||[];
+  if(a==='game'){if(window.fcStart)window.fcStart(W,b.dataset.m,35);return}
   if(a==='known'){const x=W.find(v=>v.w===b.dataset.w);if(x){x.k=x.k?0:1;VB.save();render()}}
   else if(a==='del'){if(confirm('Xóa từ “'+b.dataset.w+'” khỏi kho?')){VB.words=W.filter(v=>v.w!==b.dataset.w);VB.save();render()}}
   else if(a==='cards'){VS.card={deck:shuffle(W.filter(x=>!x.k).length?W.filter(x=>!x.k):W),i:0,flip:false,ok:0,no:0};overlay(cardHtml())}
@@ -428,8 +481,8 @@ window.render=function(){
   try{
     document.body.classList.toggle('x-tr',TX.tr&&route().startsWith('ex-'));
     document.body.classList.toggle('x-ex',route().startsWith('ex-'));setBars();setTimeout(setBars,300);
-    if(!route().startsWith('ex-')){if(tip)hideTip();TX.pen=TX.pen&&null}
-    paintAll();
+    if(!route().startsWith('ex-')){if(tip)hideTip();TX.pen=TX.pen&&null;TX.note=false}
+    paintAll();ntRender();
     if(bankOK()&&!VB.words&&!VB.loading)VB.load();
   }catch(e){console.error(e)}
 };

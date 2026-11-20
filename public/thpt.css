@@ -196,3 +196,13 @@ body.x-tr .ex .opt input{pointer-events:none}
 .top .who{margin-left:auto;gap:8px;flex:none}
 @media (max-width:1100px){.top .brand span{display:none}}
 @media (max-width:760px){.top .who>span:not(.avatar){display:none}}
+
+/* v41 ghi chú chữ */
+.ntl{position:absolute;z-index:40;min-width:120px;max-width:min(420px,90vw);background:rgba(255,253,235,.96);border:1.5px solid #e2d58a;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.14)}
+.ntl .nth{display:flex;align-items:center;gap:2px;padding:2px 4px;background:#f3ecb8;border-radius:8px 8px 0 0;opacity:.55}
+.ntl:hover .nth,.ntl:focus-within .nth{opacity:1}
+.ntl .ntg{cursor:grab;touch-action:none;padding:0 6px;font-size:1.1rem;user-select:none;flex:1}
+.ntl .nth button{border:0;background:none;cursor:pointer;font:700 .8rem var(--body,sans-serif);padding:2px 5px;border-radius:6px}
+.ntl .nth button:hover{background:rgba(0,0,0,.08)}
+.ntl .ntt{padding:6px 10px;min-height:1.6em;outline:none;white-space:pre-wrap;line-height:1.35}
+body.x-note .ex{cursor:crosshair}

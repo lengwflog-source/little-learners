@@ -53,7 +53,7 @@ window.flashView=function(){
   <select id="fc-st" class="sel-in" aria-label="Lọc"><option value="all">Tất cả</option><option value="new" ${FC.st==='new'?'selected':''}>Chưa thuộc</option><option value="known" ${FC.st==='known'?'selected':''}>Đã thuộc</option><option value="nosent" ${FC.st==='nosent'?'selected':''}>Chưa đặt câu được</option></select>
   <input id="fc-q" class="sel-in" type="search" placeholder="Tìm từ hoặc nghĩa…" value="${E(FC.q)}" aria-label="Tìm từ"></div>
   <div class="fc-go"><button class="btn" data-fc="cards" ${L.length?'':'disabled'}>🃏 Lật thẻ (${L.length})</button>
-  ${[['abcd','🔤 Trắc nghiệm ABCD'],['en2vi','🇬🇧→🇻🇳 Nhìn Anh chọn Việt'],['pic2vi','🖼️ Nhìn hình chọn nghĩa'],['type','⌨️ Nhìn chữ ghi nghĩa'],['pictype','✍️ Nhìn hình ghi nghĩa'],['listen','🎧 Nghe chọn từ'],['mix','🎲 Trộn']].map(g=>`<button class="btn ghost" data-fc="game" data-m="${g[0]}" ${L.length<4?'disabled':''}>${g[1]}</button>`).join('')}</div>
+  ${[['abcd','🔤 Trắc nghiệm ABCD'],['en2vi','🇬🇧→🇻🇳 Nhìn Anh chọn Việt'],['pic2vi','🖼️ Nhìn hình chọn nghĩa'],['type','⌨️ Nhìn chữ ghi nghĩa'],['pictype','✍️ Nhìn hình ghi nghĩa'],['listen','🎧 Nghe chọn từ'],['scr','🔀 Xếp chữ cái'],['gap','🕳️ Điền chữ thiếu'],['vi2type','🇻🇳→🇬🇧 Nhìn nghĩa viết từ'],['spell','👂 Nghe và viết'],['mix','🎲 Trộn (10 câu)'],['big','🏁 Luyện tập MIX (35 câu)']].map(g=>`<button class="btn ghost" data-fc="game" data-m="${g[0]}" ${L.length<4?'disabled':''}>${g[1]}</button>`).join('')}</div>
   <div class="fc-list">${L.slice(0,FC.lim).map(w=>{const b=get(w.k);return`<div class="card fc-item ${b&1?'known':''}"><div class="fc-pic">${tile(w)}</div><div class="fc-body"><div class="fc-h"><b>${E(w.en)}</b>${w.ipa?`<span class="xipa">${E(w.ipa)}</span>`:''}<button class="say" data-say="${E(w.en)}" aria-label="Nghe">♪</button>${w.pos?`<span class="chip">${E(w.pos)}</span>`:''}</div><div class="fc-vi">${E(w.vi)}</div>
   <div class="fc-act"><label class="fc-ck"><input type="checkbox" data-fck="1" data-k="${E(w.k)}" ${b&1?'checked':''}> Đã thuộc</label><label class="fc-ck"><input type="checkbox" data-fck="2" data-k="${E(w.k)}" ${b&2?'checked':''}> Đặt câu được ✍️</label></div></div></div>`}).join('')||'<p class="muted">Không có từ nào khớp.</p>'}</div>
   ${L.length>FC.lim?`<p style="text-align:center"><button class="btn ghost" data-fc="more">Hiện thêm (${L.length-FC.lim} từ)</button></p>`:''}</div>`};
@@ -69,7 +69,7 @@ function cardPaint(){const c=FC.card,w=c.list[c.i];if(!w){ov(`<div class="fcbox"
   <div class="fcrow"><button class="btn ghost" data-fc="prev" ${c.i?'':'disabled'}>← Trước</button><button class="btn ghost" data-fc="no">Chưa thuộc</button><button class="btn" data-fc="ok">✓ Đã thuộc</button></div></div>`)}
 function startCards(){const L=filt();if(!L.length)return;const ord=L.slice().sort((a,b)=>((get(a.k)&1)-(get(b.k)&1))||Math.random()-.5).slice(0,40);FC.card={list:ord,i:0,flip:false,ok:0,no:0};cardPaint()}
 
-const MODES={abcd:['en2vi','vi2en'],en2vi:['en2vi'],pic2vi:['pic2vi'],type:['type'],pictype:['pictype'],listen:['listen'],mix:['en2vi','vi2en','pic2vi','type','pictype','listen']};
+const MODES={scr:['scr'],gap:['gap'],vi2type:['vi2type'],spell:['spell'],big:['en2vi','vi2en','pic2vi','type','pictype','listen','scr','gap','vi2type','spell'],abcd:['en2vi','vi2en'],en2vi:['en2vi'],pic2vi:['pic2vi'],type:['type'],pictype:['pictype'],listen:['listen'],mix:['en2vi','vi2en','pic2vi','type','pictype','listen']};
 function opts(w,L,field){const pool=rnd(L.filter(x=>x.k!==w.k&&strip(x[field])!==strip(w[field])));const same=pool.filter(x=>x.pos&&x.pos===w.pos);const pick=same.concat(pool.filter(x=>!same.includes(x))).slice(0,3);return rnd([w].concat(pick))}
 function makeQ(w,type,D){
   const q={w,type};
@@ -77,20 +77,27 @@ function makeQ(w,type,D){
   else if(type==='vi2en'){q.opts=opts(w,D,'en');q.f='en'}
   else if(type==='pic2vi'){q.opts=opts(w,D,'vi');q.f='vi'}
   else if(type==='listen'){q.opts=opts(w,D,'en');q.f='en'}
+  else if(type==='scr'){const ch=w.en.replace(/\s+/g,'').split('');let t;for(let z=0;z<9;z++){t=rnd(ch).join('');if(t!==ch.join(''))break}q.hint=t}
+  else if(type==='gap'){const ch=w.en.split('');const idx=ch.map((c,i)=>/[a-z]/i.test(c)?i:-1).filter(i=>i>0);const hide=new Set(rnd(idx).slice(0,Math.max(1,Math.round(idx.length*.5))));q.hint=ch.map((c,i)=>hide.has(i)?'_':c).join(' ')}
   return q}
-function startGame(mode){
-  const D=deck(),L=filt();if(L.length<4)return;
+function startGame(mode,opt){
+  opt=opt||{};const D=opt.D||deck(),L=opt.L||filt();if(L.length<4)return;const N=mode==='big'?(opt.n||35):10;
   const types=MODES[mode]||MODES.abcd,withPic=L.filter(w=>w.pic).length>=4&&L.some(w=>w.pic);
-  const base=L.slice().sort((a,b)=>((get(a.k)&1)-(get(b.k)&1))||Math.random()-.5).slice(0,10);
+  let base=L.slice().sort((a,b)=>((get(a.k)&1)-(get(b.k)&1))||Math.random()-.5);if(base.length<N){let k=0;const o=base.slice();while(base.length<N&&o.length)base.push(o[k++%o.length])}base=base.slice(0,N);
   const qs=base.map(w=>{let ts=types.filter(t=>(t!=='pic2vi'&&t!=='pictype')||w.pic);if(!ts.length)ts=['en2vi'];const t=ts[Math.floor(Math.random()*ts.length)];
     return makeQ(w,t,(t==='pic2vi'?D.filter(x=>x.pic||true):D))});
-  FC.game={mode,qs,i:0,score:0,miss:[],okw:[],ans:null};gamePaint()}
+  FC.game={mode,qs,i:0,score:0,miss:[],okw:[],ans:null,opt};gamePaint()}
+window.fcStart=(words,mode,n)=>{const D=words.map(w=>({k:keyOf(w.w),en:w.w,vi:String(w.vi||'').split('·')[0].trim()||w.vi||'',ipa:w.ipa||'',pos:w.pos||'',pic:''}));startGame(mode,{L:D,D,n})};
 function qHtml(q,g){
   const w=q.w;let prompt='';
   if(q.type==='en2vi')prompt=`<div class="gq-t">Nghĩa tiếng Việt của từ này là gì?</div><div class="gq-w">${E(w.en)} <button class="say" data-say="${E(w.en)}" aria-label="Nghe">♪</button></div>${w.ipa?`<div class="xipa">${E(w.ipa)}</div>`:''}`;
   else if(q.type==='vi2en')prompt=`<div class="gq-t">Từ tiếng Anh nào có nghĩa là:</div><div class="gq-w">${E(w.vi)}</div>`;
   else if(q.type==='pic2vi')prompt=`<div class="gq-t">Nhìn hình, chọn nghĩa đúng:</div><div class="gq-pic">${w.pic}</div>`;
   else if(q.type==='listen')prompt=`<div class="gq-t">Nghe và chọn từ đúng:</div><button class="btn gq-ear" data-say="${E(w.en)}">🎧 Nghe lại</button>`;
+  else if(q.type==='scr')prompt=`<div class="gq-t">Sắp xếp lại các chữ cái thành từ có nghĩa: <b>${E(w.vi)}</b></div><div class="gq-w" style="letter-spacing:.2em">${E(q.hint.toUpperCase())}</div>`;
+  else if(q.type==='gap')prompt=`<div class="gq-t">Điền các chữ cái còn thiếu: <b>${E(w.vi)}</b></div><div class="gq-w" style="letter-spacing:.15em">${E(q.hint)}</div>`;
+  else if(q.type==='vi2type')prompt=`<div class="gq-t">Viết từ tiếng Anh có nghĩa là:</div><div class="gq-w">${E(w.vi)}</div>`;
+  else if(q.type==='spell')prompt=`<div class="gq-t">Nghe và gõ lại từ bạn nghe được:</div><button class="btn gq-ear" data-say="${E(w.en)}">🎧 Nghe lại</button>`;
   else if(q.type==='type')prompt=`<div class="gq-t">Ghi nghĩa tiếng Việt của từ:</div><div class="gq-w">${E(w.en)} <button class="say" data-say="${E(w.en)}" aria-label="Nghe">♪</button></div>${w.ipa?`<div class="xipa">${E(w.ipa)}</div>`:''}`;
   else prompt=`<div class="gq-t">Nhìn hình, ghi nghĩa (tiếng Việt hoặc từ tiếng Anh):</div><div class="gq-pic">${w.pic}</div>`;
   let ans='';
@@ -104,9 +111,9 @@ function gamePaint(){
     <div class="fcrow">${g.okw.length?`<button class="btn ghost" data-fc="markok">✓ Đánh dấu ${g.okw.length} từ đúng là đã thuộc</button>`:''}<button class="btn" data-fc="again">Chơi lại</button><button class="btn ghost" data-fc="close">Đóng</button></div></div></div>`);return}
   const q=g.qs[g.i];
   ov(`<div class="fcbox"><button class="fcx" data-fc="close" aria-label="Đóng">✕</button><div class="fcn">Câu ${g.i+1}/${g.qs.length} · Điểm: ${g.score}</div><div class="fcprog"><i style="width:${Math.round(100*g.i/g.qs.length)}%"></i></div>${qHtml(q,g)}</div>`);
-  if(q.type==='listen'&&g.ans==null&&!g.said){g.said=1;setTimeout(()=>{try{speechSynthesis.cancel();speechSynthesis.speak(mkUtt(q.w.en,false,.8))}catch(e){}},250)}
+  if((q.type==='listen'||q.type==='spell')&&g.ans==null&&!g.said){g.said=1;setTimeout(()=>{try{speechSynthesis.cancel();speechSynthesis.speak(mkUtt(q.w.en,false,.8))}catch(e){}},250)}
   const inp=document.getElementById('gq-i');if(inp&&g.ans==null)setTimeout(()=>inp.focus(),60)}
-function judge(q,s){const a=strip(s);if(!a)return false;const en=strip(q.w.en);if(a===en)return true;if(q.type==='pictype'&&false)return false;
+function judge(q,s){const a=strip(s);if(!a)return false;const en=strip(q.w.en);if(a===en)return true;if(['scr','gap','vi2type','spell'].includes(q.type))return false;if(q.type==='pictype'&&false)return false;
   const parts=q.w.vi.split(/[,;\/()]| hoặc /).map(strip).filter(x=>x.length>1);
   return parts.some(p=>p===a||(a.length>=3&&p.length>=3&&(p.includes(a)||a.includes(p))))}
 function answer(good,typed){const g=FC.game,q=g.qs[g.i];g.good=good;g.typed=typed;g.ans=typed!=null?'typed':g.pickK;if(good){g.score++;g.okw.push(q.w)}else g.miss.push(q.w);gamePaint()}
@@ -123,7 +130,7 @@ document.addEventListener('click',e=>{
   else if(a==='ok'||a==='no'){const w=FC.card.list[FC.card.i];if(w){const has=get(w.k)&1;if(a==='ok'&&!has)toggle(w.k,1);if(a==='no'&&has)toggle(w.k,1);FC.card[a]++}FC.card.i++;FC.card.flip=false;cardPaint()}
   else if(a==='pick'){const g=FC.game;if(g.ans!=null)return;g.pickK=b.dataset.k;answer(b.dataset.k===g.qs[g.i].w.k)}
   else if(a==='next'){const g=FC.game;g.i++;g.ans=null;g.said=0;gamePaint()}
-  else if(a==='again')startGame(FC.game.mode);
+  else if(a==='again')startGame(FC.game.mode,FC.game.opt);
   else if(a==='markok'){FC.game.okw.forEach(w=>{if(!(get(w.k)&1))toggle(w.k,1)});FC.game.okw=[];toast&&toast('Đã đánh dấu ✔');gamePaint()}
 });
 document.addEventListener('submit',e=>{const f=e.target.closest('[data-fc="typef"]');if(!f)return;e.preventDefault();const g=FC.game;if(!g||g.ans!=null)return;const v=document.getElementById('gq-i').value;if(!v.trim())return;answer(judge(g.qs[g.i],v),v)});
