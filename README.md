@@ -313,3 +313,17 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Bài tự soạn thêm cho mỗi Unit: 10 câu ngữ pháp, 1 đoạn đọc hiểu (5 câu), 3 câu sắp xếp hội thoại.
 - Flashcard: từ lớp 10 vào mục Flashcard (mỗi họ từ chỉ hiện từ chính); emoji phủ ~94% (emoji.json ~2150 mục, flash.js tự suy từ gốc/cụm từ).
 - File mới: public/lop10/lessons.json; sửa index.html (tải lớp 10, bảng ngữ pháp), flash.js, emoji.json.
+
+## v40
+- Xoá toàn bộ bài "Fill in the blank with a suitable word" (khối 6-7-8-9) vì không có căn cứ để làm.
+- Bài "Complete … from 2a / 4A / Exercise 5 / box": nay có KHUNG TỪ (box) ngay trên bài, đề bài đổi thành "from the box below". Bài chọn giới từ (khối 7, 8, 9) cũng có khung giới từ.
+- Bài Rewrite: có khung "📌 Ví dụ cách làm" (câu 1 giải sẵn, phần thay đổi tô vàng + cấu trúc cần nhớ).
+- Bài đọc lại (Read the text again…) nay đính kèm đúng đoạn văn; bài nào không có đoạn văn → đã xoá.
+- Bài First letter: xoá hết, thay bằng bài Word form (6 câu/bài).
+- Các bài lý thuyết dạng điền công thức (Công thức / Cách dùng…) chuyển sang tab Ngữ pháp, không còn tính là bài tập.
+- Bài "Nghe và đọc theo từng từ" (khối 6-7-8-9) bỏ khỏi danh sách bài tập; từ nằm sẵn ở tab Từ vựng.
+- Lớp 10: mọi câu trắc nghiệm có giải thích chi tiết từng đáp án (từ loại, nghĩa, cấu trúc, vì sao đúng/sai) – hiện sau khi nộp bài.
+- File sửa: index.html, lessons.json, lop6–lop10/lessons.json.
+- Giáo viên – Giao bài: bài quá hạn gom vào mục "📁 Bài đã giao (n)" thu gọn, bấm mở mới thấy; bấm tên bài giao sẽ mở thẳng bài học đó.
+- Giáo viên – bấm tên học sinh (Hoạt động gần đây, bảng học sinh, chuông 🔔) mở hồ sơ, tự bung đúng Unit và cuộn tới phần em vừa hoàn thành gần nhất; mục đó được tô sáng.
+- File sửa thêm: public/extras.js.

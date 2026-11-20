@@ -34,7 +34,11 @@ function bellHtml(){
   const panel=BELL.open?`<div class="bellp" role="dialog" aria-label="Thông báo"><div class="bellh"><b>Thông báo</b><span class="sp"></span><button type="button" class="bellx" data-bell="close" aria-label="Đóng">✕</button></div>${list.length?list.map(x=>`<button type="button" class="belli ${x.fresh?'new':''}" data-bell="go" ${x.sel?`data-bsel="${esc(x.sel)}"`:`data-bgo="${esc(x.go)}"`}><span class="bi">${x.icon}</span><span class="bt"><span>${x.title}</span><small>${x.sub}</small></span>${x.fresh?'<i class="dot"></i>':''}</button>`).join(''):`<p class="muted small" style="padding:14px 16px;margin:0">${S.isT?'Chưa có học sinh nào nộp bài trong 7 ngày qua.':'Chưa có thông báo mới. Khi thầy/cô giao bài hoặc nhận xét bài thu âm, chuông sẽ báo ở đây.'}</p>`}</div>`:'';
   return`<div class="bellw"><button type="button" id="bell-btn" class="bellb ${b.fresh?'ring':''}" data-bell="toggle" aria-label="Thông báo${b.fresh?', '+b.fresh+' tin mới':''}" aria-expanded="${BELL.open}">${BELLSVG}${b.fresh?`<span class="bn">${b.fresh>9?'9+':b.fresh}</span>`:''}</button>${panel}</div>`}
 function refreshBell(){const el=document.querySelector('.bellw');if(el){el.outerHTML=bellHtml()}const b=bellItems();if(BELL.prev>=0&&b.fresh>BELL.prev&&!BELL.open)toast(S.isT?'🔔 Có học sinh vừa nộp bài':'🔔 Bạn có thông báo mới');BELL.prev=b.fresh}
-function gotoStudent(uid){const p=S.all&&S.all[uid];const g=p&&Number(p.grade);if(g&&g!==S.grade&&S.lessons!==undefined){try{setGrade(g);S.cls=''}catch(e){}}S.sel=uid;if(location.hash==='#t-student')render();else location.hash='t-student'}
+function latestEx(p){try{const ex=exArr(p);let bi=null,bt=-1;for(const k in ex){const t=+ex[k].t||0;if(t>bt){bt=t;bi=k}}return bi}catch(e){return null}}
+function gotoStudent(uid){const p=S.all&&S.all[uid];const g=p&&Number(p.grade);if(g&&g!==S.grade&&S.lessons!==undefined){try{setGrade(g);S.cls=''}catch(e){}}S.sel=uid;
+  S.focusEx=p?latestEx(p):null;if(S.focusEx){for(const L of S.lessons||[])if(L.exercises.some(E=>E.id===S.focusEx)){S.openL=S.openL||{};S.openL[L.id]=true}}
+  if(location.hash==='#t-student')render();else location.hash='t-student';
+  let n=0;const iv=setInterval(()=>{const el=document.getElementById('exfocus');if(el){el.scrollIntoView({block:'center',behavior:'smooth'});clearInterval(iv)}else if(++n>15)clearInterval(iv)},120)}
 window.gotoStudent=gotoStudent;
 function bellClose(){if(!BELL.open)return;BELL.open=false;BELL.snap=null;refreshBell()}
 async function bellOpen(){
