@@ -66,7 +66,7 @@ ${P(HEAD,C.g,3.8)}
 
 /* ---- Baby Dragon: tour + corner mascot (student only). Gỡ: bỏ 2 dòng link/script trong index.html ---- */
 (function(){
-const LS='bd_hide_v1',KEY='tour_v2',KEY2='tour_ex_v2';const onEx=()=>typeof route==='function'&&route().startsWith('ex-')&&!!$1('.xtb');let T=null,hiVis=false;
+const LS='bd_hide_v1',KEY='tour_v3',KEY2='tour_ex_v3';const onEx=()=>typeof route==='function'&&route().startsWith('ex-')&&!!$1('.xtb');let T=null,hiVis=false;
 const ok=()=>typeof S!=='undefined'&&S&&!S.isT&&S.prof&&!(S.cfg&&S.cfg.mascotOff);
 const $1=s=>document.querySelector(s);
 function hidden(){try{return localStorage.getItem(LS)==='1'}catch(e){return false}}
@@ -85,10 +85,13 @@ function exSteps(){const r=[];
  r.push({pose:'point',el:()=>$1('.xtb .xgrp'),t:'<b>Bút highlight</b> 🖍️',s:'Bấm bút, chọn màu <b>xanh lá</b> hoặc <b>vàng</b>, rồi kéo chọn chữ trong bài đọc hoặc câu hỏi để tô màu. Trên điện thoại: nhấn giữ rồi kéo. Nút tẩy để xóa chỗ đã tô.'});
  r.push({pose:'point',el:()=>$1('.xtb [data-xt="tr"]'),t:'<b>Dịch từ</b> 🔍',s:'Bấm nút này rồi chạm vào bất kỳ từ nào để xem nghĩa, loại từ và nghe phát âm. Bôi chọn cả câu cũng ra nghĩa cả câu. Muốn chọn đáp án thì nhớ <b>tắt</b> Dịch từ.'});
  if(typeof bankOK==='function'&&bankOK())r.push({pose:'cheer',el:menuBtn,t:'<b>Kho từ vựng</b> của bạn 📚',s:'Khi tra từ, bấm <b>Thêm vào kho từ vựng</b>. Các từ đã lưu nằm trong menu <b>Bài học ▾</b> ở trên cùng, bạn có thể ôn bằng thẻ lật và làm bài kiểm tra nhanh.'});
+ if($1('.xtb [data-xt="note"]'))r.push({pose:'point',el:()=>$1('.xtb [data-xt="note"]'),t:'<b>Ghi chú chữ</b> 📝',s:'Bấm <b>T</b> rồi chạm vào chỗ trống trong bài để gõ ghi chú. Kéo thanh trên cùng của ghi chú để di chuyển; nút <b>●</b> đổi màu, <b>A− A+</b> đổi cỡ chữ.'});
+ r.push({pose:'point',el:()=>$1('.xtb [data-xt="clear"]'),t:'<b>Xóa hết</b> 🗑️',s:'Bấm thùng rác để xóa toàn bộ ghi chú và vùng tô màu ở trang này, rồi bạn có thể bắt đầu lại.'});
+ if($1('.boxw'))r.push({pose:'cheer',el:()=>$1('.boxw'),t:'<b>Kéo thả</b> từ trong khung ✋',s:'Bài có khung từ: <b>kéo</b> từ/cụm từ vào chỗ trống. Trên điện thoại thì <b>chạm</b> vào cụm từ rồi chạm vào chỗ trống. Từ đã dùng sẽ mờ đi.'});
  r.push({pose:'point',el:()=>$1('.xtb .xgrp:last-of-type'),t:'<b>Chỉnh cỡ chữ</b> 🔠',s:'Bấm <b>A▴</b> để chữ to hơn, <b>A▾</b> để nhỏ lại cho dễ đọc.'});
  r.push({pose:'point',el:()=>$1('.xtb [data-xt="dock"]'),t:'<b>Ghim thanh công cụ</b> 📌',s:'Bấm để đổi chỗ thanh công cụ: Trái → Phải → Trên. Chọn chỗ nào tiện tay nhất cho bạn.'});
  r.push({pose:'point',el:vis('.xtabs,.xpas'),t:'Bài đọc và câu hỏi 📖',s:'Máy tính: bài đọc bên trái, câu hỏi bên phải. Điện thoại: bài đọc ở trên, câu hỏi ở dưới, mỗi phần tự cuộn riêng.'});
- r.push({pose:'cheer',t:'Nộp bài để mở phần tiếp theo ✅',s:'Làm xong một phần, bấm <b>Nộp bài</b> để xem đáp án và lời giải chi tiết từng câu. Nộp rồi mới sang được phần kế tiếp. Chúc bạn làm bài thật tốt!'});
+ r.push({pose:'cheer',t:'Nộp bài để mở phần tiếp theo ✅',s:'Làm xong một phần, bấm <b>Nộp bài</b> để xem đáp án và lời giải chi tiết từng câu. Bạn có thể <b>làm lại nhiều lần</b> để nhớ bài. Chúc bạn làm bài thật tốt!'});
  return r.filter(okEl)}
 function steps(){if(T&&T.ex)return exSteps();const r=[];
  r.push({pose:'wave',t:`Chào ${esc(name())}! Mình là <b>Baby Dragon</b> 🐲, trợ lý của <b>Mr. Phi Long</b>`,s:'Mình sẽ chỉ bạn cách học trên web này, chỉ mất một phút thôi!'});
@@ -98,8 +101,9 @@ function steps(){if(T&&T.ex)return exSteps();const r=[];
  r.push({pose:'point',el:()=>$1('#bell-btn'),t:'Đây là <b>chuông thông báo</b> 🔔',s:'Có bài mới được giao hoặc thầy/cô vừa nhận xét, chuông sẽ báo ở đây.'});
  if(spG())r.push({pose:'cheer',t:'Đọc to và được chấm điểm 🎤',s:'Ở bài <b>Listen and repeat</b> và <b>Speaking cards</b>, bấm <b>Đọc thử</b> rồi đọc to. Máy chấm phát âm từ 50–100%. Mỗi mục chỉ đọc <b>1 lần</b> nên hãy nghe mẫu ♪ trước nhé!'});
  if(qaG())r.push({pose:'point',t:'Có thắc mắc? Hỏi mình nhé! 💬',s:'Bấm vào mình ở góc màn hình, chọn <b>Hỏi đáp (Q&A)</b> để hỏi bài. Nếu câu trả lời chưa ổn, bạn chấm dưới 3 sao để thầy/cô trả lời trực tiếp.'});
- r.push({pose:'cheer',el:menuBtn,t:'Ôn từ vựng bằng <b>Flashcard</b> 🃏',s:'Mở menu ☰ → <b>Flashcard</b>: lật thẻ có hình, chơi game (chọn ABCD, nhìn hình chọn nghĩa, gõ nghĩa…). Nhớ tick <b>Đã thuộc</b> và <b>Đặt câu được</b> khi bạn làm được nhé!'});
- r.push({pose:'cheer',t:'Cách làm bài ✏️',s:'Làm xong từng bài, nhớ bấm <b>Nộp bài</b> để xem kết quả. Nộp rồi mới sang được <b>Bài kế tiếp</b>, và có nút <b>Bài trước</b> nếu muốn xem lại. Cố lên nhé!'});
+ r.push({pose:'cheer',el:menuBtn,t:'Ôn từ vựng bằng <b>Flashcard</b> 🃏',s:'Mở menu ☰ → <b>Flashcard</b>: lật thẻ có hình, chơi nhiều game (chọn ABCD, xếp chữ cái, điền chữ thiếu, nghe và viết…) và bài <b>MIX 35 câu</b>. Nhớ tick <b>Đã thuộc</b> và <b>Đặt câu được</b> khi bạn làm được nhé!'});
+ if(S.lessons&&S.lessons.some(l=>l.wordform))r.push({pose:'cheer',t:'Mục <b>WORDFORM</b> 🔤',s:'Trong mỗi bài có thẻ <b>Wordform</b>: bảng danh từ – động từ – tính từ – trạng từ và phần luyện tập 10–20 câu kèm công thức. Mỗi lần bấm <b>luyện bộ câu mới</b> sẽ ra câu khác, bạn <b>làm lại bao nhiêu lần cũng được</b>!'});
+ r.push({pose:'cheer',t:'Cách làm bài ✏️',s:'Làm xong từng bài, nhớ bấm <b>Nộp bài</b> để xem kết quả. Mỗi bài có thể <b>làm lại nhiều lần</b>. Bài có <b>công thức</b> ở trên đề thì đọc kỹ trước khi làm, vì vậy không cần thầy/cô bên cạnh bạn vẫn tự ôn được. Cố lên nhé!'});
  return r.filter(okEl)}
 function finish(){if(!T)return;const ISEX=T.ex;T.root.remove();T.spot&&T.spot.remove();window.removeEventListener('resize',T.rp);window.removeEventListener('scroll',T.rp,true);document.removeEventListener('keydown',T.kd);T=null;
  const K=ISEX?KEY2:KEY;if(S.prof){S.prof.lv=S.prof.lv||{};if(!S.prof.lv[K]){S.prof.lv[K]=Date.now();try{saveProf()}catch(e){}}}sync()}

@@ -68,7 +68,7 @@ document.addEventListener('click',e=>{
     if(k==='pen'){TX.pen=TX.pen?null:'g';if(TX.pen)TX.note=false}
     else if(k==='hl-g'||k==='hl-y'||k==='hl-x'){const c=k.slice(3);TX.pen=TX.pen===c?null:c;if(TX.pen)TX.note=false}
     else if(k==='note'){TX.note=!TX.note;if(TX.note){TX.pen=null;if(TX.tr){TX.tr=false;hideTip()}}}
-    else if(k==='clear'){const eid=curEid();if(eid&&confirm('Xóa tất cả ghi chú và vùng tô màu ở trang này?')){hlSet(eid,[]);ntSet(eid,[]);paintAll();ntRender()}}
+    else if(k==='clear'){const eid=curEid();if(eid)askBox('Xóa tất cả ghi chú và vùng tô màu ở trang này?','Xóa hết','🗑️').then(ok=>{if(ok){hlSet(eid,[]);ntSet(eid,[]);paintAll();ntRender()}})}
     else if(k==='dock'){dock=DK[(DK.indexOf(dock)+1)%DK.length];lss('ll-dock2',dock)}
     else if(k==='tr'){TX.tr=!TX.tr;if(TX.tr){TX.pen=null;TX.note=false}if(!TX.tr)hideTip()}
     else if(k==='fs-'||k==='fs+'){fsi=Math.max(0,Math.min(FS.length-1,fsi+(k==='fs+'?1:-1)));lss('ll-fs',String(fsi));applyFs()}

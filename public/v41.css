@@ -10,3 +10,17 @@ input.blank.dz{background:#fff6c9;border-bottom-color:#b7791f}
 .wfres{margin-top:6px;font-size:.95rem}.wfres.ok{color:#256b3a}.wfres.bad{color:#b3382c}
 .wftip{margin-top:4px;padding:8px 12px;border-radius:10px;background:#f6f1d4;color:#2b3a2f;font-size:.88rem}
 .mt .mtp{display:block;max-width:170px;width:100%;border-radius:8px}
+
+.askov{position:fixed;inset:0;z-index:9999;background:rgba(30,45,35,.45);display:grid;place-items:center;padding:20px}
+.askbox{background:#fff;border-radius:22px;padding:24px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.askbox .askic{font-size:2.2rem}.askbox p{margin:10px 0 18px;font-size:1.05rem;line-height:1.45}
+.askbt{display:flex;gap:10px;justify-content:center}
+
+.tbl4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.tbl4 .t4c{display:flex;flex-direction:column;gap:6px;padding:12px;border:1.5px solid var(--line,#d8e2cf);border-radius:14px;background:#fff;text-align:center}
+.tbl4 .t4c b{color:var(--primary-deep,#2e5e3e);letter-spacing:.04em;padding-bottom:6px;border-bottom:1px dashed var(--line,#d8e2cf)}
+.tbl4 .t4c span{font-size:.95rem}
+@media(max-width:560px){.tbl4{grid-template-columns:repeat(2,1fr)}}
+.dictbox{margin:12px 0;border:2px solid #cfd9e8;border-radius:16px;background:#f7faff;padding:12px;display:flex;flex-direction:column;gap:10px}
+.dictbox .dictt{font-weight:700;color:#2d4a7a;font-size:.9rem}
+.dictbox img{display:block;width:100%;max-width:640px;margin:0 auto;border-radius:10px;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.08);image-rendering:-webkit-optimize-contrast}

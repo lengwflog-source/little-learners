@@ -45,6 +45,13 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.boxw span')){e.preventDefault();e.target.click()}});
 document.addEventListener('input',e=>{if(e.target.classList&&e.target.classList.contains('blank'))boxMark()});
 
+/* ---- hộp xác nhận trong giao diện ---- */
+window.askBox=function(msg,okLabel,icon){return new Promise(res=>{
+  const o=document.createElement('div');o.className='askov';o.innerHTML=`<div class="askbox" role="dialog" aria-modal="true"><div class="askic">${icon||'❓'}</div><p>${E(msg)}</p><div class="askbt"><button type="button" class="btn ghost" data-a="0">Hủy</button><button type="button" class="btn" data-a="1">${E(okLabel||'Đồng ý')}</button></div></div>`;
+  const done=v=>{o.remove();document.removeEventListener('keydown',kd);res(v)};const kd=e=>{if(e.key==='Escape')done(false)};
+  o.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b)done(b.dataset.a==='1');else if(e.target===o)done(false)});
+  document.addEventListener('keydown',kd);document.body.appendChild(o);const b=o.querySelector('[data-a="1"]');b&&b.focus()})};
+
 /* ---- WORDFORM ---- */
 let W=null;const COLS=['Danh từ (N)','Động từ (V)','Tính từ (adj)','Trạng từ (adv)'];
 addEventListener('hashchange',()=>{W=null});

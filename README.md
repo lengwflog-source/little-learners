@@ -340,3 +340,11 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Đã dạy / Chưa dạy từng mục (giáo viên), Giao bài mới chỉ hiện mục đã dạy và chưa giao; nút đặt lại và trả bài quá hạn (cần cập nhật netlify/functions/api.mjs).
 - Ghi chú chữ (giáo viên + lớp IELTS) và nút thùng rác xóa hết ghi chú/tô màu.
 - Ex nối hình (u5-gs-1b) cắt thành 8 hình riêng.
+
+## v42
+- Bỏ các bài phụ thuộc gạch chân/khoanh tròn (mất định dạng); đánh số lại Ex 1, 2, 3…
+- Bỏ ký tự a. b. VII. đầu đề; dịch dòng hướng dẫn dưới tiêu đề sang tiếng Việt.
+- Bài viết câu có khung cấu trúc + cách làm phía trên (Yes/No, nối câu, trả lời, viết từ gợi ý, viết lại câu, gợi ý trong ngoặc như FEW/IF…).
+- Bài từ điển: đưa vào hộp riêng, hình lớn, bấm phóng to; tiêu đề "Tra từ điển".
+- Bảng số liệu 4 cột (Terry/Kate/Mary/John).
+- Hộp hỏi xác nhận ngay trong trang; Baby Dragon giới thiệu WORDFORM, game, làm lại nhiều lần; ẩn bài quá hạn ở học sinh.
