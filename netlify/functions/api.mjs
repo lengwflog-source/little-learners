@@ -579,8 +579,8 @@ async function route(req) {
     return J(200, { ok: true });
   }
 
-  /* ---------- chấm phát âm (mỗi bé đọc 1 lần / mục, không lưu file âm thanh, tự xóa sau 3 ngày) ---------- */
-  const SPK = store("speak"), SPK_KEEP = 3 * 24 * 3600 * 1000;
+  /* ---------- chấm phát âm (mỗi bé đọc 1 lần / mục, không lưu file âm thanh, tự xóa sau 60 ngày) ---------- */
+  const SPK = store("speak"), SPK_KEEP = 60 * 24 * 3600 * 1000;
   const spLive = (d) => Object.fromEntries(Object.entries((d && d.r) || {}).filter(([, v]) => v && Date.now() - v.t < SPK_KEEP));
   if (a === "speak" && b === "mine" && m === "GET") {
     if (staff) return J(200, { r: {} });

@@ -42,6 +42,7 @@ function mtLink(i, k, j) {
   a[k] = j;
   X.ans[i] = a;
   MT.sel = null;
+  if (window.SFX) SFX.pop();
   mtRefresh(i);
 }
 

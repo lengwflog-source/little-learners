@@ -53,7 +53,7 @@ window.flashView=function(){
   <select id="fc-st" class="sel-in" aria-label="Lọc"><option value="all">Tất cả</option><option value="new" ${FC.st==='new'?'selected':''}>Chưa thuộc</option><option value="known" ${FC.st==='known'?'selected':''}>Đã thuộc</option><option value="nosent" ${FC.st==='nosent'?'selected':''}>Chưa đặt câu được</option></select>
   <input id="fc-q" class="sel-in" type="search" placeholder="Tìm từ hoặc nghĩa…" value="${E(FC.q)}" aria-label="Tìm từ"></div>
   <div class="fc-go"><button class="btn" data-fc="cards" ${L.length?'':'disabled'}>🃏 Lật thẻ (${L.length})</button>
-  ${[['abcd','🔤 Trắc nghiệm ABCD'],['en2vi','🇬🇧→🇻🇳 Nhìn Anh chọn Việt'],['pic2vi','🖼️ Nhìn hình chọn nghĩa'],['type','⌨️ Nhìn chữ ghi nghĩa'],['pictype','✍️ Nhìn hình ghi nghĩa'],['listen','🎧 Nghe chọn từ'],['scr','🔀 Xếp chữ cái'],['gap','🕳️ Điền chữ thiếu'],['vi2type','🇻🇳→🇬🇧 Nhìn nghĩa viết từ'],['spell','👂 Nghe và viết'],['mix','🎲 Trộn (10 câu)'],['big','🏁 Luyện tập MIX (35 câu)']].map(g=>`<button class="btn ghost" data-fc="game" data-m="${g[0]}" ${L.length<4?'disabled':''}>${g[1]}</button>`).join('')}</div>
+  ${[['abcd','🔤 Trắc nghiệm ABCD'],['en2vi','🇬🇧→🇻🇳 Nhìn Anh chọn Việt'],['pic2vi','🖼️ Nhìn hình chọn từ tiếng Anh'],['type','⌨️ Nhìn chữ ghi nghĩa'],['pictype','✍️ Nhìn hình ghi nghĩa'],['listen','🎧 Nghe chọn từ'],['scr','🔀 Xếp chữ cái'],['gap','🕳️ Điền chữ thiếu'],['vi2type','🇻🇳→🇬🇧 Nhìn nghĩa viết từ'],['spell','👂 Nghe và viết'],['mix','🎲 Trộn (10 câu)'],['big','🏁 Luyện tập MIX (35 câu)']].map(g=>`<button class="btn ghost" data-fc="game" data-m="${g[0]}" ${L.length<4?'disabled':''}>${g[1]}</button>`).join('')}</div>
   <div class="fc-list">${L.slice(0,FC.lim).map(w=>{const b=get(w.k);return`<div class="card fc-item ${b&1?'known':''}"><div class="fc-pic">${tile(w)}</div><div class="fc-body"><div class="fc-h"><b>${E(w.en)}</b>${w.ipa?`<span class="xipa">${E(w.ipa)}</span>`:''}<button class="say" data-say="${E(w.en)}" aria-label="Nghe">♪</button>${w.pos?`<span class="chip">${E(w.pos)}</span>`:''}</div><div class="fc-vi">${E(w.vi)}</div>
   <div class="fc-act"><label class="fc-ck"><input type="checkbox" data-fck="1" data-k="${E(w.k)}" ${b&1?'checked':''}> Đã thuộc</label><label class="fc-ck"><input type="checkbox" data-fck="2" data-k="${E(w.k)}" ${b&2?'checked':''}> Đặt câu được ✍️</label></div></div></div>`}).join('')||'<p class="muted">Không có từ nào khớp.</p>'}</div>
   ${L.length>FC.lim?`<p style="text-align:center"><button class="btn ghost" data-fc="more">Hiện thêm (${L.length-FC.lim} từ)</button></p>`:''}</div>`};
@@ -75,7 +75,7 @@ function makeQ(w,type,D){
   const q={w,type};
   if(type==='en2vi'){q.opts=opts(w,D,'vi');q.f='vi'}
   else if(type==='vi2en'){q.opts=opts(w,D,'en');q.f='en'}
-  else if(type==='pic2vi'){q.opts=opts(w,D,'vi');q.f='vi'}
+  else if(type==='pic2vi'){q.opts=opts(w,D,'en');q.f='en'}
   else if(type==='listen'){q.opts=opts(w,D,'en');q.f='en'}
   else if(type==='scr'){const ch=w.en.replace(/\s+/g,'').split('');let t;for(let z=0;z<9;z++){t=rnd(ch).join('');if(t!==ch.join(''))break}q.hint=t}
   else if(type==='gap'){const ch=w.en.split('');const idx=ch.map((c,i)=>/[a-z]/i.test(c)?i:-1).filter(i=>i>0);const hide=new Set(rnd(idx).slice(0,Math.max(1,Math.round(idx.length*.5))));q.hint=ch.map((c,i)=>hide.has(i)?'_':c).join(' ')}
@@ -92,7 +92,7 @@ function qHtml(q,g){
   const w=q.w;let prompt='';
   if(q.type==='en2vi')prompt=`<div class="gq-t">Nghĩa tiếng Việt của từ này là gì?</div><div class="gq-w">${E(w.en)} <button class="say" data-say="${E(w.en)}" aria-label="Nghe">♪</button></div>${w.ipa?`<div class="xipa">${E(w.ipa)}</div>`:''}`;
   else if(q.type==='vi2en')prompt=`<div class="gq-t">Từ tiếng Anh nào có nghĩa là:</div><div class="gq-w">${E(w.vi)}</div>`;
-  else if(q.type==='pic2vi')prompt=`<div class="gq-t">Nhìn hình, chọn nghĩa đúng:</div><div class="gq-pic">${w.pic}</div>`;
+  else if(q.type==='pic2vi')prompt=`<div class="gq-t">Look at the picture and choose the correct English word:</div><div class="gq-pic">${w.pic}</div>`;
   else if(q.type==='listen')prompt=`<div class="gq-t">Nghe và chọn từ đúng:</div><button class="btn gq-ear" data-say="${E(w.en)}">🎧 Nghe lại</button>`;
   else if(q.type==='scr')prompt=`<div class="gq-t">Sắp xếp lại các chữ cái thành từ có nghĩa: <b>${E(w.vi)}</b></div><div class="gq-w" style="letter-spacing:.2em">${E(q.hint.toUpperCase())}</div>`;
   else if(q.type==='gap')prompt=`<div class="gq-t">Điền các chữ cái còn thiếu: <b>${E(w.vi)}</b></div><div class="gq-w" style="letter-spacing:.15em">${E(q.hint)}</div>`;
