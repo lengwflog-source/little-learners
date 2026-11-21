@@ -348,3 +348,8 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Bài từ điển: đưa vào hộp riêng, hình lớn, bấm phóng to; tiêu đề "Tra từ điển".
 - Bảng số liệu 4 cột (Terry/Kate/Mary/John).
 - Hộp hỏi xác nhận ngay trong trang; Baby Dragon giới thiệu WORDFORM, game, làm lại nhiều lần; ẩn bài quá hạn ở học sinh.
+
+## v43
+- lop5: id bài tập thêm tiền tố `l5-` (trước đây trùng lop4 → mở sai bài, đếm sai).
+- A1 (ef): phần Listen & repeat chấm máy; chỉ "Speaking: Record your answers" giáo viên chấm. Giáo viên thấy % đọc.
+- Nhìn hình chọn từ tiếng Anh; WORDFORM kho 100 câu/phần, mỗi lần 20 câu; mặc định giao diện sáng; âm thanh (ting/ố/vỗ tay/bụp).

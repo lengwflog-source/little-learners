@@ -92,7 +92,7 @@ function qHtml(q,g){
   const w=q.w;let prompt='';
   if(q.type==='en2vi')prompt=`<div class="gq-t">Nghĩa tiếng Việt của từ này là gì?</div><div class="gq-w">${E(w.en)} <button class="say" data-say="${E(w.en)}" aria-label="Nghe">♪</button></div>${w.ipa?`<div class="xipa">${E(w.ipa)}</div>`:''}`;
   else if(q.type==='vi2en')prompt=`<div class="gq-t">Từ tiếng Anh nào có nghĩa là:</div><div class="gq-w">${E(w.vi)}</div>`;
-  else if(q.type==='pic2vi')prompt=`<div class="gq-t">Look at the picture and choose the correct English word:</div><div class="gq-pic">${w.pic}</div>`;
+  else if(q.type==='pic2vi')prompt=`<div class="gq-t">Nhìn hình, chọn từ tiếng Anh đúng:</div><div class="gq-pic">${w.pic}</div>`;
   else if(q.type==='listen')prompt=`<div class="gq-t">Nghe và chọn từ đúng:</div><button class="btn gq-ear" data-say="${E(w.en)}">🎧 Nghe lại</button>`;
   else if(q.type==='scr')prompt=`<div class="gq-t">Sắp xếp lại các chữ cái thành từ có nghĩa: <b>${E(w.vi)}</b></div><div class="gq-w" style="letter-spacing:.2em">${E(q.hint.toUpperCase())}</div>`;
   else if(q.type==='gap')prompt=`<div class="gq-t">Điền các chữ cái còn thiếu: <b>${E(w.vi)}</b></div><div class="gq-w" style="letter-spacing:.15em">${E(q.hint)}</div>`;
@@ -116,7 +116,7 @@ function gamePaint(){
 function judge(q,s){const a=strip(s);if(!a)return false;const en=strip(q.w.en);if(a===en)return true;if(['scr','gap','vi2type','spell'].includes(q.type))return false;if(q.type==='pictype'&&false)return false;
   const parts=q.w.vi.split(/[,;\/()]| hoặc /).map(strip).filter(x=>x.length>1);
   return parts.some(p=>p===a||(a.length>=3&&p.length>=3&&(p.includes(a)||a.includes(p))))}
-function answer(good,typed){const g=FC.game,q=g.qs[g.i];g.good=good;g.typed=typed;g.ans=typed!=null?'typed':g.pickK;if(good){g.score++;g.okw.push(q.w)}else g.miss.push(q.w);gamePaint()}
+function answer(good,typed){const g=FC.game,q=g.qs[g.i];g.good=good;g.typed=typed;g.ans=typed!=null?'typed':g.pickK;if(good){g.score++;g.okw.push(q.w);try{window.SFX&&SFX.ok()}catch(e){}}else g.miss.push(q.w);gamePaint()}
 
 /* ---------- sự kiện ---------- */
 document.addEventListener('click',e=>{

@@ -1,6 +1,6 @@
 /* Chấm phát âm cho bài Listen and repeat / Speaking cards (lớp 2-5).
    Dùng nhận dạng giọng nói của trình duyệt: KHÔNG lưu file âm thanh. Mỗi bé chỉ đọc 1 lần cho mỗi mục.
-   Kết quả (điểm 50-100%) lưu 60 ngày để giáo viên xem rồi tự xóa. */
+   Kết quả (điểm 50-100%) lưu 30 ngày để giáo viên xem rồi tự xóa. */
 (function(){
 const GR=[2,3,4,5,8];
 const spOn=()=>!S.isT&&!!S.user&&GR.includes(Number(S.grade));
@@ -22,13 +22,6 @@ function ui(it,i){const k=keyOf(i);const r=window.SPK[k];
   if(!SR)return`<div class="spk small muted">🎤 Thiết bị này chưa hỗ trợ chấm giọng nói. Hãy dùng Chrome (Android) hoặc Safari (iPhone).</div>`;
   const on=window.SPKON===k;
   return`<div class="spk" data-spk="${k}"><button class="btn sm ${on?'rec-on':''}" data-spkgo="${i}" ${window.SPKON&&!on?'disabled':''}>${on?'● Đang nghe… hãy đọc to':'🎤 Đọc thử (chỉ 1 lần)'}</button><span class="small muted">Nghe mẫu ♪ trước, rồi đọc to. Điểm 50–100%.</span></div>`}
-/* Khóa A1 (EF): mục "Listen, repeat and record" (rec không có prompt) do máy chấm; câu hỏi speaking (có prompt) vẫn thu âm cho giáo viên */
-window.SPKM=function(it){return !!(SR&&it&&it.t==='rec'&&!it.prompt&&!S.isT&&S.user&&X&&X.L&&Number(X.L.grade)===3)};
-window.SPKREC=function(it,i){
-  const bt=`<div class="recw"><div class="rt"><button class="say big" data-say="${esc(it.w)}" aria-label="Nghe mẫu" title="Nghe mẫu">♪</button><button class="say big" data-say="${esc(it.w)}" data-rate="0.55" aria-label="Nghe chậm" title="Nghe chậm">🐢</button><b class="rtext">${esc(it.w)}</b>${it.ipa?`<span class="muted small">${esc(it.ipa)}</span>`:''}${it.vi?`<span class="muted small">${esc(it.vi)}</span>`:''}</div>`;
-  const k=keyOf(i);
-  if(!window.SPK[k]&&X&&X.checked)return bt+`<div class="spk small muted">Bạn chưa đọc mục này.</div></div>`;
-  return bt+ui(it,i)+`</div>`};
 const _ih=window.itemHtml;
 if(typeof _ih==='function'){window.itemHtml=function(it,i,...rest){let out=_ih.call(this,it,i,...rest);
   if(spOn()&&it&&(it.t==='say'||it.t==='card')&&typeof out==='string'&&out.lastIndexOf('</div>')>-1&&!/data-spk=/.test(out)){const j=out.lastIndexOf('</div>');out=out.slice(0,j)+ui(it,i)+out.slice(j)}return out}}
@@ -40,23 +33,27 @@ function start(i){const it=X&&X.E&&X.E.items[i];if(!it||window.SPKON)return;cons
   const stop=()=>{window.SPKON=null;repaint(i)};
   rc.onresult=async ev=>{got=true;const res=ev.results[0];const alts=[];for(let a=0;a<res.length;a++)alts.push({t:res[a].transcript,c:res[a].confidence});
     const sc=score(targetsOf(it),alts);const heard=alts[0]?alts[0].t:'';
-    if(window.SFX)SFX.score(sc);if(X&&X.ans&&it.t==='rec')X.ans[i]=true;
     try{const r=await API.call('POST','speak/result',{key:k,score:sc,heard,target:targetsOf(it)[0]});window.SPK[k]=r.rec}catch(e){window.SPK[k]={s:sc,h:heard,t:Date.now()};toast('Chưa lưu được kết quả lên máy chủ.')}
+    try{window.SFX&&SFX.say(sc)}catch(e){}
     window.SPKON=null;repaint(i)};
   rc.onerror=ev=>{if(got)return;const m={'not-allowed':'Hãy cho phép dùng micro rồi bấm lại.','service-not-allowed':'Hãy cho phép dùng micro rồi bấm lại.','no-speech':'Chưa nghe thấy giọng. Bấm lại để thử (chưa tính lượt).','audio-capture':'Không tìm thấy micro.','network':'Cần có mạng để chấm giọng nói.'}[ev.error]||'Chưa nghe rõ, bấm lại để thử (chưa tính lượt).';toast(m);stop()};
   rc.onend=()=>{if(!got&&window.SPKON===k)stop()};
   try{rc.start()}catch(e){stop()}}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-spkgo]');if(b){e.preventDefault();e.stopPropagation();start(+b.dataset.spkgo)}},true);
 /* giáo viên xem kết quả */
-/* chip điểm đọc trung bình của một bộ bài (dùng ở danh sách bài trong hồ sơ học sinh) */
-window.SPKCHIP=function(uid,exId){if(!LIVE||!LIVE.all)return'';const r=LIVE.all[uid]||{};const v=Object.entries(r).filter(([k])=>k.split(':')[0]===exId).map(([,x])=>x.s);if(!v.length)return'';const a=Math.round(v.reduce((x,y)=>x+y,0)/v.length),l=label(a);return`<span class="chip ${l[1]}" title="Điểm đọc trung bình (${v.length} mục)">🎤 ${a}%</span>`};
 async function loadAll(){try{const r=await API.call('GET','speak/all');LIVE={all:r.all||{},t:Date.now()}}catch(e){LIVE={all:{},t:Date.now()}}}
 function tcard(){const u=S.sel;if(!LIVE||Date.now()-LIVE.t>60000){if(!window.SPKLD){window.SPKLD=1;loadAll().then(()=>{window.SPKLD=0;if(route()==='t-student')render()})}return''}
   const r=(LIVE.all||{})[u]||{};const rows=Object.entries(r).sort((a,b)=>b[1].t-a[1].t);
   const avg=rows.length?Math.round(rows.reduce((x,[,v])=>x+v.s,0)/rows.length):null;
-  return`<div class="card" style="margin-block:12px"><div class="row"><div><b>🎤 Kết quả phát âm (60 ngày gần nhất)</b><div class="small muted">Bé đọc 1 lần/mục, không lưu file âm thanh. Kết quả tự xóa sau 60 ngày.</div></div><span class="sp"></span>${avg!=null?`<span class="chip ${label(avg)[1]}">TB ${avg}% · ${rows.length} mục</span>`:''}</div>${rows.length?`<div class="tw"><table class="t" style="min-width:0;margin-top:8px"><thead><tr><th>Từ / câu</th><th>Máy nghe</th><th>Điểm</th><th>Lúc</th></tr></thead><tbody>${rows.map(([k,v])=>{const l=label(v.s);return`<tr><td><b>${esc(v.w||k)}</b></td><td class="muted">${esc(v.h||'—')}</td><td><span class="chip ${l[1]}">${v.s}% ${l[2]}</span></td><td class="small muted">${fmtT(v.t)}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="muted small" style="margin-top:8px">Chưa có bài đọc nào.</p>'}</div>`}
+  return`<div class="card" style="margin-block:12px"><div class="row"><div><b>🎤 Kết quả phát âm (30 ngày gần nhất)</b><div class="small muted">Bé đọc 1 lần/mục, không lưu file âm thanh. Kết quả tự xóa sau 30 ngày.</div></div><span class="sp"></span>${avg!=null?`<span class="chip ${label(avg)[1]}">TB ${avg}% · ${rows.length} mục</span>`:''}</div>${rows.length?`<div class="tw"><table class="t" style="min-width:0;margin-top:8px"><thead><tr><th>Từ / câu</th><th>Máy nghe</th><th>Điểm</th><th>Lúc</th></tr></thead><tbody>${rows.map(([k,v])=>{const l=label(v.s);return`<tr><td><b>${esc(v.w||k)}</b></td><td class="muted">${esc(v.h||'—')}</td><td><span class="chip ${l[1]}">${v.s}% ${l[2]}</span></td><td class="small muted">${fmtT(v.t)}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="muted small" style="margin-top:8px">Chưa có bài đọc nào trong 30 ngày qua.</p>'}</div>`}
+window.spkChip=function(E){if(!S.isT||!E||!E.items.some(it=>it.t==='say'||it.t==='card'))return'';
+  if(!LIVE||Date.now()-LIVE.t>60000){if(!window.SPKLD){window.SPKLD=1;loadAll().then(()=>{window.SPKLD=0;if(route()==='t-student')render()})}return''}
+  const r=(LIVE.all||{})[S.sel]||{};const v=[];E.items.forEach((it,i)=>{const x=r[E.id+':'+i];if(x)v.push(x.s)});
+  const tot=E.items.filter(it=>it.t==='say'||it.t==='card').length;
+  if(!v.length)return'<span class="chip">🎤 chưa đọc</span>';
+  const avg=Math.round(v.reduce((a,b)=>a+b,0)/v.length);return`<span class="chip ${avg>=85?'good':avg>=70?'warn':'bad'}" title="Điểm phát âm trung bình do máy chấm">🎤 ${avg}% · ${v.length}/${tot} mục</span>`};
 const _sd=window.studentDetail;
 if(typeof _sd==='function'){window.studentDetail=function(){let out=_sd.apply(this,arguments);if(!S.isT||typeof out!=='string')return out;const c=tcard();if(!c)return out;const j=out.lastIndexOf('</div>');return j>-1?out.slice(0,j)+c+out.slice(j):out+c}}
 const _r=window.render;
-window.render=function(){if(!LOADED&&spOn())load().then(()=>{if(route().startsWith('ex-'))try{X&&X.E&&X.E.items.forEach((it,i)=>{if(it.t==='say'||it.t==='card'||window.SPKM(it))repaint(i)})}catch(e){}});return _r.apply(this,arguments)};
+window.render=function(){if(!LOADED&&spOn())load().then(()=>{if(route().startsWith('ex-'))try{X&&X.E&&X.E.items.forEach((it,i)=>{if(it.t==='say'||it.t==='card')repaint(i)})}catch(e){}});return _r.apply(this,arguments)};
 })();

@@ -35,6 +35,7 @@ function mtRefresh(i) {
 }
 
 function mtLink(i, k, j) {
+  try { window.SFX && SFX.pop(); } catch (e) {}
   const it = X.E.items[i];
   let a = Array.isArray(X.ans[i]) ? X.ans[i].slice() : [];
   while (a.length < it.left.length) a.push('');
@@ -42,7 +43,6 @@ function mtLink(i, k, j) {
   a[k] = j;
   X.ans[i] = a;
   MT.sel = null;
-  if (window.SFX) SFX.pop();
   mtRefresh(i);
 }
 

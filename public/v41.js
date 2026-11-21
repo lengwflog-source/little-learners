@@ -60,13 +60,14 @@ window.wfView=function(L){
   const tb=`<div class="tw"><table class="t wft"><thead><tr>${COLS.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${wf.rows.map(r=>`<tr>${r.map(c=>`<td>${c.map(x=>`<div><b>${E(x.en)}</b>${x.vi?`<span class="muted small"> · ${E(x.vi)}</span>`:''}</div>`).join('')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   const rules=`<div class="exm"><b>📌 Cách chọn dạng từ</b><p><b>N</b>: a/an/the/sở hữu + (adj) + <b>N</b> · giới từ (in, on, of, for…) + <b>N</b> · some of / many of + <b>N số nhiều</b></p><p><b>V</b>: S + <b>V</b> · to + <b>V</b> · can/will/should + <b>V</b></p><p><b>adj</b>: a/an/the + <b>adj</b> + N · be/look/seem/feel + <b>adj</b></p><p><b>adv</b>: V + <b>adv</b> · <b>adv</b> + adj · <b>Adv</b>, S + V</p></div>`;
   let pr='';
-  if(!W||W.lid!==L.id)pr=`<div class="card" style="margin-top:16px"><h3 style="margin-bottom:6px">✏️ Luyện tập WORDFORM</h3><p class="muted small" style="margin:0 0 12px">Mỗi lần bấm sẽ có bộ câu và thứ tự khác nhau (10–20 câu). Sau khi nộp có đáp án và công thức cho từng câu.</p><button class="btn" data-wf="start">Bắt đầu luyện tập</button></div>`;
+  if(!W||W.lid!==L.id)pr=`<div class="card" style="margin-top:16px"><h3 style="margin-bottom:6px">✏️ Luyện tập WORDFORM</h3><p class="muted small" style="margin:0 0 12px">Mỗi lần bấm sẽ có bộ câu và thứ tự khác nhau (20 câu ngẫu nhiên từ kho 100 câu). Sau khi nộp có đáp án và công thức cho từng câu.</p><button class="btn" data-wf="start">Bắt đầu luyện tập</button></div>`;
   else{
     const done=W.done;let ok=0;
     pr=`<div class="card" style="margin-top:16px"><h3 style="margin-bottom:10px">✏️ Luyện tập WORDFORM · ${W.qs.length} câu</h3>${W.qs.map((q,i)=>{
       const parts=E(q.q).replace(/&lt;b&gt;/g,'<b>').replace(/&lt;\/b&gt;/g,'</b>').split('___');
       const v=W.ans[i]||'';let res='';
       if(done){const good=q.a.some(a=>N(a)===N(v));if(good)ok++;res=`<div class="wfres ${good?'ok':'bad'}">${good?'✔ Đúng':'✘ Sai'} · Đáp án: <b>${E(q.a[0])}</b><div class="wftip">${q.tip||''}</div></div>`}
+      if(q.o){q._o=q._o||rnd(q.o.slice());return`<div class="wfq"><span class="num">${i+1}</span><div>${parts[0]}<br><select class="blank wfi" data-wfi="${i}" ${done?'disabled':''}><option value="">— chọn —</option>${q._o.map(o=>`<option ${o===v?'selected':''} value="${E(o)}">${E(o)}</option>`).join('')}</select>${res}</div></div>`}
       return`<div class="wfq"><span class="num">${i+1}</span><div>${parts[0]}<input class="blank wfi" data-wfi="${i}" value="${E(v)}" ${done?'disabled':''} autocomplete="off" autocapitalize="none" spellcheck="false">${parts.slice(1).join('___')}${res}</div></div>`}).join('')}
       <div class="row" style="margin-top:14px;gap:8px">${done?`<b>Kết quả: ${ok}/${W.qs.length}</b><span class="sp"></span><button class="btn" data-wf="start">Luyện bộ câu mới</button>`:`<button class="btn" data-wf="check">Nộp bài</button>`}</div></div>`}
   return`<div class="prose" style="margin-bottom:10px"><h3>Bảng WORDFORM</h3></div>${tb}${rules}${pr}`};
@@ -76,9 +77,29 @@ document.addEventListener('click',e=>{
   const L=S.by[location.hash.replace('#lesson-','')];if(!L||!L.wordform)return;
   if(b.dataset.wf==='start'){
     const pool=L.wordform.pool||[],seen=new Set(),u=[];rnd(pool).forEach(q=>{if(!seen.has(q.q)){seen.add(q.q);u.push(q)}});
-    const n=Math.min(u.length,Math.max(10,Math.min(20,L.wordform.rows.length*2)));
+    const n=Math.min(u.length,20);
     W={lid:L.id,qs:u.slice(0,n),ans:[],done:false};
   }else if(b.dataset.wf==='check'&&W){W.done=true}
   render();
 });
+
+/* ---- âm thanh ---- */
+(function(){
+let ctx=null;
+const on=()=>{try{return localStorage.getItem('ll-mute')!=='1'}catch(e){return true}};
+function C(){if(!on())return null;try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}catch(e){return null}}
+function tone(c,f,t0,d,type,vol,f2){const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t0+d);g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);o.connect(g).connect(c.destination);o.start(t0);o.stop(t0+d+0.05)}
+function noise(c,t0,d,vol,fc){const n=c.sampleRate*d,b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++){const env=0.55+0.45*Math.sin(i/c.sampleRate*38+Math.sin(i/c.sampleRate*9)*3);a[i]=(Math.random()*2-1)*env}
+  const s=c.createBufferSource();s.buffer=b;const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=fc;f.Q.value=0.7;const g=c.createGain();g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+0.15);g.gain.setValueAtTime(vol,t0+d-0.5);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);s.connect(f).connect(g).connect(c.destination);s.start(t0)}
+const SFX={
+ ting(v){const c=C();if(!c)return;const t=c.currentTime;v=v||0.28;tone(c,1568,t,0.9,'sine',v);tone(c,2349,t,0.6,'sine',v*0.5);tone(c,3136,t+0.01,0.35,'sine',v*0.25)},
+ pop(){const c=C();if(!c)return;const t=c.currentTime;tone(c,720,t,0.11,'sine',0.45,160);tone(c,360,t,0.08,'triangle',0.2,120)},
+ aww(){const c=C();if(!c)return;const t=c.currentTime;[[392,311,0],[349,247,0.32]].forEach(([a,b,d])=>{const o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=900;o.type='sawtooth';o.frequency.setValueAtTime(a,t+d);o.frequency.linearRampToValueAtTime(b,t+d+0.3);g.gain.setValueAtTime(0.0001,t+d);g.gain.exponentialRampToValueAtTime(0.22,t+d+0.04);g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.34);o.connect(f).connect(g).connect(c.destination);o.start(t+d);o.stop(t+d+0.4)})},
+ ok(){const c=C();if(!c)return;const t=c.currentTime;tone(c,880,t,0.18,'sine',0.25);tone(c,1318,t+0.1,0.3,'sine',0.25)},
+ cheer(){const c=C();if(!c)return;const t=c.currentTime;noise(c,t,1.7,0.22,1800);noise(c,t+0.1,1.5,0.12,3200);[523,659,784,1047].forEach((f,i)=>tone(c,f,t+i*0.11,0.5,'triangle',0.2));tone(c,300,t+0.1,0.5,'sawtooth',0.06,520);tone(c,1047,t+0.5,0.9,'sine',0.18)},
+ say(sc){if(sc>=80)SFX.ting();else if(sc>=70)SFX.ting(0.14);else SFX.aww()},
+ result(c,n){if(n>0&&c/n>=0.8)SFX.cheer()},
+ mute(m){try{localStorage.setItem('ll-mute',m?'1':'0')}catch(e){}}};
+window.SFX=SFX;
+})();
 })();
