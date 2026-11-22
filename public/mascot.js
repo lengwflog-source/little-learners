@@ -66,7 +66,7 @@ ${P(HEAD,C.g,3.8)}
 
 /* ---- Baby Dragon: tour + corner mascot (student only). Gỡ: bỏ 2 dòng link/script trong index.html ---- */
 (function(){
-const LS='bd_hide_v1',KEY='tour_v3',KEY2='tour_ex_v3';const onEx=()=>typeof route==='function'&&route().startsWith('ex-')&&!!$1('.xtb');let T=null,hiVis=false;
+const LS='bd_hide_v1',KEY='tour_v4',KEY2='tour_ex_v3';const onEx=()=>typeof route==='function'&&route().startsWith('ex-')&&!!$1('.xtb');let T=null,hiVis=false;
 const ok=()=>typeof S!=='undefined'&&S&&!S.isT&&S.prof&&!(S.cfg&&S.cfg.mascotOff);
 const $1=s=>document.querySelector(s);
 function hidden(){try{return localStorage.getItem(LS)==='1'}catch(e){return false}}
@@ -93,7 +93,7 @@ function exSteps(){const r=[];
  r.push({pose:'point',el:vis('.xtabs,.xpas'),t:'Bài đọc và câu hỏi 📖',s:'Máy tính: bài đọc bên trái, câu hỏi bên phải. Điện thoại: bài đọc ở trên, câu hỏi ở dưới, mỗi phần tự cuộn riêng.'});
  r.push({pose:'cheer',t:'Nộp bài để mở phần tiếp theo ✅',s:'Làm xong một phần, bấm <b>Nộp bài</b> để xem đáp án và lời giải chi tiết từng câu. Bạn có thể <b>làm lại nhiều lần</b> để nhớ bài. Chúc bạn làm bài thật tốt!'});
  return r.filter(okEl)}
-function steps(){if(T&&T.ex)return exSteps();const r=[];
+function steps(){if(T&&T.tp)return typeSteps();if(T&&T.ex)return exSteps();const r=[];
  r.push({pose:'wave',t:`Chào ${esc(name())}! Mình là <b>Baby Dragon</b> 🐲, trợ lý của <b>Mr. Phi Long</b>`,s:'Mình sẽ chỉ bạn cách học trên web này, chỉ mất một phút thôi!'});
  r.push({pose:'point',el:menuBtn,t:'Đây là <b>menu</b> ☰',s:'Bấm vào để mở tất cả các mục: <b>Bài học</b>, <b>Bản thu</b> (nhận xét của thầy/cô)'+(typeof bankOK==='function'&&bankOK()?' và <b>Kho từ vựng</b> của bạn':'')+'. Mọi thứ đều nằm trong ô này.'});
  r.push({pose:'point',el:gradeBtn,t:'Chọn <b>khối lớp</b> 🎓',s:'Bấm vào đây để đổi sang khối lớp khác (nếu thầy/cô cho phép).'});
@@ -103,10 +103,46 @@ function steps(){if(T&&T.ex)return exSteps();const r=[];
  if(qaG())r.push({pose:'point',t:'Có thắc mắc? Hỏi mình nhé! 💬',s:'Bấm vào mình ở góc màn hình, chọn <b>Hỏi đáp (Q&A)</b> để hỏi bài. Nếu câu trả lời chưa ổn, bạn chấm dưới 3 sao để thầy/cô trả lời trực tiếp.'});
  r.push({pose:'cheer',el:menuBtn,t:'Ôn từ vựng bằng <b>Flashcard</b> 🃏',s:'Mở menu ☰ → <b>Flashcard</b>: lật thẻ có hình, chơi nhiều game (chọn ABCD, xếp chữ cái, điền chữ thiếu, nghe và viết…) và bài <b>MIX 35 câu</b>. Nhớ tick <b>Đã thuộc</b> và <b>Đặt câu được</b> khi bạn làm được nhé!'});
  if(S.lessons&&S.lessons.some(l=>l.wordform))r.push({pose:'cheer',t:'Mục <b>WORDFORM</b> 🔤',s:'Trong mỗi bài có thẻ <b>Wordform</b>: bảng danh từ – động từ – tính từ – trạng từ và phần luyện tập 10–20 câu kèm công thức. Mỗi lần bấm <b>luyện bộ câu mới</b> sẽ ra câu khác, bạn <b>làm lại bao nhiêu lần cũng được</b>!'});
+ const g=Number(S.grade);
+ if(g===13){
+  r.push({pose:'cheer',t:'Khối <b>TOEIC</b>: nghe có hướng dẫn 🎧',s:'Mỗi bài nghe (Track A, B, C, D) có khung vàng <b>"Cách làm bài"</b> ở đầu bài: đọc trước khi bấm nghe. Part 1 nhìn ảnh 3–5 giây rồi mới nghe. Sau khi nộp, mỗi đáp án đều có lời giải thích vì sao đúng và vì sao sai.'});
+  r.push({pose:'point',t:'Từ vựng, đặt câu và thu âm ✍️🎤',s:'Mỗi Unit có <b>Flashcard</b>, bài <b>đặt câu</b> với từ vựng và bài <b>nói – thu âm</b>: thầy sẽ nghe và chấm trực tiếp, bạn đọc nhận xét trong mục <b>Bản thu</b>.'});
+ }else if(g===9){
+  r.push({pose:'cheer',t:'Khối <b>IELTS</b>: Writing & Speaking 🤖',s:'Bài <b>Writing</b> và <b>Speaking</b> được AI chấm theo 4 tiêu chí kèm chỗ sửa lỗi. Phần Listening và Reading có <b>band ước tính</b> sau khi nộp.'});
+  r.push({pose:'cheer',t:'Mục <b>EXTRA WRITING</b> ✍️',s:'Cuối phần Writing của mỗi Unit có <b>EXTRA WRITING</b>: bạn viết bài rồi bấm <b>Nộp bài cho thầy chấm</b>. Thầy đọc, cho điểm và nhận xét, kết quả hiện ngay trong bài. Bạn có thể sửa và nộp lại.'});
+ }else if(spG()){
+  r.push({pose:'cheer',t:'Nghe ♪ rồi làm nhé! 🔊',s:'Gặp nút <b>♪</b> thì bấm để nghe mẫu. Làm đúng sẽ có tiếng <b>ting ting</b> vui tai. Bài Flashcard có nhiều trò chơi để nhớ từ thật lâu!'});
+ }else{
+  r.push({pose:'cheer',t:'Đọc, nghe và thu âm 🎧',s:'Bài nghe có nút <b>▶</b>, bài đọc to có nút <b>Thu âm</b> (bấm xong nghe tiếng <b>ting</b> rồi mới nói). Trong mỗi bài còn có thẻ <b>Flashcard</b> riêng cho từ vựng của bài đó.'});
+ }
+ r.push({pose:'point',el:menuBtn,t:'Thêm <b>từ vựng riêng</b> ➕',s:'Trong <b>Flashcard</b> bạn có thể tự thêm từ mình muốn (phải chọn <b>Unit</b> trước). Khi dịch câu hay cụm từ, bấm <b>Lưu</b> để cất vào kho từ vựng.'});
  r.push({pose:'cheer',t:'Cách làm bài ✏️',s:'Làm xong từng bài, nhớ bấm <b>Nộp bài</b> để xem kết quả. Mỗi bài có thể <b>làm lại nhiều lần</b>. Bài có <b>công thức</b> ở trên đề thì đọc kỹ trước khi làm, vì vậy không cần thầy/cô bên cạnh bạn vẫn tự ôn được. Cố lên nhé!'});
  return r.filter(okEl)}
-function finish(){if(!T)return;const ISEX=T.ex;T.root.remove();T.spot&&T.spot.remove();window.removeEventListener('resize',T.rp);window.removeEventListener('scroll',T.rp,true);document.removeEventListener('keydown',T.kd);T=null;
- const K=ISEX?KEY2:KEY;if(S.prof){S.prof.lv=S.prof.lv||{};if(!S.prof.lv[K]){S.prof.lv[K]=Date.now();try{saveProf()}catch(e){}}}sync()}
+
+/* ---- hướng dẫn theo từng dạng bài (hiện 1 lần cho mỗi dạng, bấm rồng để xem lại) ---- */
+function itemEl(t){const X0=typeof X!=='undefined'&&X&&X.E;if(!X0)return null;const i=X.E.items.findIndex(it=>it.t===t);const els=document.querySelectorAll('#app .item');return i>=0&&els[i]?els[i]:null}
+const TP=[
+ ['audio',()=>!!(X.E.media&&X.E.media.length),()=>$1('#app audio')&&($1('#app audio').closest('.card')||$1('#app audio')),'Nút <b>▶ nghe</b> 🎧','Bấm <b>▶</b> để nghe bài. Bạn nghe được nhiều lần, có thể tua lại. Nếu không phát, tải lại trang hoặc báo thầy.'],
+ ['guide',()=>!!document.querySelector('#app .exm'),()=>$1('#app .exm'),'Khung vàng <b>Cách làm bài</b> 📌','Đọc khung này <b>trước khi nghe</b>: có mẹo làm từng phần và những bẫy hay gặp.'],
+ ['img',()=>X.E.items.some(it=>it.t==='mcq'&&/<img/.test(it.q||'')),()=>$1('#app .item img'),'Nhìn ảnh trước khi nghe 🖼️','Nhìn ảnh <b>3–5 giây</b>: mấy người, đang làm gì, vật ở đâu. Rồi nghe cả 4 câu A, B, C, D và chọn câu mô tả đúng nhất.'],
+ ['mcq',()=>X.E.items.some(it=>it.t==='mcq'),()=>itemEl('mcq'),'Chọn đáp án 🔘','Chạm vào một đáp án (A, B, C hoặc D). Bấm <b>Nộp bài</b> ở cuối để xem đúng sai và <b>lời giải thích</b> từng đáp án.'],
+ ['fill',()=>X.E.items.some(it=>it.t==='fill'),()=>itemEl('fill'),'Điền vào chỗ trống ✏️','Gõ từ còn thiếu vào ô trống. Bài nghe chép: nghe tối đa 3 lần, viết đúng chính tả. Anh–Anh hay Anh–Mỹ đều được chấp nhận.'],
+ ['text',()=>X.E.items.some(it=>it.t==='text'),()=>itemEl('text'),'Sửa câu / viết câu ✍️','Câu có <u style="text-decoration:underline wavy #d33">từ gạch đỏ</u> là chỗ sai: sửa lại <b>cả câu</b> cho đúng trong ô bên dưới.'],
+ ['match',()=>X.E.items.some(it=>it.t==='match'),()=>itemEl('match'),'Nối từ 🔗','Chọn một từ bên trái rồi chọn nghĩa tương ứng bên phải để nối.'],
+ ['rec',()=>X.E.items.some(it=>it.t==='rec'),()=>itemEl('rec'),'Thu âm cho thầy chấm 🎤','Bấm <b>♪</b> nghe mẫu, rồi bấm <b>Thu âm</b>. Có tiếng <b>ting</b> là bắt đầu nói. Đọc xong bấm dừng. Thầy sẽ nghe và nhận xét trong mục <b>Bản thu</b>.'],
+ ['say',()=>X.E.items.some(it=>it.t==='say'),()=>itemEl('say'),'Nghe và đọc to 🗣️','Bấm <b>♪</b> nghe mẫu rồi bấm <b>Đọc thử</b>. Máy chấm phát âm từ 50–100%, mỗi mục đọc được <b>một lần</b>.'],
+ ['open',()=>X.E.items.some(it=>it.t==='open'),()=>itemEl('open'),'Tự viết câu 📝','Ô này để bạn tự viết, không chấm tự động. Bấm <b>Xem câu mẫu</b> (nếu có) để so với bài của mình.'],
+ ['wr',()=>X.E.items.some(it=>it.t==='wr'),()=>itemEl('wr'),'Writing chấm bằng AI 🤖','Viết đủ số từ tối thiểu rồi bấm <b>Nộp để AI chấm</b>. Sau khoảng 10–40 giây bạn nhận điểm band, chỗ sai và bài viết đã cải thiện.'],
+ ['sp',()=>X.E.items.some(it=>it.t==='sp'),()=>itemEl('sp'),'Speaking chấm bằng AI 🎙️','Bấm thu âm và nói to, rõ (dùng Chrome hoặc Safari). Máy nhận dạng lời nói rồi AI nhận xét phát âm, từ vựng và ngữ pháp.'],
+ ['ew',()=>X.E.items.some(it=>it.t==='ew'),()=>itemEl('ew'),'<b>EXTRA WRITING</b> nộp cho thầy ✍️','Viết bài đủ số từ rồi bấm <b>Nộp bài cho thầy chấm</b>. Thầy sẽ đọc, cho điểm và nhận xét; kết quả hiện ngay tại đây. Chưa hài lòng thì bấm <b>Sửa và nộp lại</b>.']];
+function tpList(all){const lv=(S.prof&&S.prof.lv)||{};return TP.filter(x=>{try{return x[1]()&&(all||!lv['tg_'+x[0]])}catch(e){return false}})}
+function typeSteps(){const r=[];const l=tpList(T&&T.all);
+ if(!l.length)return r;
+ r.push({pose:'wave',t:'Hướng dẫn nhanh cho bài này 🐲',s:'Mình chỉ bạn từng phần của bài. Bấm <b>Tiếp theo</b> để xem, hoặc <b>Bỏ qua</b> nếu bạn đã biết.'});
+ l.forEach(x=>r.push({pose:'point',el:x[2],t:x[3],s:x[4]}));
+ T&&(T.types=l.map(x=>x[0]));return r.filter(okEl)}
+function finish(){if(!T)return;const ISEX=T.ex,T0=T;T.root.remove();T.spot&&T.spot.remove();window.removeEventListener('resize',T.rp);window.removeEventListener('scroll',T.rp,true);document.removeEventListener('keydown',T.kd);T=null;
+ const TPX=T0.tp,TYP=T0.types;if(S.prof){S.prof.lv=S.prof.lv||{};if(TPX){(TYP||[]).forEach(k=>{S.prof.lv['tg_'+k]=Date.now()});try{saveProf()}catch(e){}}else{const K=ISEX?KEY2:KEY;if(!S.prof.lv[K]){S.prof.lv[K]=Date.now();try{saveProf()}catch(e){}}}}sync()}
 function place(){if(!T)return;const st=T.list[T.i];const el=st.el&&st.el();
  if(el){const r=el.getBoundingClientRect();if(r.top<70||r.bottom>innerHeight-200){scrollTo({top:Math.max(0,r.top+scrollY-110),behavior:'smooth'})}
   const q=el.getBoundingClientRect();Object.assign(T.spot.style,{display:'block',left:q.left-8+'px',top:q.top-8+'px',width:q.width+16+'px',height:q.height+16+'px'});T.shade.style.display='none'}
@@ -114,14 +150,15 @@ function place(){if(!T)return;const st=T.list[T.i];const el=st.el&&st.el();
 function draw(){const st=T.list[T.i],n=T.list.length;
  T.root.innerHTML=`<div class="bdg">${bdSVG(st.pose)}</div><div class="bdc" role="dialog" aria-label="Hướng dẫn của Baby Dragon">${st.t}<small>${st.s}</small><div class="bdr"><span class="bdd">${T.list.map((_,k)=>`<i class="${k===T.i?'on':''}"></i>`).join('')}</span><span class="sp"></span>${T.i>0?'<button type="button" class="bdk" data-bd="prev">Quay lại</button>':'<button type="button" class="bdk" data-bd="skip">Bỏ qua</button>'}<button type="button" class="bdn" data-bd="next">${T.i===n-1?'Xong! 🎉':'Tiếp theo ➜'}</button></div></div>`;
  place();setTimeout(place,380)}
-function start(){if(T||!ok())return;const ex=onEx();T={ex};const list=steps();T=null;if(!list.length)return;
+function start(kind,all){if(T||!ok())return;const tp=kind==='tp';const ex=!tp&&onEx();T={ex,tp,all};const list=steps();const tt=T.types;T=null;if(!list.length)return;
  const root=document.createElement('div');root.className='bdtour';const spot=document.createElement('div');spot.className='bdspot';const shade=document.createElement('div');shade.className='bdshade';
- document.body.append(shade,spot,root);T={list,i:0,root,spot,shade,ex};
+ document.body.append(shade,spot,root);T={list,i:0,root,spot,shade,ex,tp,types:tt,all};
  const rm=T.root.remove.bind(T.root);T.root.remove=()=>{rm();shade.remove()};
  T.rp=()=>place();T.kd=e=>{if(e.key==='Escape')finish()};addEventListener('resize',T.rp);addEventListener('scroll',T.rp,true);document.addEventListener('keydown',T.kd);
  root.addEventListener('click',e=>{const a=e.target.closest('[data-bd]');if(!a)return;const k=a.dataset.bd;if(k==='skip')finish();else if(k==='prev'){T.i--;draw()}else{if(T.i>=T.list.length-1)finish();else{T.i++;draw()}}});
  draw();clearHi();const h=document.querySelector('.bdw');h&&(h.style.display='none')}
-window.bdStart=function(){start()};
+window.bdStart=function(k,all){start(k,all)};
+window.bdOnEx=()=>typeof route==='function'&&route().startsWith('ex-')&&typeof X!=='undefined'&&X&&X.E&&tpList(true).length>0;
 function clearHi(){const h=$1('.bdhi');h&&h.remove()}
 function sync(){
  const old=$1('.bdw'),mini=$1('.bdmini');
@@ -131,9 +168,10 @@ function sync(){
  if(hidden()){old&&old.remove();clearHi();if(!mini){const m=document.createElement('button');m.type='button';m.className='bdmini';m.setAttribute('aria-label','Hiện Baby Dragon');m.innerHTML=bdSVG('stand').replace('viewBox="0 0 220 226"','viewBox="40 8 140 120"');m.onclick=()=>{setHidden(false);sync()};document.body.appendChild(m)}return}
  mini&&mini.remove();
  if(!old){const w=document.createElement('div');w.className='bdw';w.setAttribute('role','button');w.tabIndex=0;w.setAttribute('aria-label','Baby Dragon – bấm để xem hướng dẫn hoặc hỏi đáp Q&A');w.innerHTML=bdSVG('wave')+'<button type="button" class="bdx" aria-label="Ẩn Baby Dragon" title="Ẩn rồng">✕</button>';
-  w.addEventListener('click',e=>{if(e.target.closest('.bdx')){e.stopPropagation();setHidden(true);sync();return}const s=w.querySelector('svg');s.classList.remove('jump');void s.getBoundingClientRect();s.classList.add('jump');if(typeof window.bdMenu==='function'&&!S.isT)window.bdMenu(w);else start()});
+  w.addEventListener('click',e=>{if(e.target.closest('.bdx')){e.stopPropagation();setHidden(true);sync();return}const s=w.querySelector('svg');s.classList.remove('jump');void s.getBoundingClientRect();s.classList.add('jump');if(typeof window.bdMenu==='function'&&!S.isT)window.bdMenu(w);else if(window.bdOnEx())start('tp',true);else start()});
   w.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(typeof window.bdMenu==='function')window.bdMenu(w);else start()}});document.body.appendChild(w)}
  if(onEx()&&!(S.prof.lv&&S.prof.lv[KEY2])&&!T&&window.__bdAuto2!==S.uid){window.__bdAuto2=S.uid;setTimeout(()=>{if(ok()&&!T&&onEx()&&!(S.prof.lv&&S.prof.lv[KEY2]))start()},1100)}
+ if(!T&&typeof route==='function'&&route().startsWith('ex-')&&typeof X!=='undefined'&&X&&X.E&&(S.prof.lv&&S.prof.lv[KEY2])&&window.__bdTp!==X.E.id&&tpList(false).length){const id=X.E.id;window.__bdTp=id;setTimeout(()=>{if(ok()&&!T&&typeof X!=='undefined'&&X&&X.E&&X.E.id===id&&tpList(false).length)start('tp')},1500)}
  const first=!(S.prof.lv&&S.prof.lv[KEY]);
  if(first&&(typeof route==='function'?route()==='home':true)&&!T&&window.__bdAuto!==S.uid){window.__bdAuto=S.uid;setTimeout(()=>{if(ok()&&!T&&!(S.prof.lv&&S.prof.lv[KEY]))start()},900)}
  else if(!first&&!hiVis&&!(pend()&&pend().length)&&typeof route==='function'&&route()==='home'){hiVis=true;const h=document.createElement('div');h.className='bdhi';h.textContent=`Chào ${name()}! Bấm vào mình nếu cần hướng dẫn nhé 👋`;document.body.appendChild(h);setTimeout(clearHi,6000)}}

@@ -362,3 +362,8 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 ## v46 (2026-11-22)
 - TOEIC Part 1 (Unit 5-8): 24 real photos replace drawn SVGs (toeic/img/c*.jpg). Old .svg files are no longer used.
 - Every listening exercise (Track A/B/C/D) has a "Cách làm bài" guide; Part 1 and Part 2 have per-option explanations after submit.
+
+## v47 (2026-11-22)
+- IELTS: mục EXTRA WRITING cuối phần Writing mỗi Unit. Học viên tự gõ tiêu đề + nội dung, nộp; giáo viên chấm tay tại menu "Extra Writing" (api: ew/submit, ew/mine, ew/list, ew/grade; store "ewrite"; file public/ew.js).
+- Mascot: hướng dẫn riêng theo khối (TOEIC, IELTS, tiểu học, còn lại) và hướng dẫn theo từng dạng bài (nghe, ảnh, điền, thu âm, Extra Writing...). Bấm rồng trong bài để xem "Hướng dẫn bài này".
+- TOEIC: Sửa lỗi sai gạch đỏ từ sai.

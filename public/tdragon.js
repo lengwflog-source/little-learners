@@ -8,7 +8,7 @@ const setHid=v=>{try{v?localStorage.setItem(LS,'1'):localStorage.removeItem(LS)}
 const items=()=>{
   const n=(typeof qaWait==='function')?qaWait():0;
   const L=[['t-home','🏠','Tổng quan'],['t-students','👩‍🎓','Học sinh'],['t-attendance','✅','Điểm danh'],['t-assign','📝','Giao bài'],['t-voice','🎙️','Bản thu âm'],['t-qa','💬','Giải đáp',n]];
-  if(!S.isTA){L.push(['t-ai','🤖','Chấm IELTS'],['t-ta','🧑‍🏫','Trợ giảng'])}
+  if(!S.isTA){L.push(['t-ai','🤖','Chấm IELTS'],['t-ew','✍️','Extra Writing'],['t-ta','🧑‍🏫','Trợ giảng'])}
   L.push(['lessons','📚','Bài học']);return L};
 function menu(w){
   const old=document.querySelector('.bdtm');if(old){old.remove();return}
