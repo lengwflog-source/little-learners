@@ -162,7 +162,7 @@ async function toggleSp(i) {
         rec.onresult = ev => { let f = '', im = ''; for (let r = 0; r < ev.results.length; r++) { const t = ev.results[r][0].transcript; if (ev.results[r].isFinal) f += t + ' '; else im += t; } cur = (f + im).trim(); SPT[k] = (base + ' ' + cur).trim(); const el = document.querySelector('[data-splive="' + i + '"]'); if (el) el.textContent = SPT[k] || '…'; };
         rec.onend = () => { base = (base + ' ' + cur).trim(); cur = ''; if (!stopping) { try { rec.start(); } catch (_) { } } };
         rec.onerror = () => { };
-        rec.start();
+        rec.start(); try{window.SFX&&SFX.start()}catch(_){}
       } catch (_) { rec = null; }
     }
     const t0 = Date.now(), maxS = it.secs || 120;
@@ -176,7 +176,7 @@ async function toggleSp(i) {
       setTimeout(() => { if (X && X.E.id === eid) { X.ans[i] = true; refreshItem(i); } uploadRec(eid, i, bl, ('Speaking ' + (it.part || '') + ': ' + it.prompt).slice(0, 120)); }, 400);
     };
     SPR = { k, mr, stop: () => { try { mr.state !== 'inactive' && mr.stop(); } catch (_) { } }, tm: setTimeout(() => { try { mr.state !== 'inactive' && mr.stop(); } catch (_) { } }, maxS * 1000), iv: setInterval(() => { const el = document.querySelector('[data-sptime]'); if (el) { const s = Math.floor((Date.now() - t0) / 1000); el.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); } }, 500) };
-    mr.start(); refreshItem(i);
+    mr.start(); try{window.SFX&&SFX.start()}catch(_){} refreshItem(i);
   } catch (e) { SPR = null; toast('Không mở được micro. Hãy bấm "Cho phép" khi trình duyệt hỏi quyền dùng micro.'); }
 }
 async function spSubmit(i) {

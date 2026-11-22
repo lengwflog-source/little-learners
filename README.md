@@ -357,3 +357,8 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 ## v44
 - IELTS: sửa 3 đáp án trùng, thêm chỗ điền (4); chấm chấp nhận Anh-Anh/Anh-Mỹ (ukus), đáp án hiện cả hai; logo mới.
 - v44b: khối TOEIC (mã 13, `public/toeic/lessons.json`, 8 unit, 781 từ, bài tập, kiểm tra tuần, ghi âm do thầy chấm); Flashcard theo unit + tự thêm từ (chọn unit trước, lưu trong `prof.fcw`); lưu cụm/câu dịch vào kho từ vựng; Q&A mở cho A1, lớp 9, 10–12, IELTS; kho từ vựng mở cho A1, lớp 9, IELTS, TOEIC.
+- v45: TOEIC sửa lỗi sai điền sẵn câu, bỏ nghĩa tiếng Việt ở bài điền từ, bài nói tách từng từ, khóa TOEIC khi chưa giao, âm thanh chỉ ting (ting ting khi đúng, ting khi bắt đầu thu âm).
+
+## v46 (2026-11-22)
+- TOEIC Part 1 (Unit 5-8): 24 real photos replace drawn SVGs (toeic/img/c*.jpg). Old .svg files are no longer used.
+- Every listening exercise (Track A/B/C/D) has a "Cách làm bài" guide; Part 1 and Part 2 have per-option explanations after submit.
