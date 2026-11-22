@@ -38,7 +38,7 @@ function start(i){const it=X&&X.E&&X.E.items[i];if(!it||window.SPKON)return;cons
     window.SPKON=null;repaint(i)};
   rc.onerror=ev=>{if(got)return;const m={'not-allowed':'Hãy cho phép dùng micro rồi bấm lại.','service-not-allowed':'Hãy cho phép dùng micro rồi bấm lại.','no-speech':'Chưa nghe thấy giọng. Bấm lại để thử (chưa tính lượt).','audio-capture':'Không tìm thấy micro.','network':'Cần có mạng để chấm giọng nói.'}[ev.error]||'Chưa nghe rõ, bấm lại để thử (chưa tính lượt).';toast(m);stop()};
   rc.onend=()=>{if(!got&&window.SPKON===k)stop()};
-  try{rc.start()}catch(e){stop()}}
+  try{rc.start();try{window.SFX&&SFX.start()}catch(_){}}catch(e){stop()}}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-spkgo]');if(b){e.preventDefault();e.stopPropagation();start(+b.dataset.spkgo)}},true);
 /* giáo viên xem kết quả */
 async function loadAll(){try{const r=await API.call('GET','speak/all');LIVE={all:r.all||{},t:Date.now()}}catch(e){LIVE={all:{},t:Date.now()}}}

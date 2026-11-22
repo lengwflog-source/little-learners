@@ -139,7 +139,7 @@ function qvStart(){
   r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){toast('Bạn cần cho phép micro để nói nhé.');qvStop()}else if(e.error==='no-speech'){}else if(e.error!=='aborted'){toast('Chưa nghe rõ ('+e.error+'). Bạn thử lại nhé.');qvStop()}};
   r.onend=()=>{if(QV.on&&QV.rec===r){try{r.start()}catch(e){qvStop()}}};
   QV.rec=r;QV.on=true;QV.t0=Date.now();
-  try{r.start()}catch(e){QV.on=false;toast('Không bật được micro.');return}
+  try{r.start();try{window.SFX&&SFX.start()}catch(_){}}catch(e){QV.on=false;toast('Không bật được micro.');return}
   clearInterval(QV.tm);QV.tm=setInterval(qvSet,1000);qvSet();
 }
 async function qvSend(){

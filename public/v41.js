@@ -95,8 +95,9 @@ const SFX={
  ting(v){const c=C();if(!c)return;const t=c.currentTime;v=v||0.28;tone(c,1568,t,0.9,'sine',v);tone(c,2349,t,0.6,'sine',v*0.5);tone(c,3136,t+0.01,0.35,'sine',v*0.25)},
  pop(){const c=C();if(!c)return;const t=c.currentTime;tone(c,720,t,0.11,'sine',0.45,160);tone(c,360,t,0.08,'triangle',0.2,120)},
  aww(){const c=C();if(!c)return;const t=c.currentTime;[[392,311,0],[349,247,0.32]].forEach(([a,b,d])=>{const o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=900;o.type='sawtooth';o.frequency.setValueAtTime(a,t+d);o.frequency.linearRampToValueAtTime(b,t+d+0.3);g.gain.setValueAtTime(0.0001,t+d);g.gain.exponentialRampToValueAtTime(0.22,t+d+0.04);g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.34);o.connect(f).connect(g).connect(c.destination);o.start(t+d);o.stop(t+d+0.4)})},
- ok(){const c=C();if(!c)return;const t=c.currentTime;tone(c,880,t,0.18,'sine',0.25);tone(c,1318,t+0.1,0.3,'sine',0.25)},
- cheer(){const c=C();if(!c)return;const t=c.currentTime;noise(c,t,1.7,0.22,1800);noise(c,t+0.1,1.5,0.12,3200);[523,659,784,1047].forEach((f,i)=>tone(c,f,t+i*0.11,0.5,'triangle',0.2));tone(c,300,t+0.1,0.5,'sawtooth',0.06,520);tone(c,1047,t+0.5,0.9,'sine',0.18)},
+ ok(){SFX.ting(0.26);setTimeout(()=>SFX.ting(0.26),200)},
+ cheer(){const c=C();if(!c)return;SFX.ting(0.3);setTimeout(()=>SFX.ting(0.3),230)},
+ start(){SFX.ting(0.22)},
  say(sc){if(sc>=80)SFX.ting();else if(sc>=70)SFX.ting(0.14);else SFX.aww()},
  result(c,n){if(n>0&&c/n>=0.8)SFX.cheer()},
  mute(m){try{localStorage.setItem('ll-mute',m?'1':'0')}catch(e){}}};
