@@ -1,7 +1,5 @@
 /* thpt.css — v24: giải đề, thanh công cụ, dịch từ, kho từ vựng */
 :root{--hl-g:#bfe3b4;--hl-y:#fbe48a;--xfs:1}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hl-g:#3f6b43;--hl-y:#7a6620}}
-:root[data-theme="dark"]{--hl-g:#3f6b43;--hl-y:#7a6620}
 
 .wrap.xwide{max-width:1760px;padding-inline:18px}
 /* thanh công cụ */

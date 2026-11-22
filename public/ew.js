@@ -50,7 +50,7 @@ async function ewSubmit(i) {
     S.ew[k] = r.entry; X['ewredo' + k] = false; refreshItem(i); ewSync(); toast('Đã nộp bài. Thầy sẽ chấm sớm nhé!');
   } catch (e) { toast(e.message); }
 }
-function ewClick(t, D) {
+var ewClick = function (t, D) {
   const i = D.ix != null ? +D.ix : null;
   if (D.ew === 'sub') return ewSubmit(i);
   if (D.ew === 'redo') { const k = ewK(i); X['ewredo' + k] = true; X.ans[i] = (S.ew[k] && S.ew[k].text) || ''; X['ewt' + k] = (S.ew[k] && S.ew[k].title) || ''; refreshItem(i); return; }
@@ -58,7 +58,7 @@ function ewClick(t, D) {
   if (D.ew === 'open') { S.ewOpen = S.ewOpen === D.id ? '' : D.id; render(); return; }
   if (D.ew === 'reload') { S.ewl = null; render(); return; }
   if (D.ew === 'save') return ewSave(D.id, t);
-}
+};
 document.addEventListener('input', e => {
   const t = e.target, d = t.dataset; if (!d || d.ewta == null) return;
   const it = X && X.E.items[+d.ewta], n = ewWc(t.value), el = document.querySelector('[data-ewn="' + d.ewta + '"]'), bx = document.querySelector('[data-ewbox="' + d.ewta + '"]');
@@ -82,7 +82,7 @@ function ewTeacher() {
 }
 function ewCard(x) {
   const id = ewId(x), open = S.ewOpen === id, ex = x.key.split(':')[0], graded = x.gradedAt && x.gradedAt >= x.t;
-  return `<div class="card vcard"><div class="row"><div><b>${esc(x.name)}</b> <span class="muted small">${esc(x.cls || '')}</span><div><b>${x.title ? esc(x.title) : '(không có tiêu đề)'}</b></div><div class="muted small">${esc(exTitleOf(ex))}</div><div class="muted small">${fmtT(x.t)} · ${x.wc || 0} từ${x.n > 1 ? ' · nộp lần ' + x.n : ''}</div></div><span class="sp"></span>${graded ? `<span class="chip good">Đã chấm${x.score ? ' · ' + esc(x.score) : ''}</span>` : '<span class="chip warn">Chưa chấm</span>'}<button class="btn sm" data-ew="open" data-id="${esc(id)}">${open ? 'Đóng' : (graded ? 'Xem / sửa' : 'Chấm bài')}</button></div>
+  return `<div class="card vcard"><div class="row"><div><b>${esc(x.name)}</b> <span class="muted small">${esc(x.cls || '')}</span><div><b>${x.title ? esc(x.title) : '(không có tiêu đề)'}</b></div><div class="muted small">${ex === 'ie-extra-writing' ? 'Extra Writing (tự do)' : esc(exTitleOf(ex))}</div><div class="muted small">${fmtT(x.t)} · ${x.wc || 0} từ${x.n > 1 ? ' · nộp lần ' + x.n : ''}</div></div><span class="sp"></span>${graded ? `<span class="chip good">Đã chấm${x.score ? ' · ' + esc(x.score) : ''}</span>` : '<span class="chip warn">Chưa chấm</span>'}<button class="btn sm" data-ew="open" data-id="${esc(id)}">${open ? 'Đóng' : (graded ? 'Xem / sửa' : 'Chấm bài')}</button></div>
   ${open ? `<div class="aied" data-ewed="${esc(id)}" style="margin-top:12px"><div class="grid g2" style="align-items:start">
    <div><h4>Tiêu đề: ${esc(x.title || '')}</h4><h4>Bài làm của học viên</h4><div class="fbtext">${esc(x.text).replace(/\n/g, '<br>')}</div></div>
    <div><h4>Điểm (ví dụ 6.5)</h4><input class="sel-in bandin" data-ews value="${esc(x.score || '')}" maxlength="12" placeholder="6.5">
@@ -100,3 +100,62 @@ async function ewSave(id, btn) {
     Object.assign(x, r.entry); toast('Đã lưu. Học viên sẽ thấy nhận xét của bạn.'); render();
   } catch (e) { toast(e.message); btn.disabled = false; }
 }
+
+/* ---------- mục EXTRA WRITING riêng (học viên IELTS): viết tự do, thầy chấm ---------- */
+const EWX = 'ie-extra-writing';
+const ewMine = () => Object.entries(S.ew || {}).filter(([k]) => k.startsWith(EWX + ':')).map(([k, e]) => ({ k, idx: +k.split(':')[1], e })).sort((a, b) => b.e.t - a.e.t);
+function ewHomeCard() {
+  const l = ewMine(), g = l.filter(x => x.e.gradedAt && x.e.gradedAt >= x.e.t), nw = g.filter(x => !x.e.seen).length;
+  return `<div class="card" id="tr-ew"><div class="sechead" style="margin:0 0 8px"><h3>✍️ EXTRA WRITING</h3>${nw ? `<span class="chip good">${nw} bài mới được chấm</span>` : ''}</div>
+   <p class="muted" style="margin:0 0 10px">Tự chọn đề tài, viết bài rồi nộp. Thầy đọc, cho điểm và nhận xét.</p>
+   <div class="row small muted" style="margin-bottom:10px"><span>Đã nộp: <b>${l.length}</b></span><span>Đã chấm: <b>${g.length}</b></span></div>
+   <a class="btn" href="#ew-me" style="text-decoration:none">Viết bài mới / xem bài đã nộp</a></div>`;
+}
+function ewHome() {
+  const l = ewMine(), draft = S.ewDraft || { t: '', x: '' }, n = ewWc(draft.x);
+  if (!S.ewSeenSent) {
+    S.ewSeenSent = true;
+    l.filter(x => x.e.gradedAt && x.e.gradedAt >= x.e.t && !x.e.seen).forEach(x => { x.e.seen = true; API.call('PUT', 'ew/seen', { key: x.k }).catch(() => { }); });
+  }
+  return `<div class="wrap" style="padding-block:28px"><a href="#home" class="btn ghost sm" style="text-decoration:none">← Tổng quan</a><h1 style="font-size:clamp(2rem,5vw,2.8rem);margin-top:12px">✍️ EXTRA WRITING</h1>
+  <p class="muted">Bạn tự chọn đề tài: gõ <b>tiêu đề</b> và <b>nội dung</b>. Nên viết từ 150 từ. Nộp xong, thầy sẽ chấm và nhận xét tại đây.</p>
+  <div class="card"><h4>Bài viết mới</h4>
+   <input class="sel-in" style="width:100%;margin-bottom:8px;font-weight:700" data-ewmt maxlength="120" placeholder="Tiêu đề bài viết (Title)" value="${esc(draft.t)}">
+   <textarea class="txt wrta" rows="14" data-ewmx lang="en" spellcheck="true" autocomplete="off" autocapitalize="off" placeholder="Viết bài của bạn bằng tiếng Anh tại đây…">${esc(draft.x)}</textarea>
+   <div class="row wcrow"><div class="wcbox ${n >= 150 ? 'ok' : ''}" data-ewmbox><b data-ewmn>${n}</b> / 150 từ</div><span class="sp"></span><button class="btn" data-ew="msub">Nộp bài cho thầy chấm</button></div></div>
+  <h3 style="margin-top:22px">Bài đã nộp (${l.length})</h3>
+  ${l.length ? l.map(x => ewMineCard(x)).join('') : '<div class="card"><p class="muted">Bạn chưa nộp bài nào.</p></div>'}</div>`;
+}
+function ewMineCard(x) {
+  const e = x.e, graded = e.gradedAt && e.gradedAt >= e.t, open = S.ewmOpen === x.k;
+  return `<div class="card vcard"><div class="row"><div><b>${esc(e.title || '(không có tiêu đề)')}</b><div class="muted small">${fmtT(e.t)} · ${e.wc || 0} từ</div></div><span class="sp"></span>${graded ? `<span class="chip good">Đã chấm${e.score ? ' · ' + esc(e.score) : ''}</span>` : '<span class="chip warn">Chờ thầy chấm</span>'}<button class="btn sm" data-ew="mopen" data-id="${esc(x.k)}">${open ? 'Đóng' : 'Xem'}</button></div>
+  ${open ? `<div style="margin-top:10px"><div class="fbtext">${esc(e.text).replace(/\n/g, '<br>')}</div>${graded ? `<div class="card" style="margin-top:10px"><div class="row"><span class="chip good">Thầy đã chấm</span>${e.score ? `<b style="font-size:1.6em">${esc(e.score)}</b>` : ''}<span class="sp"></span><span class="muted small">${fmtT(e.gradedAt)}</span></div>${e.comment ? `<h4>Nhận xét của thầy</h4><p>${esc(e.comment).replace(/\n/g, '<br>')}</p>` : ''}${e.fixed ? `<details open><summary><b>Bài đã sửa</b></summary><div class="fbtext" style="margin-top:6px">${esc(e.fixed).replace(/\n/g, '<br>')}</div></details>` : ''}</div>` : ''}</div>` : ''}</div>`;
+}
+async function ewMSubmit() {
+  const t = (document.querySelector('[data-ewmt]') || {}).value || '', x = (document.querySelector('[data-ewmx]') || {}).value || '';
+  if (S.isT) { toast('Chỉ học viên mới nộp bài.'); return; }
+  if (!t.trim()) { toast('Bạn nhớ gõ tiêu đề bài viết nhé.'); return; }
+  if (ewWc(x) < 20) { toast('Bài viết còn quá ngắn (cần ít nhất 20 từ).'); return; }
+  const used = Object.keys(S.ew || {}).filter(k => k.startsWith(EWX + ':')).map(k => +k.split(':')[1]);
+  const idx = used.length ? Math.max(...used) + 1 : 0;
+  try {
+    const r = await API.call('POST', 'ew/submit', { exId: EWX, idx, text: x, title: t.trim() });
+    S.ew[r.key || EWX + ':' + idx] = r.entry; S.ewDraft = null; S.ewmOpen = r.key || EWX + ':' + idx; toast('Đã nộp bài. Thầy sẽ chấm sớm nhé!'); render();
+  } catch (e) { toast(e.message); }
+}
+document.addEventListener('input', e => {
+  const d = e.target.dataset; if (!d) return;
+  if (d.ewmt != null || d.ewmx != null) {
+    S.ewDraft = S.ewDraft || { t: '', x: '' };
+    if (d.ewmt != null) S.ewDraft.t = e.target.value; else {
+      S.ewDraft.x = e.target.value; const n = ewWc(e.target.value), el = document.querySelector('[data-ewmn]'), bx = document.querySelector('[data-ewmbox]');
+      if (el) el.textContent = n; if (bx) bx.classList.toggle('ok', n >= 150);
+    }
+  }
+});
+const _ewClick = ewClick;
+ewClick = function (t, D) {
+  if (D.ew === 'msub') return ewMSubmit();
+  if (D.ew === 'mopen') { S.ewmOpen = S.ewmOpen === D.id ? '' : D.id; render(); return; }
+  return _ewClick(t, D);
+};

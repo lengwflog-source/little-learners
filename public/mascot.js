@@ -109,7 +109,7 @@ function steps(){if(T&&T.tp)return typeSteps();if(T&&T.ex)return exSteps();const
   r.push({pose:'point',t:'Từ vựng, đặt câu và thu âm ✍️🎤',s:'Mỗi Unit có <b>Flashcard</b>, bài <b>đặt câu</b> với từ vựng và bài <b>nói – thu âm</b>: thầy sẽ nghe và chấm trực tiếp, bạn đọc nhận xét trong mục <b>Bản thu</b>.'});
  }else if(g===9){
   r.push({pose:'cheer',t:'Khối <b>IELTS</b>: Writing & Speaking 🤖',s:'Bài <b>Writing</b> và <b>Speaking</b> được AI chấm theo 4 tiêu chí kèm chỗ sửa lỗi. Phần Listening và Reading có <b>band ước tính</b> sau khi nộp.'});
-  r.push({pose:'cheer',t:'Mục <b>EXTRA WRITING</b> ✍️',s:'Cuối phần Writing của mỗi Unit có <b>EXTRA WRITING</b>: bạn viết bài rồi bấm <b>Nộp bài cho thầy chấm</b>. Thầy đọc, cho điểm và nhận xét, kết quả hiện ngay trong bài. Bạn có thể sửa và nộp lại.'});
+  r.push({pose:'cheer',t:'Mục <b>EXTRA WRITING</b> ✍️',s:'Ở trang <b>Tổng quan</b> có thẻ <b>EXTRA WRITING</b>: bạn tự gõ <b>tiêu đề</b> và <b>nội dung</b> rồi bấm <b>Nộp bài cho thầy chấm</b>. Thầy đọc, cho điểm và nhận xét, bạn xem kết quả ngay trong mục này. Viết bao nhiêu bài cũng được.'});
  }else if(spG()){
   r.push({pose:'cheer',t:'Nghe ♪ rồi làm nhé! 🔊',s:'Gặp nút <b>♪</b> thì bấm để nghe mẫu. Làm đúng sẽ có tiếng <b>ting ting</b> vui tai. Bài Flashcard có nhiều trò chơi để nhớ từ thật lâu!'});
  }else{

@@ -367,3 +367,14 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - IELTS: mục EXTRA WRITING cuối phần Writing mỗi Unit. Học viên tự gõ tiêu đề + nội dung, nộp; giáo viên chấm tay tại menu "Extra Writing" (api: ew/submit, ew/mine, ew/list, ew/grade; store "ewrite"; file public/ew.js).
 - Mascot: hướng dẫn riêng theo khối (TOEIC, IELTS, tiểu học, còn lại) và hướng dẫn theo từng dạng bài (nghe, ảnh, điền, thu âm, Extra Writing...). Bấm rồng trong bài để xem "Hướng dẫn bài này".
 - TOEIC: Sửa lỗi sai gạch đỏ từ sai.
+- v47c: Extra Writing là mục riêng ở trang Tổng quan của khối IELTS (#ew-me), học viên viết tự do nhiều bài; bài quá hạn chưa làm xong vẫn hiện ở "Bài được giao".
+
+## v48 (2026-11-22)
+- Chat với thầy: bấm Baby Dragon → "Chat với thầy" (mọi khối). Thầy trả lời ở menu "Chat" (api chat/mine, chat/send, chat/seen, chat/list, chat/reply; store "tchat"; file public/chat.js). Học viên thấy chấm đỏ khi có phản hồi.
+- Luôn nền sáng trên điện thoại kể cả khi bật dark mode (bỏ CSS dark, color-scheme: only light).
+
+## v49 (2026-11-22)
+- Giáo viên: trang Bài học luôn có thanh công cụ (bút highlight, dịch, ghi chú chữ T); tô được cả đoạn văn (ngữ pháp, từ vựng, đề, lời giải thích).
+- Ghi chú chữ (T) mở thêm cho lớp 10, 11, 12 (đã có IELTS và giáo viên).
+- Nút "Quay lại" về đúng trang và đúng vị trí cuộn trước đó (ví dụ xem bài làm của bé → quay lại hồ sơ bé).
+- Gộp từ v47: Extra Writing, ảnh TOEIC đúng tỉ lệ, bài quá hạn vẫn hiện, v48 Chat với thầy, luôn nền sáng.
