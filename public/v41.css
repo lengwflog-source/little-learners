@@ -25,3 +25,4 @@ input.blank.dz{background:#fff6c9;border-bottom-color:#b7791f}
 .dictbox .dictt{font-weight:700;color:#2d4a7a;font-size:.9rem}
 .dictbox img{display:block;width:100%;max-width:640px;margin:0 auto;border-radius:10px;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.08);image-rendering:-webkit-optimize-contrast}
 html{color-scheme:light}
+.fcw{margin:12px 0}.fcw-r{display:flex;flex-wrap:wrap;gap:8px}.fcw-r .sel-in{flex:1 1 180px;min-width:0}

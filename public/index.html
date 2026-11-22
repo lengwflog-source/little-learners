@@ -270,7 +270,7 @@ const ART=`<svg viewBox="0 0 520 380" role="img" aria-label="Đồi xanh, ngôi 
 <path d="M0 380V280C110 250 210 286 310 276S460 252 520 270V380Z" fill="var(--art-hill2)"/>
 <g fill="#fff"><circle cx="60" cy="300" r="5"/><circle cx="150" cy="318" r="5"/><circle cx="380" cy="306" r="5"/><circle cx="470" cy="300" r="5"/></g><g fill="var(--sun)"><circle cx="60" cy="300" r="2"/><circle cx="150" cy="318" r="2"/><circle cx="380" cy="306" r="2"/><circle cx="470" cy="300" r="2"/></g></svg>`;
 const WAVE=`<svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30C220 70 440 0 700 28S1180 62 1440 20V60H0Z" fill="var(--bg)"/></svg>`;
-const LOGO=`<svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><path d="M6 20 20 8l14 12v14H6Z" fill="var(--mint)" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/><rect x="16" y="23" width="8" height="11" rx="4" fill="var(--peach)" stroke="var(--primary)" stroke-width="1.5"/><path d="M20 5c-2-5 6-6 8-3-1 5-5 6-8 3z" fill="var(--primary)"/></svg>`;
+const LOGO=`<svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 36.5 16.5V29.5a3 3 0 0 1-3 3H17.5L10 38.5v-6H6.5a3 3 0 0 1-3-3V16.5Z" fill="var(--mint)" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/><path d="M20 28.5c-3.5-2.6-7-2.8-9.5-2V17.8c2.5-.8 6-.6 9.5 2 3.5-2.6 7-2.8 9.5-2V26.5c-2.5-.8-6-.6-9.5 2Z" fill="var(--peach)" stroke="var(--primary)" stroke-width="1.6" stroke-linejoin="round"/><path d="M20 19.8v8.7" stroke="var(--primary)" stroke-width="1.4"/><path d="M24.5 18.4v3.6l1.3-1 1.3 1v-4.1" fill="#f3a5b5"/></svg>`;
 const ICONS={
  4:`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M6 42V22l9-6 9 6v20M24 42V12l9-6 9 6v30M3 42h42M12 30h6M30 20h6M30 28h6M30 36h6"/></svg>`,
  5:`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M3 40 17 16l8 12 6-8 14 20Z"/><circle cx="36" cy="10" r="4"/></svg>`,
@@ -284,23 +284,23 @@ const DISC={7:'var(--sky)',4:'var(--peach)',5:'var(--mint)',6:'var(--butter)',0:
 ICONS[201]=ICONS[101];ICONS[202]=ICONS[102];ICONS[203]=ICONS[103];ICONS[204]=ICONS[104];ICONS[205]=ICONS[101];ICONS[206]=ICONS[102];
 ICONS[701]=ICONS[4];ICONS[702]=ICONS[5];ICONS[703]=ICONS[6];ICONS[704]=ICONS[4];ICONS[705]=ICONS[5];ICONS[706]=ICONS[6];ICONS[700]=ICONS[0];ICONS[707]=ICONS[0];Object.assign(DISC,{700:'var(--sky)',707:'var(--sky)',701:'var(--peach)',702:'var(--mint)',703:'var(--butter)',704:'var(--peach)',705:'var(--mint)',706:'var(--butter)'});
 Object.assign(DISC,{201:'var(--peach)',202:'var(--mint)',203:'var(--butter)',204:'var(--sky)',205:'var(--peach)',206:'var(--mint)'});
-const GN={109:'Lớp 9',108:'Lớp 8',12:'Lớp 12',11:'Lớp 11',10:'Lớp 10',7:'Lớp 7',6:'Lớp 6',5:'Lớp 5',4:'Lớp 4',2:'Lớp 2',8:'Lớp 3',3:'A1.1',9:'IE1.1'},GCODE={109:'9',108:'8',12:'12',11:'11',10:'10',2:'2',8:'3',4:'4',5:'5',6:'6',7:'7',3:'A1.1',9:'IE1.1'},GS={109:'Tiếng Anh 9 · Global Success',108:'Tiếng Anh 8 · Global Success',12:'Tiếng Anh 12 · Luyện đề THPT',11:'Tiếng Anh 11',10:'Tiếng Anh 10',7:'Tiếng Anh 7 · Global Success',6:'Tiếng Anh 6 · Global Success',5:'Tiếng Anh 5 · Extra Workbook',4:'Tiếng Anh 4 · Global Success',2:'Tiếng Anh 2',8:'Tiếng Anh 3',3:'English A1+ · Elementary',9:'IELTS 1 · Band 3.0–5.0'};
+const GN={13:'TOEIC',109:'Lớp 9',108:'Lớp 8',12:'Lớp 12',11:'Lớp 11',10:'Lớp 10',7:'Lớp 7',6:'Lớp 6',5:'Lớp 5',4:'Lớp 4',2:'Lớp 2',8:'Lớp 3',3:'A1.1',9:'IE1.1'},GCODE={13:'TOEIC',109:'9',108:'8',12:'12',11:'11',10:'10',2:'2',8:'3',4:'4',5:'5',6:'6',7:'7',3:'A1.1',9:'IE1.1'},GS={13:'TOEIC 550+ · Foundation',109:'Tiếng Anh 9 · Global Success',108:'Tiếng Anh 8 · Global Success',12:'Tiếng Anh 12 · Luyện đề THPT',11:'Tiếng Anh 11',10:'Tiếng Anh 10',7:'Tiếng Anh 7 · Global Success',6:'Tiếng Anh 6 · Global Success',5:'Tiếng Anh 5 · Extra Workbook',4:'Tiếng Anh 4 · Global Success',2:'Tiếng Anh 2',8:'Tiếng Anh 3',3:'English A1+ · Elementary',9:'IELTS 1 · Band 3.0–5.0'};
 /* mã khối khi nhập: 2, 3, 5, 6 = số lớp; A1.1 = A1+ Elementary; IE1.1 = IELTS 1 (id nội bộ giữ nguyên để không mất dữ liệu cũ) */
 function gradeFromCode(x){const t=String(x==null?'':x).toUpperCase().replace(/[\s_+-]/g,'');if(!t)return'';
   if(t==='2'||t==='4'||t==='5'||t==='6'||t==='7'||t==='10'||t==='11'||t==='12')return t;if(t==='8'||t==='LỚP8'||t==='LOP8')return'108';if(t==='9'||t==='LỚP9'||t==='LOP9')return'109';if(t==='3'||t==='LỚP3'||t==='LOP3')return'8';
-  if(['A1','A1.1','A11'].includes(t))return'3';if(['IE1','IE1.1','IE11','IELTS1','IELTS','IELTS1.1'].includes(t))return'9';
+  if(['TOEIC','TOEIC550','TOEICFOUNDATION','TC','13'].includes(t))return'13';if(['A1','A1.1','A11'].includes(t))return'3';if(['IE1','IE1.1','IE11','IELTS1','IELTS','IELTS1.1'].includes(t))return'9';
   const m=/^(?:LỚP|LOP)?([24567])$/.exec(t);if(m)return m[1];return null}
-const gradeOpts=sel=>`<option value="">(tự chọn)</option>${[['2','2 · Lớp 2'],['8','3 · Lớp 3'],['4','4 · Lớp 4'],['5','5 · Lớp 5'],['6','6 · Lớp 6'],['7','7 · Lớp 7'],['108','8 · Lớp 8'],['109','9 · Lớp 9'],['10','10 · Lớp 10'],['11','11 · Lớp 11'],['12','12 · Lớp 12 · Luyện đề'],['3','A1.1 · A1+ Elementary'],['9','IE1.1 · IELTS 1']].map(([v,l])=>`<option value="${v}" ${String(sel)===v?'selected':''}>${l}</option>`).join('')}`;
+const gradeOpts=sel=>`<option value="">(tự chọn)</option>${[['2','2 · Lớp 2'],['8','3 · Lớp 3'],['4','4 · Lớp 4'],['5','5 · Lớp 5'],['6','6 · Lớp 6'],['7','7 · Lớp 7'],['108','8 · Lớp 8'],['109','9 · Lớp 9'],['10','10 · Lớp 10'],['11','11 · Lớp 11'],['12','12 · Lớp 12 · Luyện đề'],['3','A1.1 · A1+ Elementary'],['9','IE1.1 · IELTS 1'],['13','TOEIC · 550+ Foundation']].map(([v,l])=>`<option value="${v}" ${String(sel)===v?'selected':''}>${l}</option>`).join('')}`;
 const IB=()=>X&&X.L?(X.L.grade===2?'lop2/img/':X.L.grade===5?'lop5/img/':X.L.grade===4?'lop4/img/':X.L.grade===7?'lop7/img/':X.L.grade===108?'lop8/img/':X.L.grade===109?'lop9/img/':(X.L.grade===6&&/^l6-/.test(X.L.id))?'lop6/img/':'img/'):'img/';
 function setGrade(g){S.grade=g;S.lessons=S.allL.filter(L=>L.grade===g);try{localStorage.setItem('ll-grade',String(g))}catch(e){}}
 function initGrade(){let g=6;try{g=Number(localStorage.getItem('ll-grade'))||6}catch(e){}
   if(S.user&&!S.isT&&S.user.grade)g=Number(S.user.grade);
   if(!S.allL.some(L=>L.grade===g))g=6;setGrade(g)}
-const gradeSw=()=>{const gs=[12,11,10,109,108,7,6,5,4,2,8,3,9].filter(g=>S.allL.some(L=>L.grade===g));if(gs.length<2||(!S.isT&&S.user&&S.user.grade))return'';
+const gradeSw=()=>{const gs=[12,11,10,109,108,7,6,5,4,2,8,3,9,13].filter(g=>S.allL.some(L=>L.grade===g));if(gs.length<2||(!S.isT&&S.user&&S.user.grade))return'';
   return`<details class="gdd" id="gdd"><summary aria-label="Chọn khối, đang chọn ${GN[S.grade]}">${GN[S.grade]} <span class="car">▾</span></summary><div class="gmenu" role="menu">${gs.map(g=>`<button class="gitem ${S.grade===g?'on':''}" role="menuitem" data-grade="${g}">${GN[g]}<small>${GS[g]}</small></button>`).join('')}</div></details>`};
 
 /* ---------- data helpers ---------- */
-const bankOK=()=>!S.isT&&!!S.user&&[10,11,12].includes(S.grade);
+const bankOK=()=>!S.isT&&!!S.user&&[3,9,10,11,12,13,109].includes(S.grade);
 const lessonUnits=()=>{const g=[];S.lessons.forEach(L=>{let u=g.find(x=>x.key===L.unit);if(!u){u={key:L.unit,title:(L.grade!==6||L.unit>=600)?L.unitTitle:(L.unit?'Unit '+L.unit:'Đề ôn tập HK1'),sub:L.grade===12?'Giải đề thi thử · chấm tự động · có lời giải':L.grade===10?'Từ vựng · Ngữ pháp · Đoạn văn · Hội thoại · Đề test':L.grade===11?'Nội dung đang được cập nhật':L.grade===2||L.grade===8?'Bài tập có hình':(L.grade===7||L.grade===108||L.grade===109||(L.grade===6&&L.unit>=600))?'Từ vựng · Ngữ pháp · Bài tập':L.grade===5||L.grade===4?'Từ vựng · Ngữ pháp · Bài tập · Nghe':L.grade===9?'Vocabulary · Reading · Listening · Writing · Speaking':L.grade===3?'Từ vựng · Ngữ pháp · Nghe · Phát âm':(L.unit?L.unitTitle:'Ôn luyện cuối kì'),lessons:[]};g.push(u)}u.lessons.push(L)});return g};
 const exArr=p=>(p&&p.ex)||{};
 function lessonStat(p,L){const ex=exArr(p);let done=0,sum=0,cnt=0;for(const E of L.exercises){const r=ex[E.id];if(r){done++;if(r.n>0){sum+=r.c/r.n;cnt++}}}const total=L.exercises.length;return{done,total,pct:total?done/total:0,avg:cnt?sum/cnt:null}}
@@ -325,7 +325,20 @@ function assignStat(p,a){let done=0,total=0;const ex=exArr(p);if(a.ex&&a.ex.leng
 function showContact(){if(document.getElementById('ctov'))return;const o=document.createElement('div');o.id='ctov';o.className='ctov';o.innerHTML=`<div class="ctbox"><h3>Liên hệ thầy Long</h3><p class="small muted" style="margin:0 0 10px">Quét mã QR để kết bạn Zalo</p><img src="zalo-qr.png" alt="QR Zalo Longlong"><div class="ph"><a href="tel:0923880442">0923 880 442</a><a href="tel:0941741420">0941 741 420</a></div><button class="btn ghost sm" data-act="ctclose">Đóng</button></div>`;o.addEventListener('click',ev=>{if(ev.target===o)o.remove()});document.body.appendChild(o)}
 /* ---------- grading ---------- */
 const norm=s=>String(s==null?'':s).toLowerCase().replace(/[’‘`´]/g,"'").replace(/[“”]/g,'"').replace(/\s+/g,' ').trim();
-const loose=s=>norm(s).replace(/[.,!?;:"]/g,'').replace(/\s+/g,' ').trim();
+/* Anh-Anh ↔ Anh-Mỹ: coi hai cách viết là như nhau khi chấm; hiện cả hai trong đáp án */
+const UKP=[[/\b(col|favo|neighb|behavi|hon|hum|flav|lab|harb|rum|sav|vap|parl|endeav)our(s|ed|ing|ite|ites|able|ful)?\b/g,'$1or$2'],
+[/\b(organi|reali|recogni|apologi|critici|speciali|summari|memori|civili|popularli|authori|customi|minimi|maximi|familiari|emphasi|energi|finali|mobili|modernis|personali|socialis|visuali|utili|characteri|categori|criticis|capitali|colonis|legali|normali|real|general|public|publici|equali|globali|local|industriali|hospitali|moderni|stabili|symboli|sympathi)s(e|es|ed|ing|ation|ations)\b/g,(m,a,b)=>a+'z'+b],
+[/\b(cent|theat|met|lit|fib|kilomet|calib|centimet|millimet|sab|spect|mei)re(s)?\b/g,(m,a,b)=>a+'er'+(b||'')],
+[/\b(dial|catal|anal)ogue(s)?\b/g,(m,a,b)=>a+'og'+(b||'')],
+[/\b(travel|cancel|label|model|level|fuel|signal|counsel|marvel|quarrel|equal)l(ed|ing|er|ers)\b/g,'$1$2'],
+[/\bgrey\b/g,'gray'],[/\bjewellery\b/g,'jewelry'],[/\bprogramme(s)?\b/g,'program$1'],[/\bcheque(s)?\b/g,'check$1'],[/\btyre(s)?\b/g,'tire$1'],[/\bkerb\b/g,'curb'],[/\baluminium\b/g,'aluminum'],[/\bmum\b/g,'mom'],[/\bmummy\b/g,'mommy'],[/\bageing\b/g,'aging'],[/\bplough\b/g,'plow'],[/\bpractise(s|d)?\b/g,'practice$1'],[/\blicence\b/g,'license'],[/\bdefence\b/g,'defense'],[/\boffence\b/g,'offense'],[/\bpyjamas\b/g,'pajamas'],[/\bstorey(s)?\b/g,'story$1'],[/\bcosy\b/g,'cozy'],[/\bsceptic(al)?\b/g,'skeptic$1'],[/\bmaths\b/g,'math'],[/\bcentre\b/g,'center'],[/\bsulphur\b/g,'sulfur'],[/\bmould\b/g,'mold'],[/\bsmelt\b/g,'smelled'],[/\blearnt\b/g,'learned'],[/\bspelt\b/g,'spelled'],[/\bburnt\b/g,'burned'],[/\bdreamt\b/g,'dreamed'],[/\bwhilst\b/g,'while'],[/\bamongst\b/g,'among'],[/\bfulfil\b/g,'fulfill'],[/\benrol\b/g,'enroll'],[/\bskilful\b/g,'skillful'],[/\bwilful\b/g,'willful'],[/\bholiday(s)?\b/g,'vacation$1']];
+const ukus=s=>{let t=String(s);for(const[r,x]of UKP)t=t.replace(r,x);return t};
+const USP=[[/\b(col|favo|neighb|behavi|hon|hum|flav|lab|harb|rum|sav|vap)or(s|ed|ing|ite|ites|able|ful)?\b/g,'$1our$2'],
+[/\b(organi|reali|recogni|apologi|critici|speciali|summari|memori|civili|authori|customi|minimi|maximi|familiari|energi|finali|mobili|moderni|personali|socialis|visuali|utili|characteri|categori|capitali|legali|normali|equali|globali|industriali|hospitali|stabili|symboli|sympathi)z(e|es|ed|ing|ation|ations)\b/g,(m,a,b)=>a+'s'+b],
+[/\b(cent|theat|met|lit|fib|kilomet|calib|centimet|millimet)er(s)?\b/g,(m,a,b)=>a+'re'+(b||'')],
+[/\bgray\b/g,'grey'],[/\bjewelry\b/g,'jewellery'],[/\bprogram(s)?\b/g,'programme$1'],[/\bcheck(s)?\b/g,m=>m],[/\bmom\b/g,'mum'],[/\bpajamas\b/g,'pyjamas'],[/\bcozy\b/g,'cosy'],[/\bmath\b/g,'maths'],[/\bcenter\b/g,'centre'],[/\bvacation(s)?\b/g,'holiday$1']];
+const ukOf=s=>{let t=String(s);for(const[r,x]of USP)t=t.replace(r,x);return t};
+const loose=s=>ukus(norm(s).replace(/[.,!?;:"]/g,'')).replace(/\s+/g,' ').trim();
 const same=(a,b)=>loose(a)===loose(b);
 function units(it){switch(it.t){case'mcq':case'tf':case'text':case'build':case'rec':case'wr':case'sp':return 1;case'ws':return it.words.length;case'fill':return it.a.length;case'order':return it.steps.length;case'match':return it.left.length;case'cat':return it.words.length;default:return 0}}
 function gradeItem(it,a,k){switch(it.t){
@@ -347,11 +360,11 @@ function normRec(p,mark){if(!p||!p.ex)return;let ch=false;for(const id in p.ex){
 function solText(it){switch(it.t){
   case'mcq':return it.opts[it.a];
   case'tf':return it.tick?(it.a==='T'?'✔ Đúng':'✘ Sai'):it.a==='T'?'True':it.a==='F'?'False':'Not given';
-  case'text':case'build':return it.a[0];
+  case'text':case'build':{const a=it.a[0],u=ukOf(a);return a===u?a:a+'  (Anh-Mỹ)  /  '+u+'  (Anh-Anh)'}
   case'ws':return it.words.join(', ');
   case'rec':return'Hãy thu âm giọng đọc của bạn';
   case'wr':case'sp':return'';
-  case'fill':return it.a.map(v=>v[0]).join(' · ');
+  case'fill':return it.a.map(v=>{const a=v[0],u=ukOf(a);return a===u?a:a+' / '+u}).join(' · ');
   case'order':return it.steps.map((_,k)=>(k+1)+'→'+(it.a.indexOf(k)+1)).join('  ');
   case'match':return it.left.map((l,k)=>(k+1)+'-'+L2[it.a[k]]).join('  ');
   case'cat':return it.words.map((w,k)=>w+' → '+it.cats[it.a[k]]).join('; ');
@@ -419,6 +432,7 @@ async function init(){
   try{const r=await fetch('lop3/lessons.json');if(r.ok){const e8=await r.json();e8.forEach(L=>{L.grade=8;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e8)}}catch(e){}
   try{const r=await fetch('thpt12/lessons.json');if(r.ok){const e12=await r.json();e12.forEach(L=>{L.grade=12;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e12)}}catch(e){}
   try{const r=await fetch('lop10/lessons.json');if(r.ok){const g10=await r.json();g10.forEach(L=>{L.grade=10;L.label=(L.unitTitle?L.unitTitle+' · ':'')+L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(g10)}}catch(e){}
+  try{const r=await fetch('toeic/lessons.json');if(r.ok){const e13=await r.json();e13.forEach(L=>{L.grade=13;L.label=(L.unitTitle?L.unitTitle+' · ':'')+L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e13)}}catch(e){}
   [11].forEach(g=>S.allL.push({id:'g'+g+'-soon',grade:g,unit:1,unitTitle:'Lớp '+g,title:'Nội dung lớp '+g+' đang được cập nhật',sub:'Kho từ vựng cá nhân đã dùng được',label:'Lớp '+g,vocab:[],grammar:[],exercises:[]}));
   try{const r=await fetch('ielts/lessons.json');if(r.ok){const e9=await r.json();e9.forEach(L=>{L.grade=9;L.label=L.title+(L.sub?' · '+L.sub:'')});S.allL=S.allL.concat(e9)}}catch(e){}
   S.allL.forEach(L=>{S.by[L.id]=L;L.exercises.forEach(E=>{S.exL[E.id]=L.id})});
@@ -575,10 +589,11 @@ function lessonView(id){const L=S.by[id];if(!L)return`<div class="wrap" style="p
   const p=S.isT?null:S.prof;const ex=exArr(p);
   if(p&&!(p.lv&&p.lv[id])){p.lv=p.lv||{};p.lv[id]=Date.now();saveProf()}
   let tab=S.tab;if(tab==='vocab'&&!L.vocab.length)tab=L.exercises.length?'ex':'vocab';if(tab==='gram'&&!L.grammar.length)tab='ex';if(tab==='wf'&&!L.wordform)tab='ex';
-  const tabs=[['vocab','Từ vựng',L.vocab.length],['gram','Ngữ pháp',L.grammar.length],['wf','Wordform',L.wordform?L.wordform.rows.length:0],['ex','Bài tập',L.exercises.length],['res','Kết quả',(L.results||p||S.isT)?'★':0]].filter(t=>t[2]);if(tab==='res'&&!(L.results||p||S.isT))tab='ex';
+  const tabs=[['vocab','Từ vựng',L.vocab.length],['gram','Ngữ pháp',L.grammar.length],['wf','Wordform',L.wordform?L.wordform.rows.length:0],['fc','Flashcard',(!S.isT&&typeof flashCount==='function')?String(flashCount(L)):0],['ex','Bài tập',L.exercises.length],['res','Kết quả',(L.results||p||S.isT)?'★':0]].filter(t=>t[2]);if(tab==='res'&&!(L.results||p||S.isT))tab='ex';
   let c='';
   if(tab==='vocab')c=`<div class="vocab">${L.vocab.map(v=>`<div class="vrow"><div>${emH(v.em)}<button class="say" data-say="${esc(v.en)}" aria-label="Nghe phát âm" title="Nghe">♪</button><b>${esc(v.en)}</b>${v.ex?`<div class="muted small" style="margin-left:40px">${esc(v.ex)}</div>`:''}</div><span class="ipa">${esc(v.ipa||'')} ${v.pos?`<span class="chip">${esc(v.pos)}</span>`:''}</span><span>${esc(v.vi||'')}</span></div>`).join('')}</div>`;
   else if(tab==='gram')c=L.grammar.map(g=>`<div class="prose" style="margin-bottom:14px">${g.title?`<h3>${esc(g.title)}</h3>`:''}${g.html}</div>`).join('');
+  else if(tab==='fc')c=typeof flashUnit==='function'?flashUnit(L):'';
   else if(tab==='wf')c=typeof wfView==='function'?wfView(L):'';
   else if(tab==='res')c=resultsHtml(L,p);
   else{const cards=L.exercises.map((E,k)=>{const r=ex[E.id];if(LK&&!LK.set.has(E.id))return`<div class="card lcard lockd" aria-disabled="true"><div class="t"><b>🔒 ${esc(exTitle(E))}</b><span class="muted small">Chưa được giao</span></div><span class="chip">${E.items.length} câu</span></div>`;if(L.seq&&p&&!r&&k>0&&!ex[L.exercises[k-1].id])return`<div class="card lcard lockd" aria-disabled="true"><div class="t"><b>🔒 ${esc(exTitle(E))}</b><span class="muted small">Nộp phần trước để mở khóa</span></div><span class="chip">${E.items.length} câu</span></div>`;const s=r?(r.n?Math.round(r.c/r.n*100):100):null;return`<a class="card lcard" href="#ex-${E.id}"><div class="t"><b>${esc(exTitle(E))}</b><span class="muted small">${esc((E.instruction||'').replace(/<[^>]+>/g,'').slice(0,90))}</span></div>${r?`<span class="chip ${s>=80?'good':s>=50?'warn':'bad'}">${r.n?s+'%':'Đã xem'}</span>`:`<span class="chip">${E.items.length} câu</span>`}</a>`});

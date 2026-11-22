@@ -272,6 +272,7 @@ document.addEventListener('click',e=>{
     const k=t.closest('[data-xk]');
     if(k){const a=k.dataset.xk;
       if(a==='close')hideTip();
+      else if(a==='addp'&&tipFor&&tipFor.phrase&&tipFor.vi){VB.addPhrase(tipFor.t,tipFor.vi);const p={t:tipFor.t,rect:tipFor.rect};tip.querySelector('.xact').innerHTML='<span class="xok">✓ Đã lưu trong kho từ vựng</span> <a href="#vocab" class="xlink">Mở kho</a>';if(typeof toast==='function')toast('Đã lưu vào kho từ vựng')}
       else if(a==='retry'&&tipFor){tip.innerHTML=tipHtml(tipFor.w,null,'','load');runLookup(tipFor)}
       else if(a==='add'&&tipFor&&tipFor.r){VB.add(tipFor.w,tipFor.r,tipFor.ctx);tip.innerHTML=tipHtml(tipFor.w,tipFor.r,tipFor.ctx,'ok');placeTip(tipFor.rect);if(typeof toast==='function')toast('Đã thêm “'+tipFor.w+'” vào kho từ vựng')}
     }
@@ -313,7 +314,7 @@ const TSC={};
 function showPhrase(p){
   if(!tip){tip=document.createElement('div');tip.className='xtip';tip.setAttribute('role','dialog');tip.setAttribute('aria-label','Dịch câu');document.body.appendChild(tip)}
   const mine=tipFor={w:'',phrase:true,rect:p.rect};
-  const draw=(vi,err)=>{if(tipFor!==mine||!tip)return;tip.innerHTML='<div class="xth"><b class="xw">Dịch câu</b><span class="sp"></span><button type="button" class="xb sm" data-xk="close" aria-label="Đóng">✕</button></div><div class="xmain" style="font-weight:600;color:var(--muted);margin-bottom:6px">'+E_(p.t)+'</div>'+(err?'<div class="xerr">'+E_(err)+'</div>':'<div class="xmain">'+E_(vi||'')+'</div>');placeTip(p.rect)};
+  const draw=(vi,err)=>{if(tipFor!==mine||!tip)return;tip.innerHTML='<div class="xth"><b class="xw">Dịch câu</b><span class="sp"></span><button type="button" class="xb sm" data-xk="close" aria-label="Đóng">✕</button></div><div class="xmain" style="font-weight:600;color:var(--muted);margin-bottom:6px">'+E_(p.t)+'</div>'+(err?'<div class="xerr">'+E_(err)+'</div>':'<div class="xmain">'+E_(vi||'')+'</div>'+(bankOK()?'<div class="xact">'+(VB.has(p.t)?'<span class="xok">✓ Đã lưu trong kho từ vựng</span> <a href="#vocab" class="xlink">Mở kho</a>':'<button type="button" class="btn sm" data-xk="addp">＋ Lưu cụm/câu vào kho từ vựng</button>')+'</div>':''));tipFor.vi=vi;tipFor.t=p.t;placeTip(p.rect)};
   if(TSC[p.t]){draw(TSC[p.t]);return}
   tip.innerHTML='<div class="xl-load"><i></i><i></i><i></i> Đang dịch…</div>';placeTip(p.rect);
   if(typeof S!=='undefined'&&S.local){draw('', 'Đang chạy thử không có máy chủ nên chưa dịch được.');return}
@@ -366,6 +367,7 @@ const VB={words:null,loading:null,saveT:0,
     return VB.loading;
   },
   has(w){return !!(VB.words&&VB.words.some(x=>x.w===w.toLowerCase()))},
+  addPhrase(t,vi){t=t.replace(/\s+/g,' ').trim().toLowerCase().slice(0,220);if(!VB.words)VB.words=[];if(VB.has(t))return;VB.words.unshift({w:t,pos:'',vi:String(vi||'').slice(0,200),ipa:'',ctx:'',t:Date.now(),g:(typeof S!=='undefined'&&S.grade)||0,k:0,ph:1});VB.save()},
   add(w,r,ctx){
     w=w.toLowerCase();if(!VB.words)VB.words=[];if(VB.has(w))return;
     const ss=senses(r);

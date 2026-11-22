@@ -1,8 +1,8 @@
 /* v31: Baby Dragon Q&A – học sinh hỏi bé rồng, đánh giá sao; dưới 3 sao thì báo thầy và thầy trả lời ngay trong khung chat.
    Dữ liệu Q&A tự xóa sau 48 giờ (máy chủ). Gỡ: bỏ link qa.css/qa.js trong index.html. */
 "use strict";
-/* Q&A chỉ mở cho Lớp 10, 11, 12 và IELTS (không áp dụng cho Lớp 2–9) */
-const qaOn=()=>{try{return !S.isT&&[9,10,11,12].includes(Number(S.grade))}catch(e){return false}};
+/* Q&A mở cho A1, Lớp 9, 10, 11, 12 và IELTS */
+const qaOn=()=>{try{return !S.isT&&[3,9,10,11,12,109].includes(Number(S.grade))}catch(e){return false}};
 const QA={th:[],loaded:false,open:false,busy:false,tick:0,rmFor:'',rmT:0};
 const qaIelts=()=>{try{return Number(S.grade)===9}catch(e){return false}};
 const QV={lim:3,rec:null,text:'',interim:'',on:false,t0:0,secs:0,busy:false,tm:0};

@@ -29,12 +29,14 @@ function clean(v){
   if(vi.length<2||/^[\d\s]+$/.test(vi))return null;
   return{en,vi,ipa:ipa.replace(/\s+\//g,'/'),pos:String(v.pos||'').trim(),em:String(v.em||'')}}
 function deck(){
-  if(FC.dk&&FC.dkG===S.grade&&FC.emoji)return FC.dk;
+  const cw=((S.prof&&S.prof.fcw)||[]);if(FC.dk&&FC.dkG===S.grade&&FC.dkN===cw.length&&FC.emoji)return FC.dk;
   const out=[],seen=new Set();
   (S.lessons||[]).forEach(L=>{(L.vocab||[]).forEach(v=>{const x=clean(v);if(!x)return;const k=keyOf(x.en);if(seen.has(k))return;seen.add(k);
     let pic='';if(/<img/i.test(x.em))pic=x.em;else{const e=(x.em&&x.em.length<=8&&!/^\d+$/.test(x.em))?x.em:emojiFor(x.en);if(e)pic='<span class="fce">'+E(e)+'</span>'}
     out.push(Object.assign(x,{k,pic,lid:L.id,ut:(L.unitTitle||'')+(L.unitTitle?' · ':'')+L.title}))})});
-  FC.dk=out;FC.dkG=S.grade;return out}
+  cw.forEach(c=>{const L=S.by&&S.by[c.lid];if(!L)return;const k=keyOf(c.en);if(seen.has(k))return;seen.add(k);const e=emojiFor(c.en);
+    out.push({en:c.en,vi:c.vi,ipa:'',pos:'',em:'',k,pic:e?'<span class="fce">'+E(e)+'</span>':'',lid:L.id,ut:(L.unitTitle||'')+(L.unitTitle?' · ':'')+L.title,custom:1})});
+  FC.dk=out;FC.dkG=S.grade;FC.dkN=cw.length;return out}
 const get=k=>((S.prof&&S.prof.fc)||{})[k]|0;
 function toggle(k,bit){if(!S.prof)return;S.prof.fc=S.prof.fc||{};const v=(S.prof.fc[k]|0)^bit;if(v)S.prof.fc[k]=v;else delete S.prof.fc[k];try{saveProf()}catch(e){}}
 const units=()=>{const m=new Map();deck().forEach(w=>{if(!m.has(w.lid))m.set(w.lid,{id:w.lid,t:w.ut,n:0});m.get(w.lid).n++});return[...m.values()]};
@@ -49,7 +51,7 @@ window.flashView=function(){
   return`<div class="wrap" style="padding-block:28px"><div class="sechead"><div><div class="eyebrow">Ôn từ vựng</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Flashcard</h1><p class="muted" style="margin:6px 0 0">Lật thẻ để học, chơi game để nhớ lâu. Đánh dấu <b>đã thuộc</b> và <b>đặt câu được</b> để theo dõi tiến bộ.</p></div></div>
   <div class="fc-top"><div class="card fc-stat"><b>${D.length}</b><span>từ</span></div><div class="card fc-stat"><b>${kn}</b><span>đã thuộc</span></div><div class="card fc-stat"><b>${se}</b><span>đặt câu được</span></div>
   <div class="fc-prog" role="img" aria-label="Đã thuộc ${kn}/${D.length}"><i style="width:${Math.round(100*kn/D.length)}%"></i></div></div>
-  <div class="fc-tools"><select id="fc-u" class="sel-in" aria-label="Chọn bài">${'<option value="all">Tất cả các bài ('+D.length+' từ)</option>'+us.map(u=>`<option value="${E(u.id)}" ${FC.u===u.id?'selected':''}>${E(u.t)} (${u.n})</option>`).join('')}</select>
+  ${S.isT?'':addForm('')}<div class="fc-tools"><select id="fc-u" class="sel-in" aria-label="Chọn bài">${'<option value="all">Tất cả các bài ('+D.length+' từ)</option>'+us.map(u=>`<option value="${E(u.id)}" ${FC.u===u.id?'selected':''}>${E(u.t)} (${u.n})</option>`).join('')}</select>
   <select id="fc-st" class="sel-in" aria-label="Lọc"><option value="all">Tất cả</option><option value="new" ${FC.st==='new'?'selected':''}>Chưa thuộc</option><option value="known" ${FC.st==='known'?'selected':''}>Đã thuộc</option><option value="nosent" ${FC.st==='nosent'?'selected':''}>Chưa đặt câu được</option></select>
   <input id="fc-q" class="sel-in" type="search" placeholder="Tìm từ hoặc nghĩa…" value="${E(FC.q)}" aria-label="Tìm từ"></div>
   <div class="fc-go"><button class="btn" data-fc="cards" ${L.length?'':'disabled'}>🃏 Lật thẻ (${L.length})</button>
@@ -151,4 +153,39 @@ if(typeof _sd==='function'){window.studentDetail=function(){const out=_sd.apply(
 
 const _r=window.render||render;
 render=function(){const x=_r.apply(this,arguments);return x};
+
+/* ---------- v44: học sinh tự thêm từ (chọn unit trước) + Flashcard theo unit ---------- */
+const GAMES=[['abcd','🔤 Trắc nghiệm ABCD'],['en2vi','🇬🇧→🇻🇳 Nhìn Anh chọn Việt'],['pic2vi','🖼️ Nhìn hình chọn từ tiếng Anh'],['type','⌨️ Nhìn chữ ghi nghĩa'],['pictype','✍️ Nhìn hình ghi nghĩa'],['listen','🎧 Nghe chọn từ'],['scr','🔀 Xếp chữ cái'],['gap','🕳️ Điền chữ thiếu'],['vi2type','🇻🇳→🇬🇧 Nhìn nghĩa viết từ'],['spell','👂 Nghe và viết'],['mix','🎲 Trộn (10 câu)'],['big','🏁 Luyện tập MIX (35 câu)']];
+function addForm(fixed){
+  const L=(S.lessons||[]).filter(l=>l.vocab&&l.vocab.length||true);
+  const sel=fixed?`<input type="hidden" id="fcw-u" value="${E(fixed)}">`:`<select id="fcw-u" class="sel-in" aria-label="Chọn unit"><option value="">— Chọn unit / bài học trước —</option>${L.map(l=>`<option value="${E(l.id)}" ${FC.wu===l.id?'selected':''}>${E((l.unitTitle?l.unitTitle+' · ':'')+l.title)}</option>`).join('')}</select>`;
+  return`<div class="card fcw"><b>＋ Thêm từ vựng của em</b><p class="muted small" style="margin:4px 0 8px">${fixed?'Từ sẽ được thêm vào unit này.':'Chọn unit bài học rồi nhập từ em muốn học.'} Để trống phần nghĩa, máy sẽ tự tra.</p>
+  <div class="fcw-r">${sel}<input id="fcw-w" class="sel-in" placeholder="Từ hoặc cụm từ tiếng Anh" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="40"><input id="fcw-v" class="sel-in" placeholder="Nghĩa tiếng Việt (có thể để trống)" maxlength="70"><button class="btn" data-fcw="add">Thêm</button></div></div>`}
+function wordsHtml(list){return list.length?`<div class="fc-list">${list.map(w=>{const b=get(w.k);return`<div class="card fc-item ${b&1?'known':''}"><div class="fc-pic">${tile(w)}</div><div class="fc-body"><div class="fc-h"><b>${E(w.en)}</b>${w.ipa?`<span class="xipa">${E(w.ipa)}</span>`:''}<button class="say" data-say="${E(w.en)}" aria-label="Nghe">♪</button>${w.custom?'<span class="chip">của em</span>':''}</div><div class="fc-vi">${E(w.vi)}</div>
+  <div class="fc-act"><label class="fc-ck"><input type="checkbox" data-fck="1" data-k="${E(w.k)}" ${b&1?'checked':''}> Đã thuộc</label><label class="fc-ck"><input type="checkbox" data-fck="2" data-k="${E(w.k)}" ${b&2?'checked':''}> Đặt câu được ✍️</label>${w.custom?`<button class="btn sm ghost" data-fcw="del" data-k="${E(w.k)}" aria-label="Xóa từ">Xóa</button>`:''}</div></div></div>`}).join('')}</div>`:'<p class="muted">Unit này chưa có từ nào. Hãy thêm từ ở khung trên.</p>'}
+window.flashUnit=function(L){
+  FC.u=L.id;FC.st='all';FC.q='';
+  const D=deck().filter(w=>w.lid===L.id);let kn=0;D.forEach(w=>{if(get(w.k)&1)kn++});
+  return`<div class="fc-top"><div class="card fc-stat"><b>${D.length}</b><span>từ</span></div><div class="card fc-stat"><b>${kn}</b><span>đã thuộc</span></div></div>
+  <div class="fc-go"><button class="btn" data-fc="cards" ${D.length?'':'disabled'}>🃏 Lật thẻ (${D.length})</button>${GAMES.map(g=>`<button class="btn ghost" data-fc="game" data-m="${g[0]}" ${D.length<4?'disabled':''}>${g[1]}</button>`).join('')}</div>
+  ${S.isT?'':addForm(L.id)}${wordsHtml(D)}`};
+window.flashCount=L=>deck().filter(w=>w.lid===L.id).length;
+const FCW={busy:false};
+document.addEventListener('click',async e=>{
+  const b=e.target.closest&&e.target.closest('[data-fcw]');if(!b)return;
+  if(!S.prof){return}
+  if(b.dataset.fcw==='del'){const k=b.dataset.k;S.prof.fcw=(S.prof.fcw||[]).filter(c=>keyOf(c.en)!==k);try{saveProf()}catch(_){}FC.dk=null;render();return}
+  if(b.dataset.fcw!=='add'||FCW.busy)return;
+  const u=(document.getElementById('fcw-u')||{}).value||'',en=((document.getElementById('fcw-w')||{}).value||'').trim().replace(/\s+/g,' '),vi0=((document.getElementById('fcw-v')||{}).value||'').trim();
+  FC.wu=u;
+  if(!u){toast('Hãy chọn unit bài học trước khi thêm từ.');return}
+  if(!en||!/^[A-Za-z][A-Za-z' \-’]{0,39}$/.test(en)){toast('Hãy nhập từ hoặc cụm từ tiếng Anh (chỉ dùng chữ cái).');return}
+  const k=keyOf(en);if(deck().some(w=>w.k===k)){toast('Từ này đã có trong flashcard.');return}
+  let vi=vi0;
+  if(!vi){FCW.busy=true;b.disabled=true;b.textContent='Đang tra…';
+    try{const r=/\s/.test(en)?await API.call('GET','trs?s='+encodeURIComponent(en)):await API.call('GET','tr?w='+encodeURIComponent(en.toLowerCase()));vi=String((r&&r.vi)||'').split(' · ')[0].slice(0,70)}catch(_){}
+    FCW.busy=false}
+  if(!vi){toast('Chưa tra được nghĩa, hãy tự nhập nghĩa tiếng Việt.');render();return}
+  S.prof.fcw=S.prof.fcw||[];if(S.prof.fcw.length>=300){toast('Đã đủ 300 từ tự thêm.');render();return}
+  S.prof.fcw.push({en,vi:vi.slice(0,70),lid:u,t:Date.now()});try{saveProf()}catch(_){}FC.dk=null;toast('Đã thêm “'+en+'”');render()});
 })();

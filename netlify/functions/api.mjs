@@ -72,7 +72,7 @@ async function auth(req) {
 /* ---------- helpers ---------- */
 const pub = (u) => ({ username: u.username, role: u.role, name: u.name, cls: u.cls || "", grade: u.grade || "", nseen: u.nseen || 0, ...(u.role === "ta" ? { classes: u.classes || [] } : {}) });
 const cleanClasses = (v) => [...new Set((Array.isArray(v) ? v : []).map((c) => str(c, 20)).filter(Boolean))].slice(0, 40);
-const cleanGrade = (g) => (["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "108", "109"].includes(String(g)) ? String(g) : "");
+const cleanGrade = (g) => (["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "108", "109"].includes(String(g)) ? String(g) : "");
 const strip = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
 function baseUsername(name) {
   const parts = strip(name).toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/).filter(Boolean);
@@ -231,10 +231,11 @@ function cleanVocab(arr) {
   const out = [], seen = new Set();
   for (const x of Array.isArray(arr) ? arr : []) {
     if (!x || typeof x !== "object") continue;
-    const w = String(x.w || "").trim().toLowerCase().slice(0, 40);
-    if (!WORD_RE.test(w) || seen.has(w)) continue;
+    const ph = x.ph ? 1 : 0;
+    const w = String(x.w || "").trim().replace(/\s+/g, " ").toLowerCase().slice(0, ph ? 220 : 40);
+    if ((ph ? !/[a-z]/.test(w) : !WORD_RE.test(w)) || seen.has(w)) continue;
     seen.add(w);
-    out.push({ w, pos: String(x.pos || "").slice(0, 20), vi: String(x.vi || "").slice(0, 200), ctx: String(x.ctx || "").slice(0, 260), ipa: String(x.ipa || "").slice(0, 40), t: Number(x.t) || Date.now(), g: Number(x.g) || 0, k: x.k ? 1 : 0 });
+    out.push({ w, pos: String(x.pos || "").slice(0, 20), vi: String(x.vi || "").slice(0, 200), ctx: String(x.ctx || "").slice(0, 260), ipa: String(x.ipa || "").slice(0, 40), t: Number(x.t) || Date.now(), g: Number(x.g) || 0, k: x.k ? 1 : 0, ph, u: String(x.u || "").slice(0, 60), ut: String(x.ut || "").slice(0, 80) });
     if (out.length >= 1500) break;
   }
   return out;

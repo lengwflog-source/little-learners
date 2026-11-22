@@ -353,3 +353,7 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - lop5: id bài tập thêm tiền tố `l5-` (trước đây trùng lop4 → mở sai bài, đếm sai).
 - A1 (ef): phần Listen & repeat chấm máy; chỉ "Speaking: Record your answers" giáo viên chấm. Giáo viên thấy % đọc.
 - Nhìn hình chọn từ tiếng Anh; WORDFORM kho 100 câu/phần, mỗi lần 20 câu; mặc định giao diện sáng; âm thanh (ting/ố/vỗ tay/bụp).
+
+## v44
+- IELTS: sửa 3 đáp án trùng, thêm chỗ điền (4); chấm chấp nhận Anh-Anh/Anh-Mỹ (ukus), đáp án hiện cả hai; logo mới.
+- v44b: khối TOEIC (mã 13, `public/toeic/lessons.json`, 8 unit, 781 từ, bài tập, kiểm tra tuần, ghi âm do thầy chấm); Flashcard theo unit + tự thêm từ (chọn unit trước, lưu trong `prof.fcw`); lưu cụm/câu dịch vào kho từ vựng; Q&A mở cho A1, lớp 9, 10–12, IELTS; kho từ vựng mở cho A1, lớp 9, IELTS, TOEIC.
