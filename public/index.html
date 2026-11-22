@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#5a8a5c">
 <meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light only">
+<meta name="darkreader-lock">
 <meta name="robots" content="noindex,nofollow">
 <title>MR.LONG's ENGLISH HOUSE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,20 +22,7 @@ img{max-width:100%}[hidden]{display:none!important}
   --art-sky:#eef6e2;--art-cloud:#dcebf3;--art-hill1:#d2e7bd;--art-hill2:#a9cfa8;--art-house:#fffdf4;--art-tree:#78a878;
   --shadow:0 10px 28px rgba(61,107,69,.12);--display:'Fraunces',Georgia,serif;--body:'Nunito',system-ui,sans-serif;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#121d17;--bg2:#182a20;--surface:#1b2a21;--ink:#e7f1e3;--muted:#9fb5a4;--line:#2c4235;
-  --primary:#86bb8a;--primary-ink:#0f1f12;--primary-deep:#a8d6ab;--leaf:#5f8f66;--wave:#2f5a3d;
-  --sun:#f2c744;--peach:#4a3a33;--mint:#25402e;--butter:#463f22;--sky:#243a4a;
-  --good:#7fd29c;--good-bg:#1f4130;--bad:#f09a8f;--bad-bg:#4a2723;--warn:#ecd37a;--warn-bg:#443a17;
-  --art-sky:#16261d;--art-cloud:#2a3f4c;--art-hill1:#1f3a2a;--art-hill2:#2b5238;--art-house:#d9e6d0;--art-tree:#3f7a50;
-  --shadow:0 10px 28px rgba(0,0,0,.35);color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#121d17;--bg2:#182a20;--surface:#1b2a21;--ink:#e7f1e3;--muted:#9fb5a4;--line:#2c4235;
-  --primary:#86bb8a;--primary-ink:#0f1f12;--primary-deep:#a8d6ab;--leaf:#5f8f66;--wave:#2f5a3d;
-  --sun:#f2c744;--peach:#4a3a33;--mint:#25402e;--butter:#463f22;--sky:#243a4a;
-  --good:#7fd29c;--good-bg:#1f4130;--bad:#f09a8f;--bad-bg:#4a2723;--warn:#ecd37a;--warn-bg:#443a17;
-  --art-sky:#16261d;--art-cloud:#2a3f4c;--art-hill1:#1f3a2a;--art-hill2:#2b5238;--art-house:#d9e6d0;--art-tree:#3f7a50;
-  --shadow:0 10px 28px rgba(0,0,0,.35);color-scheme:dark}
+:root{color-scheme:only light}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);margin:0;-webkit-text-size-adjust:100%}
@@ -117,7 +106,7 @@ section.blk{padding-block:34px}
 .prose h3{margin-block:14px 6px}
 
 /* exercise */
-.ex{max-width:820px;margin-inline:auto}
+.ex{max-width:820px;margin-inline:auto}.ex.lsx{max-width:none;margin:0}
 .instr{font-family:var(--display);font-size:1.15rem;margin:8px 0 14px}
 .passage{background:var(--butter);border-radius:16px;padding:14px 18px;margin-bottom:14px;max-height:340px;overflow:auto;font-size:.98rem}
 .boxw{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:12px;border:2px dashed var(--leaf);border-radius:16px}
@@ -340,9 +329,10 @@ const USP=[[/\b(col|favo|neighb|behavi|hon|hum|flav|lab|harb|rum|sav|vap)or(s|ed
 const ukOf=s=>{let t=String(s);for(const[r,x]of USP)t=t.replace(r,x);return t};
 const loose=s=>ukus(norm(s).replace(/[.,!?;:"]/g,'')).replace(/\s+/g,' ').trim();
 const same=(a,b)=>loose(a)===loose(b);
-function units(it){switch(it.t){case'mcq':case'tf':case'text':case'build':case'rec':case'wr':case'sp':return 1;case'ws':return it.words.length;case'fill':return it.a.length;case'order':return it.steps.length;case'match':return it.left.length;case'cat':return it.words.length;default:return 0}}
+function units(it){switch(it.t){case'mcq':case'tf':case'text':case'build':case'rec':case'wr':case'sp':case'ew':return 1;case'ws':return it.words.length;case'fill':return it.a.length;case'order':return it.steps.length;case'match':return it.left.length;case'cat':return it.words.length;default:return 0}}
 function gradeItem(it,a,k){switch(it.t){
   case'wr':case'sp':return[ieDone(k)];
+  case'ew':return[ewDone(k)];
   case'mcq':return[a===it.a];
   case'tf':return[a===it.a];
   case'text':return[it.a.some(v=>same(v,a))];
@@ -363,7 +353,7 @@ function solText(it){switch(it.t){
   case'text':case'build':{const a=it.a[0],u=ukOf(a);return a===u?a:a+'  (Anh-Mỹ)  /  '+u+'  (Anh-Anh)'}
   case'ws':return it.words.join(', ');
   case'rec':return'Hãy thu âm giọng đọc của bạn';
-  case'wr':case'sp':return'';
+  case'wr':case'sp':case'ew':return'';
   case'fill':return it.a.map(v=>{const a=v[0],u=ukOf(a);return a===u?a:a+' / '+u}).join(' · ');
   case'order':return it.steps.map((_,k)=>(k+1)+'→'+(it.a.indexOf(k)+1)).join('  ');
   case'match':return it.left.map((l,k)=>(k+1)+'-'+L2[it.a[k]]).join('  ');
@@ -401,6 +391,7 @@ function refresh(force){const a=document.activeElement;
 document.addEventListener('focusout',()=>{if(pending)setTimeout(()=>{if(!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))refresh(true)},120)});
 
 function applyMe(d){const isStaff=!!(d.user&&(d.user.role==='teacher'||d.user.role==='ta'));
+  if(!isStaff)setTimeout(()=>loadEw().then(()=>{if(X&&X.E&&route().startsWith('ex-'))X.E.items.forEach((it,i)=>{if(it.t==='ew')refreshItem(i)})}),0);
   if(!isStaff)setTimeout(()=>loadAi().then(()=>{if(!route().startsWith('ex-'))refresh();else if(X&&X.E)X.E.items.forEach((it,i)=>{if(it.t==='wr'||it.t==='sp')refreshItem(i)});if(aiHasPending())startAiPoll()}),0);
   if(!isStaff)setTimeout(()=>loadRecs().then(()=>{if(!route().startsWith('ex-'))refresh();else if(X&&X.E)X.E.items.forEach((it,i)=>{if(it.t==='rec')refreshItem(i)})}),0);
   S.user=d.user;S.isT=isStaff;S.isTA=d.user.role==='ta';S.uid=d.user.username;
@@ -447,7 +438,7 @@ async function init(){
 const route=()=>{const h=(location.hash||'').slice(1);return h||(S.isT?'t-home':'home')};
 addEventListener('hashchange',()=>{scrollTo(0,0);render()});
 const hdr=()=>{const r=route(),I=(h,t,on)=>`<a href="#${h}" class="${on?'on':''}">${t}</a>`;
-  const TI=[['t-home','Tổng quan',r==='t-home'],['t-students','Học sinh',r.startsWith('t-student')],['t-attendance','Điểm danh',r==='t-attendance'],['t-assign','Giao bài',r==='t-assign'],['t-voice','Bản thu âm',r==='t-voice'],['t-qa','Giải đáp'+(typeof qaNavBadge==='function'?qaNavBadge():''),r==='t-qa']].concat(S.isTA?[]:[['t-ai','Chấm IELTS',r==='t-ai'],['t-ta','Trợ giảng',r==='t-ta']]).concat([['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')]]);
+  const TI=[['t-home','Tổng quan',r==='t-home'],['t-students','Học sinh',r.startsWith('t-student')],['t-attendance','Điểm danh',r==='t-attendance'],['t-assign','Giao bài',r==='t-assign'],['t-voice','Bản thu âm',r==='t-voice'],['t-chat','Chat'+(typeof chNavBadge==='function'?chNavBadge():''),r==='t-chat'],['t-qa','Giải đáp'+(typeof qaNavBadge==='function'?qaNavBadge():''),r==='t-qa']].concat(S.isTA?[]:[['t-ai','Chấm IELTS',r==='t-ai'],['t-ew','Extra Writing',r==='t-ew'],['t-ta','Trợ giảng',r==='t-ta']]).concat([['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')]]);
   const cur=TI.find(x=>x[2]);
   const navT=`<details class="gdd" id="ndd"><summary aria-label="Menu chính, đang ở ${cur?cur[1].replace(/<[^>]+>/g,''):'Menu'}">☰ ${cur?cur[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${TI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
   const SI=[['home','Trang chủ',r==='home'],['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')],['flash','Flashcard',r==='flash'],['progress','Tiến độ',r==='progress']].concat(bankOK()?[['vocab','Kho từ vựng',r==='vocab']]:[]).concat([['voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice']]);
@@ -478,6 +469,9 @@ function render(){
     else if(r==='t-voice'&&S.isT)body=teacherVoiceView();
     else if(r==='t-qa'&&S.isT&&typeof qaTeacherView==='function')body=qaTeacherView();
     else if(r==='t-ai'&&S.isT&&!S.isTA)body=ieTeacherAi();
+    else if(r==='t-ew'&&S.isT)body=ewTeacher();
+    else if(r==='t-chat'&&S.isT)body=chatTeacher();
+    else if(r==='ew-me'&&!S.isT)body=ewHome();
     else if(r==='t-ta'&&S.isT&&!S.isTA)body=taView();
     else if(r==='voice'&&!S.isT)body=voiceView();
     else if(r==='vocab'&&bankOK()&&typeof vocabView==='function')body=vocabView();
@@ -520,10 +514,11 @@ function homeView(){const p=S.prof,o=overall(p),st=streak(p),nx=nextEx(p),ass=my
   <div class="wrap">
   ${S.cfg.announcement?`<div class="banner"><b>Thông báo:</b> ${esc(S.cfg.announcement)}</div>`:''}
   ${S.grade===9?`<section class="blk" style="padding-bottom:0">${ieSummary(p)}</section>`:''}
+  ${S.grade===9&&typeof ewHomeCard==='function'?`<section class="blk" style="padding-bottom:0">${ewHomeCard()}</section>`:''}
   <section class="blk"><div class="grid g2">
    <div class="card" id="tr-ci"><div class="sechead" style="margin:0 0 12px"><h3>Điểm danh hôm nay</h3><span class="chip ${marked?'good':'warn'}">${marked?'Đã điểm danh':'Chưa điểm danh'}</span></div>
      ${marked?`<p class="muted">Cảm ơn bạn, ${fmtD(td)} đã được ghi nhận.</p>`:ci?`<p class="muted small" style="margin-bottom:10px">Giáo viên đã mở điểm danh. Nhập mã trên bảng.</p><div class="row"><input id="ci-code" class="sel-in" inputmode="numeric" maxlength="6" placeholder="Mã 4 số" style="width:120px"><button class="btn sm" data-act="checkin">Điểm danh</button></div>`:`<p class="muted">Giáo viên chưa mở điểm danh hôm nay.</p>`}</div>
-   <div class="card" id="tr-assign"><div class="sechead" style="margin:0 0 12px"><h3>Bài được giao</h3></div>${ass.filter(a=>!(a.due&&a.due<td)).length?ass.filter(a=>!(a.due&&a.due<td)).map(a=>{const s=assignStat(p,a),late=false;return`<div style="margin-bottom:12px"><div class="row"><b>${esc(a.title)}</b><span class="sp"></span>${a.due?`<span class="chip ${late?'bad':'sky'}">Hạn ${fmtD(a.due)}</span>`:''}</div><div class="row small muted" style="margin:4px 0"><span>${s.done}/${s.total} ${a.ex&&a.ex.length?'phần':'bộ bài'}</span><span class="sp"></span><a href="#${asLink(p,a)}" style="color:var(--primary-deep);font-weight:700">Làm bài</a></div><div class="bar"><i style="width:${s.pct*100}%"></i></div>${asParts(p,a)}</div>`}).join(''):'<p class="muted">Chưa có bài được giao. Bạn cứ chọn bài bên dưới để luyện tập.</p>'}</div>
+   <div class="card" id="tr-assign"><div class="sechead" style="margin:0 0 12px"><h3>Bài được giao</h3></div>${ass.filter(a=>!(a.due&&a.due<td)).length?ass.filter(a=>!(a.due&&a.due<td)).map(a=>{const s=assignStat(p,a),late=!!(a.due&&a.due<td);return`<div style="margin-bottom:12px"><div class="row"><b>${esc(a.title)}</b><span class="sp"></span>${a.due?`<span class="chip ${late?'bad':'sky'}">${late?'Quá hạn · ':'Hạn '}${fmtD(a.due)}</span>`:''}</div><div class="row small muted" style="margin:4px 0"><span>${s.done}/${s.total} ${a.ex&&a.ex.length?'phần':'bộ bài'}</span><span class="sp"></span><a href="#${asLink(p,a)}" style="color:var(--primary-deep);font-weight:700">Làm bài</a></div><div class="bar"><i style="width:${s.pct*100}%"></i></div>${asParts(p,a)}</div>`}).join(''):'<p class="muted">Chưa có bài được giao. Bạn cứ chọn bài bên dưới để luyện tập.</p>'}</div>
   </div></section>
   <section class="blk" id="tr-prog" style="padding-top:0"><div class="sechead"><h2>Chương trình học</h2></div><div class="grid g4">${lessonUnits().map(u=>{const tot=u.lessons.reduce((a,L)=>a+L.exercises.length,0),dn=u.lessons.reduce((a,L)=>a+lessonStat(p,L).done,0);return`<a class="card unit" href="#lessons"><span class="disc" style="background:${DISC[u.key]||DISC[0]}">${ICONS[u.key]||ICONS[0]}</span><b>${u.title}</b><small>${esc(u.sub)}</small><div class="bar"><i style="width:${tot?dn/tot*100:0}%"></i></div><small>${dn}/${tot} bộ bài</small></a>`}).join('')}</div></section></div>`}
 
@@ -567,7 +562,7 @@ function teacherVoiceView(){
   ${!S.vloaded?'<div class="sk"></div>':shown.length?shown.map(card).join(''):'<div class="card"><p class="muted">Chưa có bản thu nào.</p></div>'}</div>`}
 const numOf=(E,i)=>E.items.slice(0,i).filter(x=>x.t!=='dlg'&&x.t!=='note').length+1;
 function wrongOf(E,r){if(!r||!r.a||!r.n)return null;const g=gradeEx(E,r.a),out=[];
-  E.items.forEach((it,i)=>{const res=g.res[i];if(!res||['wr','sp','rec'].includes(it.t))return;const bad=[];res.forEach((v,j)=>{if(!v)bad.push(j+1)});
+  E.items.forEach((it,i)=>{const res=g.res[i];if(!res||['wr','sp','rec','ew'].includes(it.t))return;const bad=[];res.forEach((v,j)=>{if(!v)bad.push(j+1)});
     if(bad.length)out.push(res.length>1?`${numOf(E,i)} (ô ${bad.join(', ')})`:String(numOf(E,i)))});return out}
 const sc=r=>r.n?`<span class="chip ${r.c/r.n>=.8?'good':r.c/r.n>=.5?'warn':'bad'}">${r.c}/${r.n}</span>`:'<span class="chip sky">✓</span>';
 function teacherResults(L){const st=visibleStudents(),exs=L.exercises;
@@ -599,13 +594,13 @@ function lessonView(id){const L=S.by[id];if(!L)return`<div class="wrap" style="p
   else{const cards=L.exercises.map((E,k)=>{const r=ex[E.id];if(LK&&!LK.set.has(E.id))return`<div class="card lcard lockd" aria-disabled="true"><div class="t"><b>🔒 ${esc(exTitle(E))}</b><span class="muted small">Chưa được giao</span></div><span class="chip">${E.items.length} câu</span></div>`;if(L.seq&&p&&!r&&k>0&&!ex[L.exercises[k-1].id])return`<div class="card lcard lockd" aria-disabled="true"><div class="t"><b>🔒 ${esc(exTitle(E))}</b><span class="muted small">Nộp phần trước để mở khóa</span></div><span class="chip">${E.items.length} câu</span></div>`;const s=r?(r.n?Math.round(r.c/r.n*100):100):null;return`<a class="card lcard" href="#ex-${E.id}"><div class="t"><b>${esc(exTitle(E))}</b><span class="muted small">${esc((E.instruction||'').replace(/<[^>]+>/g,'').slice(0,90))}</span></div>${r?`<span class="chip ${s>=80?'good':s>=50?'warn':'bad'}">${r.n?s+'%':'Đã xem'}</span>`:`<span class="chip">${E.items.length} câu</span>`}</a>`});
     if(L.results){const k=L.exercises.findIndex(E=>/Unit test/.test(E.title));cards.splice(k<0?cards.length:k,0,`<div class="card lcard" data-tab="res" role="button" tabindex="0" style="cursor:pointer"><div class="t"><b>${L.resultsNo||15} · Results</b><span class="muted small">Bảng kết quả tổng hợp của cả Unit</span></div><span class="chip sky">★</span></div>`)}
     c=(L.seq?examSummary(L,p):'')+`<div class="grid g2">${cards.join('')}</div>`}
-  return`<div class="wrap" style="padding-block:28px"><div class="crumb"><a href="#lessons">Bài học</a> / ${esc(L.label)}</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">${esc(L.title)}</h1>${S.isT?`<div style="margin:6px 0">${taughtBtn(L.id)}</div>`:''}<p class="muted">${L.grade!==6?esc(L.sub||''):(L.unit?esc(L.unitTitle):'Đề ôn tập HK1')}</p>
-  <div class="tabs" role="tablist">${tabs.map(t=>`<button role="tab" class="${t[0]===tab?'on':''}" data-tab="${t[0]}">${t[1]}${t[0]==='res'?'':` <span class="small">(${t[2]})</span>`}</button>`).join('')}</div>${c}</div>`}
+  return`<div class="wrap${S.isT?' xwide':''}" style="padding-block:28px"><div class="crumb"><a href="#lessons">Bài học</a> / ${esc(L.label)}</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">${esc(L.title)}</h1>${S.isT?`<div style="margin:6px 0">${taughtBtn(L.id)}</div>`:''}<p class="muted">${L.grade!==6?esc(L.sub||''):(L.unit?esc(L.unitTitle):'Đề ôn tập HK1')}</p>
+  <div class="tabs" role="tablist">${tabs.map(t=>`<button role="tab" class="${t[0]===tab?'on':''}" data-tab="${t[0]}">${t[1]}${t[0]==='res'?'':` <span class="small">(${t[2]})</span>`}</button>`).join('')}</div>${S.isT&&typeof xtb==='function'?xtb():''}${S.isT?`<div class="ex lsx" data-eid="ls-${esc(id)}-${tab}"><div data-hr="lc">${c}</div></div>`:c}</div>`}
 
 /* ---------- exercise ---------- */
 function startEx(id,practice,su){const L=S.by[S.exL[id]];if(!L)return;const E=L.exercises.find(e=>e.id===id);const p=S.isT?(su?S.all[su]:null):S.prof;const r=!practice&&p&&p.ex&&p.ex[id];if(su&&!r)return;
   X={E,L,ans:r?JSON.parse(JSON.stringify(r.a||[])):E.items.map(()=>undefined),checked:!!r,show:false,practice:!!practice,stu:su||''};if(r)X.g=gradeEx(E,X.ans)}
-const hasLive=E=>E.items.some(it=>it.t==='rec'||it.t==='wr'||it.t==='sp');
+const hasLive=E=>E.items.some(it=>it.t==='rec'||it.t==='wr'||it.t==='sp'||it.t==='ew');
 function missing(E,ans){let m=0;E.items.forEach((it,i)=>{const a=ans[i];let ok=true;switch(it.t){
   case'mcq':case'tf':ok=a!=null&&a!=='';break;
   case'text':ok=!!String(a||'').trim();break;
@@ -653,7 +648,7 @@ function qText(it,i,done,res){const q=it.q||'';let k=0;
     return q+' '+mk(0)}
   return q}
 function itemHtml(it,i,done,res){const a=X.ans[i];const ok=res?res.every(Boolean):null;
-  const noq=(!it.q&&!it.img&&!it.em&&!it.say&&['match','cat','order'].includes(it.t))||['say','card','note','ws','rec','dlg','wr','sp'].includes(it.t);
+  const noq=(!it.q&&!it.img&&!it.em&&!it.say&&['match','cat','order'].includes(it.t))||['say','card','note','ws','rec','dlg','wr','sp','ew'].includes(it.t);
   const head=noq?'':`<div class="q" data-hr="q${i}"><span class="num">${it.n||(X&&X.E?X.E.items.slice(0,i).filter(x=>x.t!=='dlg'&&x.t!=='note').length+1:i+1)}</span><div>${it.img?`<img src="${IB()}${esc(it.img)}" alt="" loading="lazy" style="display:block;margin-bottom:8px">`:''}${it.say?`<button class="say" data-say="${esc(it.say)}" aria-label="Nghe" title="Nghe">♪</button>${it.slow?`<button class="say" data-say="${esc(it.say)}" data-rate="0.55" aria-label="Nghe chậm" title="Nghe chậm">🐢</button>`:''}`:''}${emH(it.em)}${qText(it,i,done,res)}${it.hint&&it.t!=='text'?` <span class="hint">${esc(it.hint)}</span>`:''}</div></div>`;
   let body='';
   if(it.t==='mcq')body=`<div class="opts">${it.opts.map((o,j)=>`<label class="opt ${a===j&&!done?'sel':''} ${done&&j===it.a?'ok':''} ${done&&a===j&&j!==it.a?'bad':''}"><input type="radio" name="q${i}" data-i="${i}" value="${j}" ${a===j?'checked':''} ${done?'disabled':''}><span class="L">${L2[j]}</span><span>${o}</span></label>`).join('')}</div>`;
@@ -672,9 +667,10 @@ function itemHtml(it,i,done,res){const a=X.ans[i];const ok=res?res.every(Boolean
   else if(it.t==='rec'){const k=X.E.id+':'+i;const on=RECING&&RECING.k===k;const url=REC[k];const canRec=!!(navigator.mediaDevices&&window.MediaRecorder);
     body=`<div class="recw"><div class="rt"><button class="say big" data-say="${esc(it.w)}" aria-label="Nghe mẫu" title="Nghe mẫu">♪</button><button class="say big" data-say="${esc(it.w)}" data-rate="0.55" aria-label="Nghe chậm" title="Nghe chậm">🐢</button><b class="rtext">${esc(it.prompt||it.w)}</b>${it.ipa?`<span class="muted small">${esc(it.ipa)}</span>`:''}${it.vi?`<span class="muted small">${esc(it.vi)}</span>`:''}</div>${it.prompt?`<details class="small" style="margin-top:6px"><summary style="cursor:pointer">Xem câu mẫu</summary><p>${esc(it.w)}</p></details>`:''}<div class="rc"><button class="btn ${on?'rec-on':'ghost'}" data-rec="${i}" ${done||!canRec?'disabled':''}>${on?'■ Dừng thu':'● Thu âm'}</button>${url?`<audio controls src="${url}"></audio>`:''}${recStatus(k,i,url,a,done)}</div>${recComment(k)}<div class="muted small">① Nghe mẫu ♪ ② Bấm Thu âm và đọc to ③ Nghe lại, so sánh với mẫu. ${S.local?'(Chế độ thử: bản thu không được gửi.)':'Bản thu được gửi cho giáo viên nghe và tự động xóa sau 7 ngày.'}${canRec||done?'':` <a href="#" data-recskip="${i}">Máy không thu được? Bấm vào đây nếu bạn đã tự đọc to.</a>`}</div></div>`}
   else if(it.t==='wr')body=ieWr(it,i);
+  else if(it.t==='ew')body=ewItem(it,i);
   else if(it.t==='sp')body=ieSp(it,i);
   else if(it.t==='dlg')body=`<div class="dlg"><div class="row"><button class="btn" data-dlg="${i}">▶ Nghe cả hội thoại</button><button class="btn ghost sm" data-dlg="stop">■ Dừng</button>${it.hide?'<span class="muted small">Bạn có thể nghe nhiều lần.</span>':''}</div>${it.hide&&!done?'<p class="muted small" style="margin:8px 0 0">Lời thoại sẽ hiện sau khi bạn nộp bài.</p>':`<details><summary>Xem lời thoại</summary>${(g=>it.lines.map(l=>`<p class="dl"><b>${esc(l[0])}:</b> ${esc(l[1])} <button class="say" data-say="${esc(l[1])}" data-g="${g[l[0]]}" aria-label="Nghe" title="Nghe">♪</button></p>`).join(''))(dlgGender(it.lines))}</details>`}</div>`;
-  const sol=done&&res&&!ok&&it.t!=='open'&&it.t!=='wr'&&it.t!=='sp'?`<div class="sol x">Đáp án: ${it.t==='mcq'?esc(String(solText(it)).replace(/<[^>]+>/g,'')):esc(solText(it))}</div>`:'';
+  const sol=done&&res&&!ok&&it.t!=='open'&&it.t!=='wr'&&it.t!=='sp'&&it.t!=='ew'?`<div class="sol x">Đáp án: ${it.t==='mcq'?esc(String(solText(it)).replace(/<[^>]+>/g,'')):esc(solText(it))}</div>`:'';
   return`<div class="item">${head}${body}${sol}${done&&it.expl?`<div class="expl">${esc(it.expl)}</div>`:''}${done&&it.xh?`<div class="xh">${it.xh}</div>`:''}</div>`}
 
 const REC={},RB={},RS={},VA={};let RECING=null;
@@ -882,12 +878,14 @@ async function putNote(d,uid,v){try{await API.call('PUT','attendance/'+d,{notes:
 
 /* ---------- events ---------- */
 document.addEventListener('click',async e=>{
-  const t=e.target.closest('[data-qp],[data-grade],[data-act],[data-tab],[data-go],[data-sel],[data-mark],[data-say],[data-rec],[data-recskip],[data-recretry],[data-recplay],[data-vplay],[data-vsave],[data-vdel],[data-vf],[data-vstu],[data-vreload],[data-dlg],[data-flip],[data-bt],[data-br],[data-wc],[data-reset],[data-delas],[data-delcls],[data-tabx],[data-ie]');if(!t)return;
+  const t=e.target.closest('[data-ch],[data-ew],[data-qp],[data-grade],[data-act],[data-tab],[data-go],[data-sel],[data-mark],[data-say],[data-rec],[data-recskip],[data-recretry],[data-recplay],[data-vplay],[data-vsave],[data-vdel],[data-vf],[data-vstu],[data-vreload],[data-dlg],[data-flip],[data-bt],[data-br],[data-wc],[data-reset],[data-delas],[data-delcls],[data-tabx],[data-ie]');if(!t)return;
   const D=t.dataset;
   if(D.act==='contact'){e.preventDefault();showContact();return}
   if(D.act==='taught'){e.preventDefault();e.stopPropagation()}
   if(D.act==='ctclose'){e.preventDefault();const o=document.getElementById('ctov');if(o)o.remove();return}
   if(D.ie!==undefined){ieClick(t,D);return}
+  if(D.ew!==undefined){ewClick(t,D);return}
+  if(D.ch!==undefined){chClick(t,D);return}
   if(D.qp!==undefined){const k=D.qp.toLowerCase();document.querySelectorAll('input[name=as-e]').forEach(c=>{if(!k)c.checked=false;else if(c.parentElement.textContent.toLowerCase().includes(k))c.checked=true});asRecount();return}
   if(D.rec!==undefined){toggleRec(+D.rec);return}
   if(D.recretry!==undefined){const i=+D.recretry,k=X.E.id+':'+i;if(RB[k])uploadRec(X.E.id,i,RB[k],(X.E.items[i].prompt||X.E.items[i].w)+'');return}
@@ -1012,6 +1010,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.target.id==='lg-p
 init();
 </script>
 <script src="ielts.js"></script>
+<script src="ew.js"></script>
+<script src="chat.js"></script>
 <script src="extras.js"></script>
 <script src="mascot.js"></script>
 <script src="match.js"></script>
