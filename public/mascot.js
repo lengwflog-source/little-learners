@@ -104,7 +104,7 @@ function steps(){if(T&&T.tp)return typeSteps();if(T&&T.ex)return exSteps();const
  r.push({pose:'cheer',el:menuBtn,t:'Ôn từ vựng bằng <b>Flashcard</b> 🃏',s:'Mở menu ☰ → <b>Flashcard</b>: lật thẻ có hình, chơi nhiều game (chọn ABCD, xếp chữ cái, điền chữ thiếu, nghe và viết…) và bài <b>MIX 35 câu</b>. Nhớ tick <b>Đã thuộc</b> và <b>Đặt câu được</b> khi bạn làm được nhé!'});
  if(S.lessons&&S.lessons.some(l=>l.wordform))r.push({pose:'cheer',t:'Mục <b>WORDFORM</b> 🔤',s:'Trong mỗi bài có thẻ <b>Wordform</b>: bảng danh từ – động từ – tính từ – trạng từ và phần luyện tập 10–20 câu kèm công thức. Mỗi lần bấm <b>luyện bộ câu mới</b> sẽ ra câu khác, bạn <b>làm lại bao nhiêu lần cũng được</b>!'});
  const g=Number(S.grade);
- if(g===13){
+ if(g===13||g===14){
   r.push({pose:'cheer',t:'Khối <b>TOEIC</b>: nghe có hướng dẫn 🎧',s:'Mỗi bài nghe (Track A, B, C, D) có khung vàng <b>"Cách làm bài"</b> ở đầu bài: đọc trước khi bấm nghe. Part 1 nhìn ảnh 3–5 giây rồi mới nghe. Sau khi nộp, mỗi đáp án đều có lời giải thích vì sao đúng và vì sao sai.'});
   r.push({pose:'point',t:'Từ vựng, đặt câu và thu âm ✍️🎤',s:'Mỗi Unit có <b>Flashcard</b>, bài <b>đặt câu</b> với từ vựng và bài <b>nói – thu âm</b>: thầy sẽ nghe và chấm trực tiếp, bạn đọc nhận xét trong mục <b>Bản thu</b>.'});
  }else if(g===9){
