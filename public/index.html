@@ -601,7 +601,17 @@ function lessonView(id){const L=S.by[id];if(!L)return`<div class="wrap" style="p
 
 /* ---------- exercise ---------- */
 function startEx(id,practice,su){const L=S.by[S.exL[id]];if(!L)return;const E=L.exercises.find(e=>e.id===id);const p=S.isT?(su?S.all[su]:null):S.prof;const r=!practice&&p&&p.ex&&p.ex[id];if(su&&!r)return;
-  X={E,L,ans:r?JSON.parse(JSON.stringify(r.a||[])):E.items.map(()=>undefined),checked:!!r,show:false,practice:!!practice,stu:su||''};if(r)X.g=gradeEx(E,X.ans)}
+  X={E,L,ans:r?JSON.parse(JSON.stringify(r.a||[])):E.items.map(()=>undefined),checked:!!r,show:false,practice:!!practice,stu:su||''};if(r)X.g=gradeEx(E,X.ans)
+  if(!r&&!S.isT){const d=draftLoad(E);if(d){X.ans=d;X.restored=true;setTimeout(()=>{try{toast('Đã khôi phục bài làm đang dở của bạn.')}catch(e){}},400)}}}
+/* ---- tự lưu nháp: đang làm dở mà tải lại trang thì đáp án vẫn còn ---- */
+const draftKey=id=>'ll-draft-'+((S.uid||(S.user&&S.user.username))||'x')+'-'+id;
+function draftClean(a){return(a||[]).map(v=>{if(v===undefined||v===null)return null;if(typeof v==='string'||typeof v==='number'||v===true)return v;if(Array.isArray(v))return v.map(x=>(typeof x==='string'||typeof x==='number'||x===true)?x:null);return null})}
+function draftLoad(E){try{const v=JSON.parse(localStorage.getItem(draftKey(E.id))||'null');if(!v||!Array.isArray(v.a)||v.n!==E.items.length)return null;const a=v.a.map(x=>x===null?undefined:x);return a.some(x=>x!==undefined&&!(Array.isArray(x)&&x.every(y=>y===null||y===''))&&x!=='')?a:null}catch(e){return null}}
+let DRL='';
+function draftSave(){try{if(!X||X.checked||S.isT||!S.user||!X.E||!route().startsWith('ex-'))return;collect();const j=JSON.stringify({n:X.E.items.length,a:draftClean(X.ans),t:Date.now()});if(j===DRL)return;DRL=j;localStorage.setItem(draftKey(X.E.id),j)}catch(e){}}
+function draftClear(id){try{localStorage.removeItem(draftKey(id));DRL=''}catch(e){}}
+setInterval(draftSave,1500);addEventListener('pagehide',draftSave);document.addEventListener('visibilitychange',()=>{if(document.hidden)draftSave()});
+
 const hasLive=E=>E.items.some(it=>it.t==='rec'||it.t==='wr'||it.t==='sp'||it.t==='ew');
 function missing(E,ans){let m=0;E.items.forEach((it,i)=>{const a=ans[i];let ok=true;switch(it.t){
   case'mcq':case'tf':ok=a!=null&&a!=='';break;
@@ -732,7 +742,7 @@ function doCheck(force){collect();
   if(!S.isT&&!X.practice){
     if(S.prof&&S.prof.ex&&S.prof.ex[X.E.id]){const id=X.E.id;X=null;startEx(id);render();toast('Bài này đã có kết quả lần đầu.');return}
     if(!force){const miss=missing(X.E,X.ans);if(miss>0){X.confirm=true;X.miss=miss;const b=$('.actbar');if(b)b.outerHTML=actbar();return}}}
-  X.confirm=false;X.g=gradeEx(X.E,X.ans);X.checked=true;try{window.SFX&&SFX.result(X.g.c,X.g.n)}catch(e){}
+  X.confirm=false;X.g=gradeEx(X.E,X.ans);X.checked=true;draftClear(X.E.id);try{window.SFX&&SFX.result(X.g.c,X.g.n)}catch(e){}
   if(S.prof&&!S.isT&&!X.practice){const clean=JSON.parse(JSON.stringify(X.ans));S.prof.ex=S.prof.ex||{};S.prof.ex[X.E.id]={c:X.g.c,n:X.g.n,t:Date.now(),a:clean};S.prof.days=S.prof.days||[];const t=today();if(!S.prof.days.includes(t)){S.prof.days.push(t);S.prof.days=S.prof.days.slice(-120)}saveProf()}
   render();scrollTo(0,0)}
 
@@ -937,7 +947,7 @@ document.addEventListener('click',async e=>{
   else if(act==='cancelcheck'){X.confirm=false;const b=$('.actbar');if(b)b.outerHTML=actbar()}
   else if(act==='practice'){startEx(X.E.id,true);render();scrollTo(0,0)}
   else if(act==='endpractice'){X=null;render();scrollTo(0,0)}
-  else if(act==='retry'){X.checked=false;X.show=false;X.ans=X.E.items.map(()=>undefined);X.g=null;render();scrollTo(0,0)}
+  else if(act==='retry'){X.checked=false;draftClear(X.E.id);X.show=false;X.ans=X.E.items.map(()=>undefined);X.g=null;render();scrollTo(0,0)}
   else if(act==='reveal'){collect();X.show=!X.show;X.g=null;render()}
   else if(act==='checkin'){const v=($('#ci-code').value||'').trim();try{const r=await API.call('POST','checkin',{code:v});S.prof.ci=r.ci;toast('Điểm danh thành công');render()}catch(err){toast(err.message)}}
   else if(act==='openci'){if(S.date!==today()){toast('Chỉ mở điểm danh bằng mã cho ngày hôm nay.');return}if(S.isTA&&!(S.cfg.classes||[]).length){toast('Bạn chưa được phân công lớp nào.');return}cfgOp({op:'ci',code:String(Math.floor(1000+Math.random()*9000)),classes:S.isTA&&S.cls?[S.cls]:[]})}
