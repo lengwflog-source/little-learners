@@ -13,3 +13,5 @@
 @media(max-width:640px){.bdtw{width:70px;bottom:70px}.bdtmini{bottom:70px}.bdtm{bottom:150px}}
 
 .bdtw{touch-action:none;user-select:none;-webkit-user-select:none}.bdtw.bdtdrag{cursor:grabbing;opacity:.92;transition:none}.bdtw:not(.bdtdrag){cursor:grab}
+
+.bdtm{max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}

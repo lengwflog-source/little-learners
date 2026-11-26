@@ -389,3 +389,4 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 ## v51 (2026-11-26)
 - Tự lưu nháp: học sinh đang làm bài mà tải lại trang thì đáp án vẫn còn (lưu trong trình duyệt, tự xoá khi nộp bài hoặc làm lại).
 - Menu Baby Dragon: "Chat với thầy" tách thành mục riêng (có vạch ngăn, nền vàng, ghi chú), không lẫn với Q&A.
+- v51b: menu Baby Dragon của giáo viên cuộn được khi màn hình thấp.

@@ -15,10 +15,10 @@ function menu(w){
   const m=document.createElement('div');m.className='bdtm';m.setAttribute('role','menu');
   m.innerHTML='<div class="bdtt">Đi nhanh đến…</div>'+items().map(i=>`<button type="button" role="menuitem" data-go="${i[0]}"><span>${i[1]}</span><span>${i[2]}</span>${i[3]?`<i class="bdn">${i[3]}</i>`:''}</button>`).join('');
   document.body.appendChild(m);
-  try{const r=w.getBoundingClientRect(),mw=m.offsetWidth||220,mh=m.offsetHeight||300;
+  try{const r=w.getBoundingClientRect(),mw=m.offsetWidth||220,mh=Math.min(m.offsetHeight||300,innerHeight-16);
     let left=Math.max(8,Math.min(innerWidth-mw-8,r.left));
     let top=r.top-mh-8;if(top<8){top=Math.min(innerHeight-mh-8,r.bottom+8)}
-    m.style.left=left+'px';m.style.top=Math.max(8,top)+'px';m.style.bottom='auto'}catch(e){}
+    m.style.left=left+'px';m.style.top=Math.max(8,top)+'px';m.style.bottom='auto';m.style.maxHeight=(innerHeight-Math.max(8,top)-8)+'px'}catch(e){}
   const off=ev=>{if(ev.target.closest('.bdtm')||ev.target.closest('.bdtw'))return;m.remove();document.removeEventListener('click',off,true)};
   setTimeout(()=>document.addEventListener('click',off,true),0);
   m.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;m.remove();document.removeEventListener('click',off,true);location.hash='#'+b.dataset.go});
