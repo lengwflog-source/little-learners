@@ -390,3 +390,6 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Tự lưu nháp: học sinh đang làm bài mà tải lại trang thì đáp án vẫn còn (lưu trong trình duyệt, tự xoá khi nộp bài hoặc làm lại).
 - Menu Baby Dragon: "Chat với thầy" tách thành mục riêng (có vạch ngăn, nền vàng, ghi chú), không lẫn với Q&A.
 - v51b: menu Baby Dragon của giáo viên cuộn được khi màn hình thấp.
+
+## v52 (2026-11-26)
+- A1.1 Elementary: hội thoại nghe dùng file ghi âm thật (`public/ef/audio/U01.mp3` … `U11.mp3`) thay giọng máy; bài ôn tập dùng lại đúng file của Unit tương ứng. Unit 12 chưa có file ghi âm nên vẫn dùng giọng máy.

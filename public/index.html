@@ -706,6 +706,12 @@ function dlgGender(lines){const sp=[...new Set(lines.map(l=>l[0]))],g={};sp.forE
   if(!g[sp[0]]){g[sp[0]]='f';if(sp[1])g[sp[1]]='m'}return g}
 function mkUtt(text,male,rate){const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));const v=pickVoice(vs,male);const u=new SpeechSynthesisUtterance(spokenText(text));u.lang=v?v.lang:'en-US';if(v)u.voice=v;
   u.rate=rate||.8;u.pitch=male?(v?.95:.75):(v?1:1.1);u.volume=1;return u}
+var DLGA=null;
+addEventListener('hashchange',()=>{try{stopDlgAudio()}catch(e){}});
+function stopDlgAudio(){if(DLGA){try{DLGA.pause()}catch(e){}DLGA=null}}
+function playDlgItem(it){stopDlgAudio();try{speechSynthesis.cancel()}catch(e){}DLGTOK++;
+  if(it&&it.audio){const a=new Audio(it.audio);DLGA=a;a.onerror=()=>{if(DLGA===a){DLGA=null;playDlg(it.lines)}};const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{if(DLGA===a){DLGA=null;playDlg(it.lines)}})}
+  else playDlg(it.lines)}
 function playDlg(lines){try{speechSynthesis.cancel();const tok=++DLGTOK;const g=dlgGender(lines);
   const next=k=>{if(tok!==DLGTOK||k>=lines.length)return;const l=lines[k];const u=mkUtt(l[1],g[l[0]]==='m');
     u.onend=()=>setTimeout(()=>next(k+1),/[?]$/.test(l[1])?700:500);u.onerror=()=>{};speechSynthesis.speak(u)};
@@ -912,7 +918,7 @@ document.addEventListener('click',async e=>{
   if(D.vstu!==undefined){const u=D.vstu;if(u==='*')S.vstu=[];else{const a=new Set(S.vstu||[]);if(a.has(u))a.delete(u);else a.add(u);S.vstu=[...a]}render();return}
   if(D.vreload!==undefined){S.vlist=null;render();return}
   if(D.recskip!==undefined){e.preventDefault();X.ans[+D.recskip]=true;refreshItem(+D.recskip);return}
-  if(D.dlg!==undefined){if(D.dlg==='stop'){DLGTOK++;try{speechSynthesis.cancel()}catch(_){}}else playDlg(X.E.items[+D.dlg].lines);return}
+  if(D.dlg!==undefined){if(D.dlg==='stop'){DLGTOK++;try{speechSynthesis.cancel()}catch(_){}stopDlgAudio()}else playDlgItem(X.E.items[+D.dlg]);return}
   if(D.flip!==undefined){t.classList.toggle('flip');return}
   if(D.bt||D.br){const[i,k]=(D.bt||D.br).split(':').map(Number);const a=Array.isArray(X.ans[i])?X.ans[i].slice():[];if(D.bt)a.push(k);else{const p=a.indexOf(k);if(p>=0)a.splice(p,1)}X.ans[i]=a;refreshItem(i);return}
   if(D.wc){const[i,r,c]=D.wc.split(':').map(Number);const it=X.E.items[i];const sel=X.wsSel;
