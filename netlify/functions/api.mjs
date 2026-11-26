@@ -599,6 +599,62 @@ async function route(req) {
     return J(200, { rec: cur[key] });
   }
 
+  /* ---------- Extra Writing: học viên nộp, giáo viên chấm tay (chỉ khóa IELTS) ---------- */
+  const EW = store("ewrite");
+  const ewWords = (t) => (String(t || "").match(/[A-Za-z0-9\u00C0-\u024F'’-]+/g) || []).length;
+  if (a === "ew" && b === "submit" && m === "POST") {
+    if (staff) return fail(403, "Chỉ học viên mới nộp bài.");
+    const exId = str(body.exId, 40), idx = Number(body.idx);
+    if (!isEx(exId) || !isIdx(idx)) return fail(400, "Bài không hợp lệ.");
+    const text = String(body.text || "").replace(/\r/g, "").trim().slice(0, 6000);
+    const wc = ewWords(text);
+    if (wc < 20) return fail(400, "Bài viết còn quá ngắn (cần ít nhất 20 từ) để nộp.");
+    if (!str(body.title, 120)) return fail(400, "Bạn nhớ gõ tiêu đề bài viết nhé.");
+    const doc = (await EW.get(user.username, { type: "json" })) || {};
+    const key = exId + ":" + idx, old = doc[key];
+    doc[key] = { text, wc, title: str(body.title, 120), t: Date.now(), n: ((old && old.n) || 0) + 1 };
+    await EW.setJSON(user.username, doc);
+    return J(200, { key, entry: doc[key] });
+  }
+  if (a === "ew" && b === "mine" && m === "GET") {
+    if (staff) return J(200, { ew: {} });
+    return J(200, { ew: (await EW.get(user.username, { type: "json" })) || {} });
+  }
+  if (a === "ew" && b === "seen" && m === "PUT") {
+    if (staff) return J(200, { ok: true });
+    const doc = await EW.get(user.username, { type: "json" }), k = str(body.key, 60);
+    if (doc && doc[k]) { doc[k].seen = true; await EW.setJSON(user.username, doc); }
+    return J(200, { ok: true });
+  }
+
+  /* ---------- Chat với giáo viên (học viên hỏi trực tiếp, giáo viên trả lời sau) ---------- */
+  const CH = store("tchat");
+  const chClean = (v, n) => String(v || "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, n);
+  if (a === "chat" && b === "mine" && m === "GET") {
+    if (staff) return J(200, { msgs: [], unread: 0 });
+    const doc = (await CH.get(user.username, { type: "json" })) || { msgs: [] };
+    return J(200, { msgs: doc.msgs || [], unread: (doc.msgs || []).filter((x) => x.f === "t" && x.t > (doc.seenT || 0)).length });
+  }
+  if (a === "chat" && b === "send" && m === "POST") {
+    if (staff) return fail(403, "Chỉ học viên mới gửi tin cho giáo viên.");
+    const x = chClean(body.text, 1000);
+    if (!x) return fail(400, "Bạn chưa nhập nội dung.");
+    const doc = (await CH.get(user.username, { type: "json" })) || { msgs: [] };
+    const day = Date.now() - 24 * 3600 * 1000;
+    if ((doc.msgs || []).filter((y) => y.f === "s" && y.t > day).length >= 30) return fail(429, "Bạn đã gửi khá nhiều tin hôm nay. Chờ thầy trả lời nhé.");
+    const msg = { f: "s", x, t: Date.now(), c: chClean(body.ctx, 120) };
+    doc.msgs = [...(doc.msgs || []), msg].slice(-200);
+    doc.lastS = msg.t; doc.seenT = doc.seenT || 0;
+    await CH.setJSON(user.username, doc);
+    return J(200, { msg });
+  }
+  if (a === "chat" && b === "seen" && m === "PUT") {
+    if (staff) return J(200, { ok: true });
+    const doc = await CH.get(user.username, { type: "json" });
+    if (doc) { doc.seenT = Date.now(); await CH.setJSON(user.username, doc); }
+    return J(200, { ok: true });
+  }
+
   /* ---------- giáo viên và trợ giảng (trợ giảng chỉ thấy lớp mình phụ trách) ---------- */
   if (!staff) return fail(403, "Bạn không có quyền thực hiện thao tác này.");
   const myStudents = async () => (await listAll(DB.users())).map(([, u]) => u).filter((u) => u && u.role === "student" && taOk(user, u.cls));
@@ -776,6 +832,55 @@ async function route(req) {
     return ok ? J(200, { ok: true }) : fail(502, "Không gọi được máy chủ chấm bài.");
   }
 
+  if (a === "ew" && b === "list" && m === "GET") {
+    const { blobs } = await EW.list();
+    const items = [];
+    for (const bl of blobs) {
+      const doc = await EW.get(bl.key, { type: "json" });
+      const u = doc && isUser(bl.key) ? await DB.users().get(bl.key, { type: "json" }) : null;
+      if (!doc || !u || u.role !== "student" || !taOk(user, u.cls)) continue;
+      for (const [key, e] of Object.entries(doc)) items.push({ user: bl.key, name: u.name, cls: u.cls || "", key, ...e });
+    }
+    items.sort((x, y) => y.t - x.t);
+    return J(200, { items: items.slice(0, 500) });
+  }
+  if (a === "ew" && b === "grade" && m === "PUT") {
+    const [, , who, exId, idx] = parts;
+    if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
+    if (!(await studentOf(who))) return fail(404, "Không tìm thấy học viên.");
+    const doc = await EW.get(who, { type: "json" }), key = exId + ":" + Number(idx), e = doc && doc[key];
+    if (!e) return fail(404, "Không tìm thấy bài.");
+    e.score = str(body.score, 12); e.comment = str(body.comment, 4000); e.fixed = str(body.fixed, 6000);
+    e.gradedAt = Date.now(); e.gradedBy = user.username; e.seen = false;
+    await EW.setJSON(who, doc);
+    return J(200, { ok: true, entry: e });
+  }
+
+  if (a === "chat" && b === "list" && m === "GET") {
+    const { blobs } = await CH.list();
+    const items = [];
+    for (const bl of blobs) {
+      const doc = await CH.get(bl.key, { type: "json" });
+      const u = doc && isUser(bl.key) ? await DB.users().get(bl.key, { type: "json" }) : null;
+      if (!doc || !u || u.role !== "student" || !taOk(user, u.cls)) continue;
+      const msgs = doc.msgs || [], last = msgs[msgs.length - 1] || {};
+      items.push({ user: bl.key, name: u.name, cls: u.cls || "", msgs: msgs.slice(-60), wait: last.f === "s", last: last.t || 0 });
+    }
+    items.sort((x, y) => (y.wait - x.wait) || (y.last - x.last));
+    return J(200, { items: items.slice(0, 300) });
+  }
+  if (a === "chat" && b === "reply" && m === "PUT") {
+    const who = parts[2];
+    if (!(await studentOf(who))) return fail(404, "Không tìm thấy học viên.");
+    const x = chClean(body.text, 1500);
+    if (!x) return fail(400, "Bạn chưa nhập nội dung.");
+    const doc = (await CH.get(who, { type: "json" })) || { msgs: [] };
+    const msg = { f: "t", x, t: Date.now(), by: user.name || "Giáo viên" };
+    doc.msgs = [...(doc.msgs || []), msg].slice(-200);
+    await CH.setJSON(who, doc);
+    return J(200, { msg });
+  }
+
   if (a === "students" && !b && m === "POST") {
     const list = (Array.isArray(body.list) ? body.list : []).slice(0, 50);
     const created = [], errors = [];
@@ -815,6 +920,8 @@ async function route(req) {
       await DB.progress().delete(b);
       try { await DB.reports().delete(b); } catch {}
       try { await DB.vocab().delete(b); } catch {}
+      try { await EW.delete(b); } catch {}
+      try { await CH.delete(b); } catch {}
       if (u.ptoken) { try { await DB.parent().delete(u.ptoken); } catch {} }
       const rm = await DB.recmeta().get(b, { type: "json" });
       if (rm) { for (const k of Object.keys(rm)) { try { await DB.recfiles().delete(fkey(b, k)); } catch {} } await DB.recmeta().delete(b); }
