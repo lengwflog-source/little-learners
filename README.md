@@ -378,3 +378,10 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 - Ghi chú chữ (T) mở thêm cho lớp 10, 11, 12 (đã có IELTS và giáo viên).
 - Nút "Quay lại" về đúng trang và đúng vị trí cuộn trước đó (ví dụ xem bài làm của bé → quay lại hồ sơ bé).
 - Gộp từ v47: Extra Writing, ảnh TOEIC đúng tỉ lệ, bài quá hạn vẫn hiện, v48 Chat với thầy, luôn nền sáng.
+
+## v50 (2026-11-26)
+- Lớp 9: thêm Học kì II – Unit 7 đến Unit 12 (mỗi Unit 7 phần), Ôn tập giữa kì 2 (5 đề), Ôn tập cuối kì 2 (5 đề). Dữ liệu nằm trong `public/lop9/lessons.json`, ảnh trong `public/lop9/img/`.
+- Luôn giao diện sáng, kể cả khi máy bật dark mode (meta, CSS và script trong index.html, v41.css).
+- Kho từ vựng: nút "➕ Thêm từ mới" để tự nhập từ (từ, nghĩa, phiên âm, ví dụ; bỏ trống nghĩa thì tự tra).
+- Baby Dragon của giáo viên: kéo thả đến vị trí bất kỳ (nhớ vị trí); bấm nhẹ vẫn mở menu.
+- Công cụ highlight của giáo viên tô được mọi chỗ trong trang, kể cả kéo chọn qua nhiều đoạn.

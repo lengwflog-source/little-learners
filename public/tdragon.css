@@ -11,3 +11,5 @@
 .bdtm button:hover{background:var(--mint)}
 .bdtm .bdn{margin-left:auto;background:#e4572e;color:#fff;border-radius:999px;font:800 .72rem/1 var(--body);min-width:18px;height:18px;display:inline-grid;place-items:center;padding:0 5px;font-style:normal}
 @media(max-width:640px){.bdtw{width:70px;bottom:70px}.bdtmini{bottom:70px}.bdtm{bottom:150px}}
+
+.bdtw{touch-action:none;user-select:none;-webkit-user-select:none}.bdtw.bdtdrag{cursor:grabbing;opacity:.92;transition:none}.bdtw:not(.bdtdrag){cursor:grab}
