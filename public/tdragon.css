@@ -15,3 +15,10 @@
 .bdtw{touch-action:none;user-select:none;-webkit-user-select:none}.bdtw.bdtdrag{cursor:grabbing;opacity:.92;transition:none}.bdtw:not(.bdtdrag){cursor:grab}
 
 .bdtm{max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+/*v54 compact scroll menu*/
+.bdtm{display:block;min-width:200px;width:min(240px,calc(100vw - 24px));max-height:min(300px,45vh)!important;max-height:min(300px,45dvh)!important;overflow-y:scroll!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:6px}
+.bdtm>*{margin-bottom:4px}
+.bdtm button{width:100%;padding:7px 10px;gap:8px;font-size:.85rem;border-radius:10px}
+.bdtm button small{display:none}
+.bdtm .bdtt{position:sticky;top:-6px;background:var(--surface);padding:4px 6px;z-index:1}
+.bdtm::-webkit-scrollbar{width:7px}.bdtm::-webkit-scrollbar-thumb{background:var(--leaf);border-radius:6px}

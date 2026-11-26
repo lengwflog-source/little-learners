@@ -393,3 +393,6 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 
 ## v52 (2026-11-26)
 - A1.1 Elementary: hội thoại nghe dùng file ghi âm thật (`public/ef/audio/U01.mp3` … `U11.mp3`) thay giọng máy; bài ôn tập dùng lại đúng file của Unit tương ứng. Unit 12 chưa có file ghi âm nên vẫn dùng giọng máy.
+
+## v53 — TOEIC 550+ Booster 1 (Tuần 9–16)
+Thêm to-u9…to-u16 vào public/toeic/lessons.json, audio B9–B16, C9, C10, C12, D13–D16 vào public/toeic/audio/. Thiếu Track C11 (Unit 11 Part 3 có ghi chú "đang cập nhật").
