@@ -24,5 +24,17 @@ input.blank.dz{background:#fff6c9;border-bottom-color:#b7791f}
 .dictbox{margin:12px 0;border:2px solid #cfd9e8;border-radius:16px;background:#f7faff;padding:12px;display:flex;flex-direction:column;gap:10px}
 .dictbox .dictt{font-weight:700;color:#2d4a7a;font-size:.9rem}
 .dictbox img{display:block;width:100%;max-width:640px;margin:0 auto;border-radius:10px;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.08);image-rendering:-webkit-optimize-contrast}
-html{color-scheme:light}
+html{color-scheme:only light}
 .fcw{margin:12px 0}.fcw-r{display:flex;flex-wrap:wrap;gap:8px}.fcw-r .sel-in{flex:1 1 180px;min-width:0}
+u.err{text-decoration:underline wavy #d33;text-underline-offset:4px;text-decoration-thickness:2px}
+
+/* v50: luôn giao diện sáng, bất kể điện thoại/máy tính đang bật dark mode */
+:root,html,body{color-scheme:only light !important;forced-color-adjust:none}
+html{background-color:#fff}
+body{background-color:var(--bg,#fff)}
+@media (prefers-color-scheme:dark){
+  :root,html,body{color-scheme:only light !important;forced-color-adjust:none}
+  html{background-color:#fff}
+  body{background-color:var(--bg,#fff);color:var(--ink,#1f2a1f)}
+}
+:where(input,select,textarea){color-scheme:only light;background-color:#fff;color:#1f2a1f}

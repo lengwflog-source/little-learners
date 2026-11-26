@@ -21,7 +21,8 @@ const HL={};   // eid -> [{r,s,e,c}]
 const hlKey=eid=>'ll-hl-'+(typeof S!=='undefined'&&S.uid||'x')+'-'+eid;
 function hlGet(eid){if(!HL[eid]){let v=[];try{v=JSON.parse(lsg(hlKey(eid))||'[]')}catch(e){}HL[eid]=Array.isArray(v)?v:[]}return HL[eid]}
 function hlSet(eid,v){HL[eid]=v;lss(hlKey(eid),JSON.stringify(v))}
-const curEid=()=>(typeof X!=='undefined'&&X&&X.E)?X.E.id:null;
+const xr=()=>{const r=route();return r.startsWith('ex-')||(typeof S!=='undefined'&&!!S.isT&&r.startsWith('lesson-'))};
+const curEid=()=>{if(typeof X!=='undefined'&&X&&X.E&&route().startsWith('ex-'))return X.E.id;const l=document.querySelector('.ex.lsx');return l?l.dataset.eid:((typeof X!=='undefined'&&X&&X.E)?X.E.id:null)};
 
 /* ---------- thanh công cụ ---------- */
 const IC={
@@ -84,7 +85,7 @@ const NT={};const ntKey=eid=>'ll-nt-'+(typeof S!=='undefined'&&S.uid||'x')+'-'+e
 function ntGet(eid){if(!NT[eid]){let v=[];try{v=JSON.parse(lsg(ntKey(eid))||'[]')}catch(e){}NT[eid]=Array.isArray(v)?v:[]}return NT[eid]}
 function ntSet(eid,v){NT[eid]=v;lss(ntKey(eid),JSON.stringify(v))}
 const NTC=['#1d2b22','#c0392b','#1f6fb5','#b7791f','#2e7d4f','#8e44ad'];
-function noteOK(){return typeof S!=='undefined'&&!!S.user&&(S.isT||S.grade===9)}
+function noteOK(){return typeof S!=='undefined'&&!!S.user&&(S.isT||[9,10,11,12].includes(Number(S.grade)))}
 function ntSave(eid,id,patch){const l=ntGet(eid);const n=l.find(x=>x.id===id);if(n){Object.assign(n,patch);ntSet(eid,l)}}
 function ntRender(){
   document.querySelectorAll('.ntl').forEach(n=>n.remove());
@@ -135,8 +136,25 @@ function paint(root,list){
       const m=document.createElement('mark');m.className='hl hl-'+h.c;mid.parentNode.insertBefore(m,mid);m.appendChild(mid)})
   })
 }
+const AR=['.instr','.passage','.prose','.exm','.wrprompt','.fbtext','.xh','.note','.sol'];
+function autoReg(){ // gắn vùng highlight cho mọi đoạn văn trong bài (không chỉ câu hỏi)
+  const ex=document.querySelector('.ex');if(!ex)return;
+  AR.forEach(sel=>{let n=0;$$(sel,ex).forEach(el=>{n++;if(el.hasAttribute('data-hr')||el.closest('[data-hr]')||el.querySelector('[data-hr]'))return;el.dataset.hr='a-'+sel.slice(1)+'-'+n})});
+  if(typeof S!=='undefined'&&S.isT)coverAll(ex,'')  // giáo viên: tô được MỌI chỗ trong trang
+}
+const SKIPC='.xtb,.ntl,.actbar,.xtabs,nav,header,script,style,svg,img,button,input,select,textarea,.bdw,.bdtw,.bdtm,.vbov,#tcp';
+function coverAll(root,path){
+  Array.prototype.forEach.call(root.children,(c,i)=>{
+    if(c.matches&&c.matches(SKIPC))return;
+    if(c.hasAttribute('data-hr'))return;
+    const p=path+'-'+i;
+    if(c.querySelector('[data-hr]')){coverAll(c,p);return}
+    if(!c.textContent.trim())return;
+    c.dataset.hr='a-p'+p;
+  });
+}
 function paintAll(){
-  const eid=curEid();if(!eid)return;
+  const eid=curEid();if(!eid)return;autoReg();
   const list=hlGet(eid);
   $$('.ex [data-hr]').forEach(r=>paint(r,list));
 }
@@ -153,13 +171,20 @@ function applySelection(){
   if(!TX.pen)return;
   const sel=getSelection();if(!sel||sel.isCollapsed||!sel.rangeCount)return;
   const rg=sel.getRangeAt(0);
-  const r1=rootOf(rg.startContainer),r2=rootOf(rg.endContainer);
-  if(!r1||!r2||r1!==r2||!r1.closest('.ex'))return;
-  const s=offsetIn(r1,rg.startContainer,rg.startOffset),e=offsetIn(r1,rg.endContainer,rg.endOffset);
-  if(e<=s)return;
   const eid=curEid();if(!eid)return;
-  let list=cut(hlGet(eid),r1.dataset.hr,s,e);
-  if(TX.pen!=='x')list.push({r:r1.dataset.hr,s,e,c:TX.pen});
+  const roots=$$('.ex [data-hr]').filter(r=>{try{return rg.intersectsNode(r)}catch(e){return false}});
+  if(!roots.length)return;
+  let list=hlGet(eid),any=false;
+  roots.forEach(r=>{
+    const sIn=r.contains(rg.startContainer),eIn=r.contains(rg.endContainer);
+    const full=offsetIn(r,r,r.childNodes.length);
+    const s=sIn?offsetIn(r,rg.startContainer,rg.startOffset):0,e=eIn?offsetIn(r,rg.endContainer,rg.endOffset):full;
+    if(e<=s)return;
+    any=true;
+    list=cut(list,r.dataset.hr,s,e);
+    if(TX.pen!=='x')list.push({r:r.dataset.hr,s,e,c:TX.pen});
+  });
+  if(!any)return;
   hlSet(eid,list);
   sel.removeAllRanges();
   paintAll();
@@ -382,8 +407,24 @@ const VB={words:null,loading:null,saveT:0,
 };
 window.VB=VB;
 addEventListener('pagehide',()=>VB.flush());
-const VS={q:'',f:'all',card:null,quiz:null};
+const VS={q:'',f:'all',card:null,quiz:null,add:false};
 const dateS=t=>{const d=new Date(t);return d.getDate()+'/'+(d.getMonth()+1)};
+function vbAddForm(){
+  return '<div class="card vb-add" style="margin-top:12px"><div class="row" style="gap:8px;flex-wrap:wrap;align-items:center"><button type="button" class="btn'+(VS.add?' ghost':'')+'" data-vb="addtoggle">'+(VS.add?'× Đóng':'➕ Thêm từ mới')+'</button><span class="muted small">Tự thêm bất kỳ từ hoặc cụm từ nào bạn muốn học.</span></div>'+
+  (VS.add?'<div class="vb-addf" style="display:grid;gap:8px;margin-top:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))"><input id="vb-nw" class="sel-in" placeholder="Từ / cụm từ tiếng Anh *" maxlength="80" autocomplete="off" autocapitalize="off"><input id="vb-nv" class="sel-in" placeholder="Nghĩa (bỏ trống = tự tra)" maxlength="160" autocomplete="off"><input id="vb-ni" class="sel-in" placeholder="Phiên âm (tùy chọn)" maxlength="60" autocomplete="off"><input id="vb-nc" class="sel-in" placeholder="Câu ví dụ (tùy chọn)" maxlength="200" autocomplete="off"><button type="button" class="btn" data-vb="addsave">Lưu vào kho</button></div>':'')+'</div>';
+}
+function vbAddSave(btn){
+  const g=id=>{const e=document.getElementById(id);return e?e.value.replace(/\s+/g,' ').trim():''};
+  const w=g('vb-nw').toLowerCase();let vi=g('vb-nv');const ipa=g('vb-ni'),ctx=g('vb-nc');
+  const T=m=>{if(typeof toast==='function')toast(m)};
+  if(!w){T('Hãy nhập từ tiếng Anh.');return}
+  if(!VB.words)VB.words=[];
+  if(VB.has(w)){T('Từ này đã có trong kho rồi.');return}
+  const put=(vi2,ipa2,pos2)=>{VB.words.unshift({w,pos:pos2||'',vi:String(vi2||'').slice(0,200),ipa:ipa2||'',ctx:ctx.slice(0,200),t:Date.now(),g:(typeof S!=='undefined'&&S.grade)||0,k:0,my:1});VB.save();VS.add=true;render();T('Đã thêm “'+w+'” vào kho.');setTimeout(()=>{const n=document.getElementById('vb-nw');if(n)n.focus()},50)};
+  if(vi||/\s/.test(w)&&!vi&&false){put(vi,ipa,'');return}
+  btn.disabled=true;
+  lookup(w).then(r=>{const ss=senses(r);const v=ss.length?ss.slice(0,4).map(x=>(x.vi.length?x.pos+' '+x.vi.slice(0,3).join(', '):'')).filter(Boolean).join(' · '):(r.vi||'');put(v||'',ipa||r.ipa||'',ss.map(x=>x.pos).filter((a,i,b)=>a&&b.indexOf(a)===i).slice(0,3).join(', '))}).catch(()=>{put('',ipa,'');T('Chưa tra được nghĩa, bạn có thể tự điền nghĩa sau.')});
+}
 window.vocabView=function(){
   if(!VB.words&&!VB.loading)VB.load();
   const all=VB.words||[];
@@ -391,12 +432,13 @@ window.vocabView=function(){
   const list=all.filter(x=>(VS.f==='all'||(VS.f==='known'?x.k:!x.k))&&(!q||x.w.indexOf(q)>=0||(x.vi||'').toLowerCase().indexOf(q)>=0));
   const known=all.filter(x=>x.k).length;
   return`<div class="wrap" style="padding-block:28px"><div class="sechead"><div><div class="eyebrow">Cá nhân</div><h1 style="font-size:clamp(2rem,5vw,2.8rem)">Kho từ vựng của bạn</h1><p class="muted" style="margin:6px 0 0">Những từ bạn thêm bằng công cụ <b>Dịch từ</b> khi làm bài sẽ nằm ở đây để ôn lại.</p></div></div>
+  ${vbAddForm()}
   <div class="vb-top"><div class="card vb-stat"><b>${all.length}</b><span>từ đã lưu</span></div><div class="card vb-stat"><b>${known}</b><span>đã thuộc</span></div>
    <div class="vb-tools"><input id="vb-q" class="sel-in" type="search" placeholder="Tìm từ hoặc nghĩa…" value="${E_(VS.q)}" aria-label="Tìm từ">
    <select id="vb-f" class="sel-in" aria-label="Lọc"><option value="all" ${VS.f==='all'?'selected':''}>Tất cả</option><option value="new" ${VS.f==='new'?'selected':''}>Chưa thuộc</option><option value="known" ${VS.f==='known'?'selected':''}>Đã thuộc</option></select>
    <button class="btn" data-vb="cards" ${all.length<1?'disabled':''}>🃏 Ôn bằng thẻ</button><button class="btn ghost" data-vb="quiz" ${all.length<4?'disabled title="Cần ít nhất 4 từ"':''}>📝 Kiểm tra nhanh</button></div></div>
   ${all.length>=4?`<div class="fc-go" style="margin:10px 0">${[['abcd','🔤 Trắc nghiệm ABCD'],['scr','🔀 Xếp chữ cái'],['gap','🕳️ Điền chữ thiếu'],['vi2type','🇻🇳→🇬🇧 Nhìn nghĩa viết từ'],['spell','👂 Nghe và viết'],['listen','🎧 Nghe chọn từ'],['mix','🎲 Trộn (10 câu)'],['big','🏁 Luyện tập MIX (35 câu)']].map(g=>`<button class="btn ghost" data-vb="game" data-m="${g[0]}">${g[1]}</button>`).join('')}</div>`:''}
-  ${!VB.words&&VB.loading?'<div class="sk" style="margin-top:14px"></div>':!all.length?`<div class="card" style="margin-top:14px;text-align:center"><div style="font-size:2.2rem">📚</div><p><b>Kho từ vựng đang trống.</b></p><p class="muted">Vào một bài tập, bấm nút <b>Dịch từ</b> trên thanh công cụ, chạm vào từ chưa biết rồi bấm <b>Thêm vào kho từ vựng</b>.</p><a class="btn" href="#lessons">Đi làm bài</a></div>`:
+  ${!VB.words&&VB.loading?'<div class="sk" style="margin-top:14px"></div>':!all.length?`<div class="card" style="margin-top:14px;text-align:center"><div style="font-size:2.2rem">📚</div><p><b>Kho từ vựng đang trống.</b></p><p class="muted">Bấm <b>➕ Thêm từ mới</b> ở trên để tự nhập từ, hoặc vào một bài tập, bấm nút <b>Dịch từ</b> trên thanh công cụ, chạm vào từ chưa biết rồi bấm <b>Thêm vào kho từ vựng</b>.</p><a class="btn" href="#lessons">Đi làm bài</a></div>`:
   `<div class="vb-list">${list.map(x=>`<div class="card vb-item ${x.k?'known':''}"><div class="vb-h"><b class="vb-w">${E_(x.w)}</b>${x.ipa?`<span class="xipa">${E_(x.ipa)}</span>`:''}<button class="say" data-say="${E_(x.w)}" aria-label="Nghe">♪</button>${x.pos?`<span class="chip">${E_(x.pos)}</span>`:''}<span class="sp"></span><span class="muted small">${dateS(x.t)}</span></div>
    <div class="vb-vi">${E_(x.vi)}</div>${x.ctx?`<div class="vb-ctx">“${E_(x.ctx)}”</div>`:''}
    <div class="vb-act"><button class="btn sm ${x.k?'':'ghost'}" data-vb="known" data-w="${E_(x.w)}">${x.k?'✓ Đã thuộc':'Đánh dấu đã thuộc'}</button><button class="btn sm ghost" data-vb="del" data-w="${E_(x.w)}" aria-label="Xóa từ ${E_(x.w)}">Xóa</button></div></div>`).join('')||'<p class="muted">Không có từ nào khớp.</p>'}</div>`}</div>`;
@@ -432,11 +474,13 @@ document.addEventListener('click',e=>{
   else if(a==='flip'&&VS.card){VS.card.flip=!VS.card.flip;overlay(cardHtml())}
   else if((a==='ok'||a==='no')&&VS.card){const w=VS.card.deck[VS.card.i];if(w){const x=W.find(v=>v.w===w.w);if(x)x.k=a==='ok'?1:0;VS.card[a]++;VB.save()}VS.card.i++;VS.card.flip=false;overlay(cardHtml())}
   else if(a==='quiz'){
-    const pool=shuffle(W).slice(0,10);
+    const pool=shuffle(W.filter(x=>x.vi)).slice(0,10);
     const qs=pool.map(w=>{const right=short(w.vi)||w.vi;const others=shuffle(W.filter(x=>x.w!==w.w).map(x=>short(x.vi)||x.vi).filter(v=>v&&v!==right)).slice(0,3);const opts=shuffle([right].concat(others));return{w:w.w,opts,a:opts.indexOf(right)}});
     VS.quiz={qs,i:0,score:0,pick:null};overlay(quizHtml())}
   else if(a==='pick'&&VS.quiz&&VS.quiz.pick==null){const z=VS.quiz;z.pick=+b.dataset.j;if(z.pick===z.qs[z.i].a)z.score++;overlay(quizHtml())}
   else if(a==='next'&&VS.quiz){VS.quiz.i++;VS.quiz.pick=null;overlay(quizHtml())}
+  else if(a==='addtoggle'){VS.add=!VS.add;render();if(VS.add)setTimeout(()=>{const n=document.getElementById('vb-nw');if(n)n.focus()},50)}
+  else if(a==='addsave')vbAddSave(b);
   else if(a==='close')closeOv();
 });
 
@@ -451,7 +495,13 @@ window.examSummary=function(L,p){
 };
 
 /* ---------- nút quay lại (góc trái trên) ---------- */
+/* ---- lịch sử xem: "Quay lại" về đúng trang và vị trí cuộn trước đó ---- */
+const NAVH=[],NAVY={};let NAVR=route(),NAVG=false,NAVP=null;
+addEventListener('scroll',()=>{NAVY[route()]=scrollY},{passive:true});
+addEventListener('hashchange',()=>{const old=NAVR;NAVR=route();if(NAVG){NAVG=false;return}if(old&&old!==NAVR&&NAVH[NAVH.length-1]!==old){NAVH.push(old);if(NAVH.length>40)NAVH.shift()}});
 window.goBack=function(){
+  while(NAVH.length&&NAVH[NAVH.length-1]===route())NAVH.pop();
+  if(NAVH.length){const prev=NAVH.pop();NAVG=true;NAVP=NAVY[prev]!=null?NAVY[prev]:0;location.hash='#'+prev;return}
   const r=route();let to;
   if(r.startsWith('ex-')||r.startsWith('lesson-'))to='lessons';
   else to=S.isT?'t-home':'home';
@@ -481,9 +531,10 @@ window.render=function(){
   _render.apply(this,arguments);
   try{backBtn()}catch(e){}
   try{
-    document.body.classList.toggle('x-tr',TX.tr&&route().startsWith('ex-'));
-    document.body.classList.toggle('x-ex',route().startsWith('ex-'));setBars();setTimeout(setBars,300);
-    if(!route().startsWith('ex-')){if(tip)hideTip();TX.pen=TX.pen&&null;TX.note=false}
+    document.body.classList.toggle('x-tr',TX.tr&&xr());
+    document.body.classList.toggle('x-ex',xr());setBars();setTimeout(setBars,300);
+    if(!xr()){if(tip)hideTip();TX.pen=TX.pen&&null;TX.note=false}
+    if(NAVP!=null){const y=NAVP;NAVP=null;[0,150,450,900].forEach(d=>setTimeout(()=>scrollTo(0,y),d))}
     paintAll();ntRender();
     if(bankOK()&&!VB.words&&!VB.loading)VB.load();
   }catch(e){console.error(e)}

@@ -21,29 +21,29 @@ async function qaLoad(force){
 }
 const qaNewReplies=()=>QA.th.filter(t=>t.st==='replied'&&!t.seen).length;
 function qaBadge(){
-  const w=document.querySelector('.bdw');if(!w)return;let b=w.querySelector('.bdbadge');const n=qaNewReplies();
+  const w=document.querySelector('.bdw');if(!w)return;let b=w.querySelector('.bdbadge');const n=qaNewReplies()+(typeof chUnread==='function'?chUnread():0);
   if(n&&!b){b=document.createElement('span');b.className='bdbadge';w.appendChild(b)}
   if(b){if(n)b.textContent=n;else b.remove()}
 }
 
 /* ---------- menu khi bấm vào bé rồng ---------- */
 window.bdMenu=function(anchor){
-  if(!qaOn()){if(typeof window.bdStart==='function')window.bdStart();return}
   const old=document.querySelector('.bdmenu');if(old){old.remove();return}
   const m=document.createElement('div');m.className='bdmenu';m.setAttribute('role','menu');
   const n=qaNewReplies();
-  m.innerHTML=`<button type="button" role="menuitem" data-bm="guide">📖 <span>Hướng dẫn</span></button><button type="button" role="menuitem" data-bm="qa">💬 <span>Q&amp;A – hỏi Baby Dragon</span>${n?`<i class="bdn">${n}</i>`:''}</button>`;
+  m.innerHTML=`${typeof window.bdOnEx==='function'&&window.bdOnEx()?'<button type="button" role="menuitem" data-bm="tp">🧭 <span>Hướng dẫn bài này</span></button>':''}<button type="button" role="menuitem" data-bm="guide">📖 <span>Hướng dẫn chung</span></button>${qaOn()?`<button type="button" role="menuitem" data-bm="qa">💬 <span>Q&amp;A – hỏi Baby Dragon<small>Bé rồng trả lời ngay</small></span>${n?`<i class="bdn">${n}</i>`:''}</button>`:''}<div class="bdsep" role="separator"></div><button type="button" role="menuitem" data-bm="chat" class="bdchat">👩‍🏫 <span>Chat với thầy<small>Hỏi thầy trực tiếp · thầy trả lời sau</small></span>${typeof chUnread==='function'&&chUnread()?`<i class="bdn">${chUnread()}</i>`:''}</button>`;
   document.body.appendChild(m);
   const off=ev=>{if(ev.target.closest('.bdmenu'))return;m.remove();document.removeEventListener('click',off,true)};
   setTimeout(()=>document.addEventListener('click',off,true),0);
   m.addEventListener('click',e=>{const b=e.target.closest('[data-bm]');if(!b)return;e.stopPropagation();m.remove();document.removeEventListener('click',off,true);
-    if(b.dataset.bm==='qa')qaOpen();else if(typeof window.bdStart==='function')window.bdStart()});
+    if(b.dataset.bm==='chat')chOpen();else if(b.dataset.bm==='qa')qaOpen();else if(b.dataset.bm==='tp')window.bdStart('tp',true);else if(typeof window.bdStart==='function')window.bdStart()});
 };
 
 /* ---------- khung Q&A của học sinh ---------- */
 function qaOpen(){
   if(!qaOn())return;
   const rm=document.querySelector('.bdqa');rm&&rm.remove();
+  const tcp=document.getElementById('tcp');if(tcp){tcp.remove();if(typeof CH!=='undefined')CH.open=false}
   let p=document.getElementById('qap');if(p){p.remove()}
   QA.open=true;
   p=document.createElement('div');p.id='qap';p.className='qap';p.setAttribute('role','dialog');p.setAttribute('aria-label','Hỏi đáp với Baby Dragon');
