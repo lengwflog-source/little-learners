@@ -53,7 +53,8 @@ function syncAiProgress() {
 /* ---------- media ---------- */
 const enc = s => encodeURI(s);
 function ieMedia(list) {
-  return `<div class="iemedia">${list.map(m => m.t === 'video'
+  const hasA = list.some(m => m.t !== 'video');
+  return `<div class="iemedia ${hasA ? 'withdg' : ''}">${hasA && window.bdPhones ? `<div class="iedg" aria-hidden="true">${bdPhones()}</div>` : ''}${list.map(m => m.t === 'video'
     ? `<figure class="iem"><figcaption>🎬 ${esc(m.title)}</figcaption><video controls preload="none" playsinline src="${enc(m.src)}"></video></figure>`
     : `<figure class="iem"><figcaption>🎧 ${esc(m.title)}</figcaption><audio controls preload="none"><source src="${enc(m.src)}"><source src="${enc(m.src.replace(/\.mp3$/i, ''))}"></audio></figure>`).join('')}
   <p class="muted small" style="margin:6px 0 0">Không phát được? Hãy tải lại trang hoặc nhờ giáo viên kiểm tra tệp âm thanh.</p></div>`;
@@ -323,3 +324,67 @@ document.addEventListener('input', e => {
   const t = e.target; if (!t.dataset || t.dataset.nbn == null || !NB.items) return;
   const x = NB.items.find(z => z.id === t.dataset.nbn); if (x) { x.my = t.value.slice(0, 1000); nbSave(); }
 });
+
+/* ---------- rồng nhún nhảy khi đang phát âm thanh ---------- */
+document.addEventListener('play', e => { const m = e.target.closest && e.target.closest('.iemedia'); if (m) m.classList.add('playing'); }, true);
+document.addEventListener('pause', e => { const m = e.target.closest && e.target.closest('.iemedia'); if (m) m.classList.remove('playing'); }, true);
+document.addEventListener('ended', e => { const m = e.target.closest && e.target.closest('.iemedia'); if (m) m.classList.remove('playing'); }, true);
+
+/* ---------- Chép chính tả cả đoạn: chấm từng từ khi gõ ---------- */
+const dnorm = w => w.toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z0-9']/g, '');
+function dlev(a, b) { const m = a.length, n = b.length; let p = Array.from({ length: n + 1 }, (_, j) => j); for (let i = 1; i <= m; i++) { const c = [i]; for (let j = 1; j <= n; j++) c[j] = Math.min(p[j] + 1, c[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); p = c; } return p[n]; }
+window.dictAlign = function (text, user) {
+  const T = String(text || '').split(/\s+/).filter(Boolean).map(w => ({ d: w, n: dnorm(w) }));
+  const U = String(user || '').split(/\s+/).filter(Boolean).map(w => ({ d: w, n: dnorm(w) })).filter(x => x.n);
+  const n = T.length, m = U.length, INF = 1e9;
+  const sub = (t, u) => t.n === u.n ? 0 : (dlev(t.n, u.n) <= Math.max(1, Math.floor(Math.max(t.n.length, u.n.length) * 0.45)) ? 0.6 : 2);
+  const D = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(INF)), B = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  D[0][0] = 0; for (let i = 1; i <= n; i++) { D[i][0] = i; B[i][0] = 1; } for (let j = 1; j <= m; j++) { D[0][j] = j; B[0][j] = 2; }
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) {
+    const a = D[i - 1][j - 1] + sub(T[i - 1], U[j - 1]), b = D[i - 1][j] + 1, c = D[i][j - 1] + 1;
+    if (a <= b && a <= c) { D[i][j] = a; B[i][j] = 0; } else if (b <= c) { D[i][j] = b; B[i][j] = 1; } else { D[i][j] = c; B[i][j] = 2; }
+  }
+  const st = T.map(t => ({ s: 'miss', t })); let i = n, j = m, extra = 0;
+  while (i > 0 || j > 0) {
+    const b = B[i][j];
+    if (i > 0 && j > 0 && b === 0) { const c = sub(T[i - 1], U[j - 1]); if (c === 0) st[i - 1] = { s: 'ok', t: T[i - 1] }; else if (c < 2) st[i - 1] = { s: 'near', t: T[i - 1], u: U[j - 1].d }; else { extra++; } i--; j--; }
+    else if (i > 0 && (j === 0 || b === 1)) { i--; } else { extra++; j--; }
+  }
+  const ok = st.filter(x => x.s === 'ok').length, near = st.filter(x => x.s === 'near').length;
+  return { st, n, ok, near, miss: n - ok - near, extra, pct: n ? ok / n : 0 };
+};
+window.dictFb = function (it, user, done) {
+  const r = dictAlign(it.text, user);
+  if (!String(user || '').trim() && !done) return '<p class="muted small">Nghe rồi gõ lại. Máy sẽ hiện từ đúng (xanh), từ sai chữ (đỏ) và chỗ còn thiếu (vàng).</p>';
+  const w = r.st.map(x => x.s === 'ok' ? `<span class="dw ok">${esc(x.t.d)}</span>` : x.s === 'near' ? `<span class="dw near">${esc(x.u)}</span>` : `<span class="dw miss" style="min-width:${Math.max(2, Math.min(12, x.t.n.length)) * 0.62}em"></span>`).join(' ');
+  const pc = Math.round(r.pct * 100);
+  return `<div class="dwbox">${w}</div><p class="small ${r.pct >= 0.85 ? 'dgood' : 'muted'}" style="margin:6px 0 0"><b>Đúng ${r.ok}/${r.n} từ (${pc}%).</b>${done ? '' : ' Sửa trong ô, bài sẽ tự cập nhật.'}</p><div class="row" style="gap:6px;margin-top:4px">${r.near ? `<span class="chip">abc ${r.near} từ sai chữ</span>` : ''}${r.miss ? `<span class="chip">▁ thiếu ${r.miss} từ</span>` : ''}${r.extra ? `<span class="chip">+ thừa ${r.extra} từ</span>` : ''}</div>${done ? `<div class="sol">Đáp án: ${esc(it.text)}</div>` : ''}`;
+};
+document.addEventListener('input', e => {
+  const t = e.target; if (!t.classList || !t.classList.contains('dictta') || !X) return;
+  const i = +t.dataset.i, it = X.E.items[i], box = document.querySelector('[data-dfb="' + i + '"]');
+  if (it && box) box.innerHTML = dictFb(it, t.value, false);
+});
+
+/* ---------- Bảng xếp hạng theo khối ---------- */
+const BD = { data: null, loading: false, per: 'week' };
+function boardLoad() {
+  if (BD.data || BD.loading || S.isT || S.local) return;
+  BD.loading = true;
+  API.call('GET', 'leaderboard').then(r => { BD.data = r.board || { periods: {}, total: 0 }; BD.loading = false; if (route() === 'board') render(); }).catch(() => { BD.data = { periods: {}, total: 0 }; BD.loading = false; });
+}
+window.boardHtml = function (b, per, tabs) {
+  if (!b || !b.periods || !b.periods[per]) return '<p class="muted">Chưa có dữ liệu xếp hạng.</p>';
+  const P = b.periods[per], medal = r => r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : r;
+  const lbl = { week: 'Tuần này', month: 'Tháng này', all: 'Tất cả' };
+  const tb = tabs ? `<div class="seg" style="margin:10px 0">${['week', 'month', 'all'].map(k => `<button type="button" class="${per === k ? 'on' : ''}" data-bd="${k}">${lbl[k]}</button>`).join('')}</div>` : '';
+  const rows = P.rows.map(x => `<tr class="${x.me ? 'bdme' : ''}"><td style="width:48px;text-align:center;font-weight:800">${medal(x.r)}</td><td>${esc(x.name)}${x.me ? ' <span class="chip good">Bạn</span>' : ''}</td><td style="text-align:right;font-weight:800">${x.pts}</td></tr>`).join('');
+  const mine = P.me && !P.rows.some(x => x.me) ? `<p class="small" style="margin-top:8px">Vị trí của bạn: <b>hạng ${P.me.r}</b> · ${P.me.pts} điểm</p>` : P.me ? `<p class="small muted" style="margin-top:8px">Hạng ${P.me.r}/${b.total} học sinh trong khối.</p>` : '';
+  return `${tb}<div class="tw"><table class="t" style="min-width:0"><thead><tr><th>Hạng</th><th>Học sinh</th><th style="text-align:right">Điểm</th></tr></thead><tbody>${rows || '<tr><td colspan="3" class="muted">Chưa có ai có điểm.</td></tr>'}</tbody></table></div>${mine}<p class="small muted" style="margin-top:6px">Điểm = số câu đúng ở lần làm đầu tiên.</p>`;
+};
+window.boardView = function () {
+  boardLoad();
+  const g = (typeof GS !== 'undefined' && GS[S.grade]) || '';
+  return `<div class="wrap" style="padding-block:28px"><div class="sechead"><h2>🏆 Bảng xếp hạng${g ? ' · ' + esc(g) : ''}</h2></div><div class="card">${BD.data ? boardHtml(BD.data, BD.per, true) : '<p class="muted">Đang tải…</p>'}</div></div>`;
+};
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-bd]'); if (!b || !BD.data || route() !== 'board') return; BD.per = b.dataset.bd; render(); });

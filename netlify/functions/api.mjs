@@ -12,6 +12,39 @@ const store = (name) => getStore({ name, consistency: "strong" });
 const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config"), recmeta: () => store("recmeta"), recfiles: () => store("recfiles"), parent: () => store("parent"), reports: () => store("reports"), vocab: () => store("vocab") };
 const MAX_AUDIO = 4 * 1024 * 1024, MAX_RECS = 150;
 const cleanNotes = (a) => (Array.isArray(a) ? a : []).slice(0, 300).map((x) => ({ id: String((x && x.id) || "").slice(0, 40), q: String((x && x.q) || "").slice(0, 300), f: String((x && x.f) || "").slice(0, 300), n: String((x && x.n) || "").slice(0, 400), my: String((x && x.my) || "").slice(0, 1000), ty: String((x && x.ty) || "").slice(0, 20), lb: String((x && x.lb) || "").slice(0, 80), t: Number(x && x.t) || 0 })).filter((x) => x.id && (x.q || x.f));
+
+/* ---------- bảng xếp hạng theo khối ---------- */
+let BOARD_C = { at: 0, v: null };
+const shortName = (n) => { const w = String(n || "").trim().split(/\s+/); return w.length <= 2 ? w.join(" ") : w.slice(-2).join(" "); };
+async function boardData() {
+  if (BOARD_C.v && Date.now() - BOARD_C.at < 60000) return BOARD_C.v;
+  const users = (await listAll(DB.users())).map((x) => x[1]).filter((u) => u && u.role === "student");
+  const prog = Object.fromEntries(await listAll(DB.progress()));
+  const ict = new Date(Date.now() + 7 * 3600e3); // giờ Việt Nam
+  const dow = (ict.getUTCDay() + 6) % 7; // thứ Hai = 0
+  const startDay = Date.UTC(ict.getUTCFullYear(), ict.getUTCMonth(), ict.getUTCDate()) - 7 * 3600e3;
+  const wk = startDay - dow * 86400e3, mo = Date.UTC(ict.getUTCFullYear(), ict.getUTCMonth(), 1) - 7 * 3600e3;
+  const rows = users.map((u) => {
+    const ex = (prog[u.username] && prog[u.username].ex) || {};
+    let w = 0, m = 0, a = 0, d = 0;
+    for (const r of Object.values(ex)) { if (!r || typeof r !== "object") continue; const c = r.c | 0, t = Number(r.t) || 0; a += c; d++; if (t >= wk) w += c; if (t >= mo) m += c; }
+    return { u: u.username, name: shortName(u.name), grade: String(u.grade || ""), cls: u.cls || "", w, m, a, d };
+  });
+  BOARD_C = { at: Date.now(), v: rows };
+  return rows;
+}
+async function boardFor(su) {
+  const all = (await boardData()).filter((r) => r.grade === String(su.grade || ""));
+  const out = { grade: String(su.grade || ""), total: all.length, periods: {} };
+  for (const [k, f] of [["week", "w"], ["month", "m"], ["all", "a"]]) {
+    const sorted = all.slice().sort((x, y) => y[f] - x[f] || y.d - x.d || x.name.localeCompare(y.name));
+    let rank = 0, last = null, pos = 0; const rk = {};
+    for (const r of sorted) { pos++; if (r[f] !== last) { rank = pos; last = r[f]; } rk[r.u] = rank; }
+    const me = sorted.find((r) => r.u === su.username);
+    out.periods[k] = { rows: sorted.slice(0, 10).map((r) => ({ r: rk[r.u], name: r.name, pts: r[f], me: r.u === su.username })), me: me ? { r: rk[me.u], pts: me[f], done: me.d } : null };
+  }
+  return out;
+}
 const RUBRIC_KEYS = ["pron", "vocab", "answer"], RUBRIC_LV = ["A", "B", "C", "D"];
 const isEx = (v) => typeof v === "string" && /^[a-z0-9-]{3,40}$/.test(v);
 const isIdx = (v) => /^\d{1,3}$/.test(String(v));
@@ -303,7 +336,8 @@ async function route(req) {
       if (mk || nt) attendance.push({ date: d, status: mk || "", note: nt || "" });
     }
     attendance.sort((x, y) => (x.date < y.date ? 1 : -1));
-    return J(200, { student: { name: su.name, cls: su.cls || "", grade: su.grade || "" }, reports: Object.values(rep).sort((x, y) => y.at - x.at), attendance: attendance.slice(0, 80) });
+    let board = null; try { board = await boardFor(su); } catch {}
+    return J(200, { board, student: { name: su.name, cls: su.cls || "", grade: su.grade || "" }, reports: Object.values(rep).sort((x, y) => y.at - x.at), attendance: attendance.slice(0, 80) });
   }
 
   /* authenticated */
@@ -367,6 +401,10 @@ async function route(req) {
     const words = cleanVocab(body.words);
     await DB.vocab().setJSON(user.username, { words, at: Date.now() });
     return J(200, { ok: true, n: words.length });
+  }
+  if (a === "leaderboard" && m === "GET") {
+    if (staff) return J(200, { board: null });
+    return J(200, { board: await boardFor(user) });
   }
   if (a === "notes" && m === "GET") {
     if (staff) return J(200, { items: [] });

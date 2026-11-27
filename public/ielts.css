@@ -41,3 +41,19 @@ mark.cm sup{font-size:.65rem;font-weight:800;margin-left:2px;color:var(--primary
 .corr{display:grid;grid-template-columns:minmax(80px,1fr) 1.2fr 1.6fr auto;gap:8px;align-items:center;margin-bottom:6px}
 @media (max-width:700px){.corr{grid-template-columns:1fr}}
 .chip.t-spelling{background:var(--bad-bg);color:var(--bad)}.chip.t-grammar{background:var(--sky)}.chip.t-vocab{background:var(--mint)}
+
+/*v66 tai nghe + chép chính tả*/
+.iemedia.withdg{position:relative;padding-right:100px}
+.iedg{position:absolute;right:4px;top:-6px;width:92px;pointer-events:none}
+.iedg svg{width:100%;height:auto;display:block}
+.iemedia.playing .iedg svg{animation:bdbob .7s ease-in-out infinite alternate;transform-origin:50% 90%}
+@keyframes bdbob{from{transform:rotate(-3deg) translateY(0)}to{transform:rotate(3deg) translateY(-4px)}}
+@media(max-width:640px){.iemedia.withdg{padding-right:70px}.iedg{width:66px}}
+.dictfb .dwbox{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--surface);border:1.5px solid var(--line);line-height:2.1}
+.dw{display:inline-block;font-weight:700}
+.dw.ok{color:#1f7a3d}
+.dw.near{color:#c0392b;text-decoration:underline wavy #c0392b;text-underline-offset:4px}
+.dw.miss{height:1.1em;vertical-align:middle;border-bottom:3px solid #e8c04a;background:#fdf1c4;border-radius:3px 3px 0 0}
+.dgood{color:#1f7a3d}
+
+.bdme td{background:#eef7e8}

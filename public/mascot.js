@@ -195,3 +195,10 @@ const _r=window.render||render;
 render=function(){const x=_r.apply(this,arguments);try{sync()}catch(e){}try{rmSync()}catch(e){}return x};
 setTimeout(()=>{try{sync()}catch(e){}},600);
 })();
+
+/* v66: rồng đeo tai nghe (trang nghe / chép chính tả) */
+window.bdPhones=function(){
+  const f=bdSVG('wave'),k=f.lastIndexOf('</svg>');
+  const ph='<g class="bdph"><path d="M52 84 C46 30 80 14 110 14 C140 14 174 30 168 84" fill="none" stroke="#2f3e63" stroke-width="7" stroke-linecap="round"/><rect x="38" y="70" width="19" height="40" rx="9" fill="#2f3e63"/><rect x="43" y="76" width="9" height="28" rx="4" fill="#5f7fc0"/><rect x="163" y="70" width="19" height="40" rx="9" fill="#2f3e63"/><rect x="168" y="76" width="9" height="28" rx="4" fill="#5f7fc0"/></g>';
+  return f.slice(0,k)+ph+f.slice(k);
+};

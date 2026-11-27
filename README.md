@@ -400,3 +400,5 @@ Thêm to-u9…to-u16 vào public/toeic/lessons.json, audio B9–B16, C9, C10, C1
 ## v55 — Booster 1 thành khoá riêng (grade 14, public/toeic/booster1.json, id b1-u9…b1-u16); api.mjs cleanGrade thêm 14.
 
 ## v64 — tổng hợp: Booster 1 riêng + 12 câu nghe, AI chấm ổn định (tool use), Speaking phát âm + bỏ gõ chữ, ẩn chữ AI phía học viên, Sổ chỉnh sửa (api notes), Baby Dragon luyện nói chỉ bằng giọng, lớp 9 sửa lỗi.
+
+## v66 — Chép chính tả từng câu nhỏ (TOEIC, type dict), rồng đeo tai nghe, bảng xếp hạng theo khối (api leaderboard + parent.board), báo cáo PH gọn, bản thu hết hạn tự ẩn.
