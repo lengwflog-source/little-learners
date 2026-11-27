@@ -331,14 +331,13 @@ const USP=[[/\b(col|favo|neighb|behavi|hon|hum|flav|lab|harb|rum|sav|vap)or(s|ed
 const ukOf=s=>{let t=String(s);for(const[r,x]of USP)t=t.replace(r,x);return t};
 const loose=s=>ukus(norm(s).replace(/[.,!?;:"]/g,'')).replace(/\s+/g,' ').trim();
 const same=(a,b)=>loose(a)===loose(b);
-function units(it){switch(it.t){case'mcq':case'tf':case'text':case'build':case'rec':case'wr':case'sp':case'ew':return 1;case'ws':return it.words.length;case'dict':return 1;case'fill':return it.a.length;case'order':return it.steps.length;case'match':return it.left.length;case'cat':return it.words.length;default:return 0}}
+function units(it){switch(it.t){case'mcq':case'tf':case'text':case'build':case'rec':case'wr':case'sp':case'ew':return 1;case'ws':return it.words.length;case'fill':return it.a.length;case'order':return it.steps.length;case'match':return it.left.length;case'cat':return it.words.length;default:return 0}}
 function gradeItem(it,a,k){switch(it.t){
   case'wr':case'sp':return[ieDone(k)];
   case'ew':return[ewDone(k)];
   case'mcq':return[a===it.a];
   case'tf':return[a===it.a];
   case'text':return[it.a.some(v=>same(v,a))];
-  case'dict':return[typeof dictAlign==='function'&&dictAlign(it.text,a||'').pct>=0.85];
   case'build':{const t=(Array.isArray(a)?a:[]).map(k=>it.tokens[k]).join(it.join);return[it.a.some(v=>same(v,t))]}
   case'ws':return it.words.map(w=>(Array.isArray(a)?a:[]).includes(w));
   case'rec':return[!!a||(!S.isT&&!!(S.recs&&S.recs[k]))];
@@ -355,7 +354,6 @@ function solText(it){switch(it.t){
   case'tf':return it.tick?(it.a==='T'?'✔ Đúng':'✘ Sai'):it.a==='T'?'True':it.a==='F'?'False':'Not given';
   case'text':case'build':{const a=it.a[0],u=ukOf(a);return a===u?a:a+'  (Anh-Mỹ)  /  '+u+'  (Anh-Anh)'}
   case'ws':return it.words.join(', ');
-  case'dict':return it.text;
   case'rec':return'Hãy thu âm giọng đọc của bạn';
   case'wr':case'sp':case'ew':return'';
   case'fill':return it.a.map(v=>{const a=v[0],u=ukOf(a);return a===u?a:a+' / '+u}).join(' · ');
@@ -446,7 +444,7 @@ const hdr=()=>{const r=route(),I=(h,t,on)=>`<a href="#${h}" class="${on?'on':''}
   const TI=[['t-home','Tổng quan',r==='t-home'],['t-students','Học sinh',r.startsWith('t-student')],['t-attendance','Điểm danh',r==='t-attendance'],['t-assign','Giao bài',r==='t-assign'],['t-voice','Bản thu âm',r==='t-voice'],['t-chat','Chat'+(typeof chNavBadge==='function'?chNavBadge():''),r==='t-chat'],['t-qa','Giải đáp'+(typeof qaNavBadge==='function'?qaNavBadge():''),r==='t-qa']].concat(S.isTA?[]:[['t-ai','Chấm IELTS',r==='t-ai'],['t-ew','Extra Writing',r==='t-ew'],['t-ta','Trợ giảng',r==='t-ta']]).concat([['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')]]);
   const cur=TI.find(x=>x[2]);
   const navT=`<details class="gdd" id="ndd"><summary aria-label="Menu chính, đang ở ${cur?cur[1].replace(/<[^>]+>/g,''):'Menu'}">☰ ${cur?cur[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${TI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
-  const SI=[['home','Trang chủ',r==='home'],['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')],['flash','Flashcard',r==='flash'],['progress','Tiến độ',r==='progress']].concat(bankOK()?[['vocab','Kho từ vựng',r==='vocab']]:[]).concat((!S.isT&&S.user&&typeof notesView==='function')?[['notes','Sổ chỉnh sửa',r==='notes']]:[]).concat((!S.isT&&S.user&&typeof boardView==='function')?[['board','Xếp hạng',r==='board']]:[]).concat([['voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice']]);
+  const SI=[['home','Trang chủ',r==='home'],['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')],['flash','Flashcard',r==='flash'],['progress','Tiến độ',r==='progress']].concat(bankOK()?[['vocab','Kho từ vựng',r==='vocab']]:[]).concat((!S.isT&&S.user&&typeof notesView==='function')?[['notes','Sổ chỉnh sửa',r==='notes']]:[]).concat([['voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice']]);
   const curS=SI.find(x=>x[2]);
   const navM=S.isT?'':`<details class="gdd navm" id="nmm"><summary aria-label="Menu chính, đang ở ${curS?curS[1].replace(/<[^>]+>/g,''):'Menu'}">☰ ${curS?curS[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${SI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
   const nav=S.isT?navT:SI.map(x=>I(x[0],x[1],x[2])).join('');
@@ -480,7 +478,6 @@ function render(){
     else if(r==='t-ta'&&S.isT&&!S.isTA)body=taView();
     else if(r==='voice'&&!S.isT)body=voiceView();
     else if(r==='notes'&&!S.isT&&typeof notesView==='function')body=notesView();
-    else if(r==='board'&&!S.isT&&typeof boardView==='function')body=boardView();
     else if(r==='vocab'&&bankOK()&&typeof vocabView==='function')body=vocabView();
     else if(r==='flash'&&!S.isT&&typeof flashView==='function')body=flashView();
     else body=S.isT?teacherHome():homeView();
@@ -620,7 +617,7 @@ setInterval(draftSave,1500);addEventListener('pagehide',draftSave);document.addE
 const hasLive=E=>E.items.some(it=>it.t==='rec'||it.t==='wr'||it.t==='sp'||it.t==='ew');
 function missing(E,ans){let m=0;E.items.forEach((it,i)=>{const a=ans[i];let ok=true;switch(it.t){
   case'mcq':case'tf':ok=a!=null&&a!=='';break;
-  case'text':case'dict':ok=!!String(a||'').trim();break;
+  case'text':ok=!!String(a||'').trim();break;
   case'build':case'ws':ok=Array.isArray(a)&&a.length>0;break;
   case'fill':ok=it.a.every((_,k)=>String((a||[])[k]||'').trim());break;
   case'order':ok=it.steps.every((_,k)=>(a||[])[k]!=null&&String((a||[])[k])!=='');break;
@@ -671,7 +668,6 @@ function itemHtml(it,i,done,res){const a=X.ans[i];const ok=res?res.every(Boolean
   if(it.t==='mcq')body=`<div class="opts">${it.opts.map((o,j)=>`<label class="opt ${a===j&&!done?'sel':''} ${done&&j===it.a?'ok':''} ${done&&a===j&&j!==it.a?'bad':''}"><input type="radio" name="q${i}" data-i="${i}" value="${j}" ${a===j?'checked':''} ${done?'disabled':''}><span class="L">${L2[j]}</span><span>${o}</span></label>`).join('')}</div>`;
   else if(it.t==='tf'){const o=it.tick?[['T','✔ Đúng'],['F','✘ Sai']]:it.ng?[['T','True'],['F','False'],['NG','Not given']]:[['T','True'],['F','False']];body=`<div class="tfs">${o.map(([v,t])=>`<label class="opt ${a===v&&!done?'sel':''} ${done&&v===it.a?'ok':''} ${done&&a===v&&v!==it.a?'bad':''}"><input type="radio" name="q${i}" data-i="${i}" value="${v}" ${a===v?'checked':''} ${done?'disabled':''}><span>${t}</span></label>`).join('')}</div>`}
   else if(it.t==='text')body=`<textarea class="txt ${done?(ok?'ok-in':'bad-in'):''}" rows="2" data-i="${i}" placeholder="${esc(it.hint||'Viết câu trả lời của bạn…')}" ${done?'disabled':''}>${esc(a!=null?a:(it.pre||''))}</textarea>`;
-  else if(it.t==='dict')body=`<textarea class="txt dictta" rows="5" data-i="${i}" lang="en" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Gõ đoạn bạn nghe được…" ${done?'disabled':''}>${esc(typeof a==='string'?a:'')}</textarea><div class="dictfb" data-dfb="${i}">${typeof dictFb==='function'?dictFb(it,typeof a==='string'?a:'',done):''}</div>`;
   else if(it.t==='open')body=`<textarea class="txt" rows="3" data-i="${i}" placeholder="Viết câu trả lời của bạn…" ${done?'':''}>${esc(a||'')}</textarea>${done?`<div class="sol">Gợi ý: ${esc(it.sample||'')}</div>`:''}`;
   else if(it.t==='order')body=`<div>${it.steps.map((s,k)=>`<div class="ordrow"><select class="sel-in ${done&&res?(res[k]?'ok-in':'bad-in'):''}" data-i="${i}" data-k="${k}" ${done?'disabled':''}><option value="">–</option>${it.steps.map((_,n)=>`<option value="${n+1}" ${Number((a||[])[k])===n+1?'selected':''}>${n+1}</option>`).join('')}</select><span>${s}</span></div>`).join('')}</div>`;
   else if(it.t==='match')body=mtHtml(it,i,a,done,res);
@@ -889,7 +885,6 @@ function parentView(){const P=S.ph;
   ${reps.length?reps.map(r=>`<div class="card rep"><div class="row"><div><b style="font-size:1.1rem">${esc(r.label)}</b><div class="small muted">${r.unit?esc(r.unit)+' · ':''}Báo ngày ${fmtD(dstr(new Date(r.at)))}</div></div><span class="sp"></span>${r.n?`<div style="text-align:right"><div class="big">${r.c}/${r.n}</div><span class="small muted">câu đúng</span></div>`:'<span class="chip">Đã hoàn thành</span>'}</div>
    ${(r.rows&&r.rows.length>1)?(()=>{const q=r.rows.filter(x=>x.n>0),av=q.length?(Math.round(q.reduce((a,x)=>a+x.c/x.n,0)/q.length*100)/10)+'/10':'';return`${av?`<div class="small muted" style="margin-top:6px">Điểm trung bình: <b>${av}</b></div>`:''}<details class="noprint" style="margin-top:6px"><summary class="small muted" style="cursor:pointer">Xem chi tiết từng phần</summary><div class="tw"><table class="t" style="min-width:0;margin-top:6px"><tbody>${r.rows.map(x=>`<tr><td>${esc(x.title)}</td><td style="text-align:right;white-space:nowrap">${x.n?x.c+'/'+x.n:'Đã xem'}</td></tr>`).join('')}</tbody></table></div></details>`})():''}
    ${r.note?`<div class="tcm"><b>💬 Nhận xét của giáo viên</b><p>${esc(r.note)}</p></div>`:''}</div>`).join(''):'<div class="card"><p class="muted">Giáo viên chưa báo điểm phần nào. Khi bé hoàn thành một phần bài, điểm sẽ hiện ở đây.</p></div>'}
-  ${P.board&&typeof boardHtml==='function'?`<h2 style="margin:28px 0 12px;font-size:1.5rem">🏆 Xếp hạng trong khối</h2><div class="card">${boardHtml(P.board,'week',false)}<div class="small muted" style="margin:10px 0 4px">Tháng này</div>${boardHtml(P.board,'month',false).replace(/<p class="small muted" style="margin-top:6px">Điểm[^<]*<\/p>/,'')}</div>`:''}
   <h2 style="margin:28px 0 12px;font-size:1.5rem">Điểm danh và thái độ học tập</h2>
   ${att.length?`<div class="tw"><table class="t" style="min-width:0"><thead><tr><th>Ngày</th><th>Điểm danh</th><th>Nhận xét của giáo viên</th></tr></thead><tbody>${att.map(a=>`<tr><td style="white-space:nowrap">${fmtD(a.date)}</td><td>${a.status&&st[a.status]?`<span class="chip ${st[a.status][1]}">${st[a.status][0]}</span>`:'<span class="muted">—</span>'}</td><td>${a.note?esc(a.note):'<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table></div>`:'<div class="card"><p class="muted">Chưa có dữ liệu điểm danh.</p></div>'}
   <footer>Liên kết này dành riêng cho phụ huynh của bé, vui lòng không chia sẻ công khai.</footer></div>`}
