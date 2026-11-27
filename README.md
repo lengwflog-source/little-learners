@@ -398,3 +398,5 @@ Chép đè: `public/index.html`, `public/mascot.js`, `public/mascot.css`, `netli
 Thêm to-u9…to-u16 vào public/toeic/lessons.json, audio B9–B16, C9, C10, C12, D13–D16 vào public/toeic/audio/. Thiếu Track C11 (Unit 11 Part 3 có ghi chú "đang cập nhật").
 
 ## v55 — Booster 1 thành khoá riêng (grade 14, public/toeic/booster1.json, id b1-u9…b1-u16); api.mjs cleanGrade thêm 14.
+
+## v64 — tổng hợp: Booster 1 riêng + 12 câu nghe, AI chấm ổn định (tool use), Speaking phát âm + bỏ gõ chữ, ẩn chữ AI phía học viên, Sổ chỉnh sửa (api notes), Baby Dragon luyện nói chỉ bằng giọng, lớp 9 sửa lỗi.

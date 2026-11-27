@@ -1,6 +1,7 @@
 /* IELTS 1 add-on: band scoring, Writing/Speaking with AI feedback, media players, teacher review page.
    Loaded after the main script; uses its globals (S, X, API, esc, toast, refreshItem, REC, RB, uploadRec ...). */
 S.ai = S.ai || {};
+const ASRD = {};
 const SPT = {}, SPTX = {}, SPD = {};
 let SPR = null, AIP = null;
 
@@ -61,7 +62,7 @@ function ieMedia(list) {
 /* ---------- feedback rendering ---------- */
 const CRIT = {
   wr: [['TR', 'TASK RESPONSE'], ['CC', 'COHERENCE AND COHESION'], ['LR', 'LEXICAL RESOURCE'], ['GRA', 'GRAMMATICAL RANGE AND ACCURACY']],
-  sp: [['FC', 'FLUENCY AND COHERENCE'], ['LR', 'LEXICAL RESOURCE'], ['GRA', 'GRAMMATICAL RANGE AND ACCURACY'], ['PR', 'PRONUNCIATION (ước lượng)']],
+  sp: [['FC', 'FLUENCY AND COHERENCE'], ['LR', 'LEXICAL RESOURCE'], ['GRA', 'GRAMMATICAL RANGE AND ACCURACY'], ['PR', 'PRONUNCIATION']],
 };
 function placeCors(text, cors) {
   const sp = [];
@@ -85,17 +86,18 @@ function fbHtml(e) {
   return `<div class="fbgrid">
    <div class="card fbl"><h4>${kind === 'wr' ? 'Chữa lỗi bài làm' : 'Chữa lỗi bài nói (bản chữ)'}</h4>
     <div class="fbtext">${mt.html}</div>
-    ${mt.placed.length ? `<ol class="fblist">${mt.placed.map(c => `<li><span class="chip t-${esc(c.type)}">${esc(c.type)}</span> <del>${esc(c.quote)}</del> → <ins>${esc(c.fix)}</ins>${c.note ? `<div class="muted small">${esc(c.note)}</div>` : ''}</li>`).join('')}</ol>` : '<p class="muted small">Không có lỗi nào được đánh dấu.</p>'}
+    ${mt.placed.length ? `<ol class="fblist">${mt.placed.map(c => `<li><span class="chip t-${esc(c.type)}">${esc(c.type)}</span> <del>${esc(c.quote)}</del> → <ins>${esc(c.fix)}</ins>${c.note ? `<div class="muted small">${esc(c.note)}</div>` : ''}${S.isT ? '' : `<button class="btn ghost sm" data-ie="nbadd" data-q="${esc(c.quote)}" data-f="${esc(c.fix)}" data-n="${esc(c.note || '')}" data-ty="${esc(c.type || '')}" data-lb="${esc((X && X.E && X.E.title) || '')}">📒 Lưu vào sổ</button>`}</li>`).join('')}</ol>` : '<p class="muted small">Không có lỗi nào được đánh dấu.</p>'}
     ${fb.improved ? `<h4 style="margin-top:18px">${kind === 'wr' ? 'Bài viết đã cải thiện' : 'Câu trả lời mẫu cải thiện'}</h4><div class="fbimp">${paras(fb.improved)}</div>` : ''}</div>
    <div class="card fbr"><h4>Đánh giá về bài làm</h4>
     <div class="bandbig"><div class="bn">${fb1(fb.overall)}</div><div><b>Overall band</b><div class="muted small">${kind === 'wr' ? 'Writing' : 'Speaking'} · ${e.wc || 0} từ${e.secs ? ' · ' + e.secs + ' giây' : ''}</div></div></div>
     ${crit.map(([k, n]) => `<div class="crit"><div class="row"><b class="cn">${n}</b><span class="sp"></span><span class="cb">${fb1(fb.bands[k])}</span></div><p>${esc(fb.comments[k] || '')}</p></div>`).join('')}
+    ${(fb.pron || []).length ? `<div class="tcm"><b>🎤 Từ cần luyện phát âm</b><ul class="tips">${fb.pron.map(w => `<li><b>${esc(w.word)}</b>${w.ipa ? ' <span class="muted">' + esc(w.ipa) + '</span>' : ''}${w.tip ? ' – ' + esc(w.tip) : ''}</li>`).join('')}</ul></div>` : ''}
     ${fb.summary ? `<div class="tcm"><b>Nhận xét chung</b><p>${esc(fb.summary)}</p></div>` : ''}
     ${(fb.tips || []).length ? `<ul class="tips">${fb.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
-    ${e.edited ? `<p class="small" style="margin-top:8px"><span class="chip good">Giáo viên đã xem và chỉnh sửa</span> <span class="muted">${fmtT(e.editedAt)}</span></p>` : '<p class="muted small" style="margin-top:8px">Nhận xét do AI soạn. Giáo viên sẽ xem lại và có thể chỉnh sửa.</p>'}</div></div>`;
+    ${e.edited ? `<p class="muted small" style="margin-top:8px">Thầy/cô đã nhận xét · ${fmtT(e.editedAt)}</p>` : ''}</div></div>`;
 }
 function statusBox(e, i, kind) {
-  if (e.status === 'pending') return `<div class="card aiwait"><span class="spin" aria-hidden="true"></span><div><b>AI đang chấm bài của bạn…</b><div class="muted small">Thường mất khoảng 10–40 giây. Bạn có thể ở lại trang này.</div></div></div>`;
+  if (e.status === 'pending') return `<div class="card aiwait"><span class="spin" aria-hidden="true"></span><div><b>Đang chờ giáo viên chấm bài…</b><div class="muted small">Thường mất khoảng 10–40 giây. Bạn có thể ở lại trang này.</div></div></div>`;
   if (e.status === 'error') return `<div class="banner err">${esc(e.err || 'Chưa chấm được bài.')}</div><button class="btn" data-ie="${kind}sub" data-ix="${i}">Thử nộp lại</button>`;
   return '';
 }
@@ -110,14 +112,14 @@ function ieWr(it, i) {
   const n = wcount(txt);
   return head + (e && e.status === 'error' ? `<div class="banner err">${esc(e.err || '')}</div>` : '') +
     `<textarea class="txt wrta" rows="14" data-i="${i}" data-wr="${i}" lang="en" spellcheck="true" autocomplete="off" autocapitalize="off" placeholder="Viết bài của bạn bằng tiếng Anh tại đây…">${esc(txt)}</textarea>
-    <div class="row wcrow"><div class="wcbox ${n >= min ? 'ok' : ''}" data-wcbox="${i}"><b data-wcn="${i}">${n}</b> / ${min} từ</div><span class="sp"></span><button class="btn" data-ie="wrsub" data-ix="${i}">Nộp để AI chấm</button></div>
-    <p class="muted small">Máy sẽ gạch đỏ lỗi chính tả khi bạn gõ. Khi nộp, AI kiểm tra ngữ pháp, chính tả và chấm theo 4 tiêu chí IELTS.</p>`;
+    <div class="row wcrow"><div class="wcbox ${n >= min ? 'ok' : ''}" data-wcbox="${i}"><b data-wcn="${i}">${n}</b> / ${min} từ</div><span class="sp"></span><button class="btn" data-ie="wrsub" data-ix="${i}">Nộp bài để thầy chấm</button></div>
+    <p class="muted small">Máy sẽ gạch đỏ lỗi chính tả khi bạn gõ. Khi nộp, bài được chấm theo 4 tiêu chí IELTS.</p>`;
 }
 async function wrSubmit(i) {
   const it = X.E.items[i], ta = document.querySelector('textarea[data-wr="' + i + '"]');
   const text = ta ? ta.value : (X.ans[i] || '');
-  if (S.isT) { toast('Chỉ học viên mới nộp bài để AI chấm.'); return; }
-  if (S.local) { toast('Chế độ thử: không gọi AI.'); return; }
+  if (S.isT) { toast('Chỉ học viên mới nộp bài.'); return; }
+  if (S.local) { toast('Chế độ thử: không gửi bài.'); return; }
   if (wcount(text) < 20) { toast('Bài viết còn quá ngắn (cần ít nhất 20 từ).'); return; }
   X.ans[i] = text;
   await aiSubmit('wr', i, { task: it.task || 2, minWords: it.minWords || 0, prompt: it.prompt, text });
@@ -142,10 +144,10 @@ function ieSp(it, i) {
   return head + (e && e.status === 'error' ? `<div class="banner err">${esc(e.err || '')}</div>` : '') +
     `<div class="rc"><button class="btn ${on ? 'rec-on' : ''}" data-ie="sprec" data-ix="${i}" ${canRec ? '' : 'disabled'}>${on ? '■ Dừng' : '● Bắt đầu nói'}</button>${on ? '<span class="rectime" data-sptime>0:00</span>' : ''}${url ? `<audio controls src="${url}"></audio>` : ''}${recStatus(k, i, url, X.ans[i], false)}</div>
     ${on ? `<div class="muted small">Đang nghe: <i data-splive="${i}">${esc(SPT[k] || '…')}</i></div>` : ''}
-    <label class="small muted" for="spta${i}" style="display:block;margin-top:10px">Bản chữ lời nói của bạn (máy tự nhận dạng, hãy sửa lỗi nhận dạng nếu có${canRec ? '' : '; máy này không thu âm được nên bạn có thể gõ lại những gì đã nói'}):</label>
-    <textarea id="spta${i}" class="txt wrta" rows="6" data-sp="${i}" lang="en" spellcheck="false" autocomplete="off" placeholder="Bản chữ sẽ hiện ở đây sau khi bạn nói…">${esc(tx)}</textarea>
-    <div class="row wcrow"><div class="wcbox ${n >= 15 ? 'ok' : ''}" data-wcbox="${i}"><b data-wcn="${i}">${n}</b> từ</div><span class="sp"></span><button class="btn" data-ie="spsub" data-ix="${i}" ${on ? 'disabled' : ''}>Gửi để AI nhận xét</button></div>
-    <p class="muted small">① Đọc kỹ đề ② Bấm Bắt đầu nói và trả lời tự nhiên ③ Bấm Dừng, sửa bản chữ nếu cần ④ Gửi. Bản thu giọng được gửi cho giáo viên và tự xóa sau 7 ngày. ${('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) ? '' : 'Trình duyệt này không tự chuyển giọng thành chữ; hãy dùng Chrome hoặc Safari, hoặc tự gõ lại lời nói.'}</p>`;
+    <label class="small muted" for="spta${i}" style="display:block;margin-top:10px">Bản chữ máy nghe được từ giọng nói của bạn (tự động, không gõ tay):</label>
+    <textarea id="spta${i}" class="txt wrta" rows="6" data-sp="${i}" lang="en" spellcheck="false" autocomplete="off" readonly placeholder="Bản chữ sẽ hiện ở đây sau khi bạn nói…">${esc(tx)}</textarea>
+    <div class="row wcrow"><div class="wcbox ${n >= 15 ? 'ok' : ''}" data-wcbox="${i}"><b data-wcn="${i}">${n}</b> từ</div><span class="sp"></span><button class="btn" data-ie="spsub" data-ix="${i}" ${on ? 'disabled' : ''}>Gửi bài để thầy chấm</button></div>
+    <p class="muted small">① Đọc kỹ đề ② Bấm Bắt đầu nói và trả lời tự nhiên ③ Bấm Dừng ④ Gửi (nói rõ, đủ to; không gõ chữ). Bản thu giọng được gửi cho giáo viên và tự xóa sau 7 ngày. ${('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) ? '' : 'Trình duyệt này không tự chuyển giọng thành chữ; hãy dùng Chrome hoặc Safari, hoặc tự gõ lại lời nói.'}</p>`;
 }
 async function toggleSp(i) {
   const eid = X.E.id, k = eid + ':' + i, it = X.E.items[i];
@@ -155,12 +157,12 @@ async function toggleSp(i) {
     const st = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mr = new MediaRecorder(st), ch = [];
     const SRc = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let rec = null, base = '', cur = '', stopping = false; SPT[k] = ''; delete SPTX[k];
+    let rec = null, base = '', cur = '', stopping = false; SPT[k] = ''; delete SPTX[k]; ASRD[k] = []; ASRD['b:' + k] = [];
     if (SRc) {
       try {
         rec = new SRc(); rec.lang = 'en-US'; rec.continuous = true; rec.interimResults = true;
-        rec.onresult = ev => { let f = '', im = ''; for (let r = 0; r < ev.results.length; r++) { const t = ev.results[r][0].transcript; if (ev.results[r].isFinal) f += t + ' '; else im += t; } cur = (f + im).trim(); SPT[k] = (base + ' ' + cur).trim(); const el = document.querySelector('[data-splive="' + i + '"]'); if (el) el.textContent = SPT[k] || '…'; };
-        rec.onend = () => { base = (base + ' ' + cur).trim(); cur = ''; if (!stopping) { try { rec.start(); } catch (_) { } } };
+        rec.onresult = ev => { try { const sg = []; for (let r = 0; r < ev.results.length; r++) if (ev.results[r].isFinal) sg.push([ev.results[r][0].transcript.trim(), Math.round((ev.results[r][0].confidence || 0) * 100)]); ASRD[k] = (ASRD['b:' + k] || []).concat(sg); } catch (_) { } let f = '', im = ''; for (let r = 0; r < ev.results.length; r++) { const t = ev.results[r][0].transcript; if (ev.results[r].isFinal) f += t + ' '; else im += t; } cur = (f + im).trim(); SPT[k] = (base + ' ' + cur).trim(); const el = document.querySelector('[data-splive="' + i + '"]'); if (el) el.textContent = SPT[k] || '…'; };
+        rec.onend = () => { ASRD['b:' + k] = (ASRD[k] || []).slice(); base = (base + ' ' + cur).trim(); cur = ''; if (!stopping) { try { rec.start(); } catch (_) { } } };
         rec.onerror = () => { };
         rec.start(); try{window.SFX&&SFX.start()}catch(_){}
       } catch (_) { rec = null; }
@@ -183,10 +185,10 @@ async function spSubmit(i) {
   const it = X.E.items[i], k = X.E.id + ':' + i, ta = document.querySelector('textarea[data-sp="' + i + '"]');
   const text = ta ? ta.value : '';
   if (S.isT) { toast('Chỉ học viên mới gửi bài nói.'); return; }
-  if (S.local) { toast('Chế độ thử: không gọi AI.'); return; }
-  if (wcount(text) < 5) { toast('Chưa có bản chữ. Hãy nói rõ hơn hoặc tự gõ lại lời nói của bạn.'); return; }
+  if (S.local) { toast('Chế độ thử: không gửi bài.'); return; }
+  if (wcount(text) < 5) { toast('Chưa nghe được giọng nói. Hãy bấm Bắt đầu nói, nói rõ và to hơn (dùng Chrome hoặc Safari).'); return; }
   SPTX[k] = text;
-  await aiSubmit('sp', i, { part: it.part || 'Part 2', prompt: it.prompt + ((it.card || []).length ? ' ' + it.card.join(' / ') : ''), text, secs: SPD[k] || 0 });
+  await aiSubmit('sp', i, { part: it.part || 'Part 2', prompt: it.prompt + ((it.card || []).length ? ' ' + it.card.join(' / ') : ''), text, secs: SPD[k] || 0, asr: (ASRD[k] || []).slice(0, 40) });
 }
 
 /* ---------- progress summary ---------- */
@@ -201,12 +203,14 @@ function ieSummary(p) {
   const have = Object.values(v).filter(x => x != null);
   const ov = have.length ? r05(have.reduce((x, y) => x + y, 0) / have.length) : null;
   const t = (k, n) => `<div class="card kpi"><b>${fb1(v[k])}</b><span>${n}${bands[k].length ? ' · ' + bands[k].length + ' bài' : ''}</span></div>`;
-  return `<div class="iesum"><div class="sechead" style="margin:0 0 10px"><h3>Band IELTS ước tính</h3><span class="chip sky">Overall ${fb1(ov)}</span></div><div class="grid g4">${t('L', 'Listening')}${t('R', 'Reading')}${t('W', 'Writing (AI)')}${t('S', 'Speaking (AI)')}</div><p class="muted small" style="margin-top:6px">Điểm luyện tập tính trung bình các bài đã làm, làm tròn 0,5 theo quy tắc IELTS. Không phải điểm thi thật.</p></div>`;
+  return `<div class="iesum"><div class="sechead" style="margin:0 0 10px"><h3>Band IELTS ước tính</h3><span class="chip sky">Overall ${fb1(ov)}</span></div><div class="grid g4">${t('L', 'Listening')}${t('R', 'Reading')}${t('W', 'Writing')}${t('S', 'Speaking')}</div><p class="muted small" style="margin-top:6px">Điểm luyện tập tính trung bình các bài đã làm, làm tròn 0,5 theo quy tắc IELTS. Không phải điểm thi thật.</p></div>`;
 }
 
 /* ---------- click + input handlers ---------- */
 function ieClick(t, D) {
   const a = D.ie, i = D.ix != null ? +D.ix : null;
+  if (a === 'nbadd') return nbAdd(t);
+  if (a === 'nbdel') return nbDel(D.id);
   if (a === 'wrsub') return wrSubmit(i);
   if (a === 'spsub') return spSubmit(i);
   if (a === 'sprec') return toggleSp(i);
@@ -279,3 +283,43 @@ async function aiRegrade(id, btn) {
   try { await API.call('POST', 'ai/regrade/' + encodeURIComponent(who) + '/' + ex + '/' + ix, {}); toast('Đã gửi chấm lại. Danh sách sẽ tự tải lại sau khoảng 30 giây.'); S.ail = null; setTimeout(() => { S.ail = null; if (route() === 't-ai') render(); }, 30000); render(); }
   catch (e) { toast(e.message); btn.disabled = false; }
 }
+
+/* ---------- Sổ chỉnh sửa của học viên ---------- */
+const NB = { items: null, loading: false, saveT: 0 };
+function nbLoad() {
+  if (NB.items || NB.loading || S.isT || S.local) return;
+  NB.loading = true;
+  API.call('GET', 'notes').then(r => { NB.items = r.items || []; NB.loading = false; if (route() === 'notes') render(); }).catch(() => { NB.items = []; NB.loading = false; });
+}
+function nbSave() {
+  clearTimeout(NB.saveT);
+  NB.saveT = setTimeout(() => { if (S.isT || S.local) return; API.call('PUT', 'notes', { items: NB.items }).catch(() => toast('Chưa lưu được sổ, hãy kiểm tra mạng.')); }, 600);
+}
+function nbAdd(btn) {
+  if (!NB.items) { toast('Đang tải sổ, bạn bấm lại sau 1 giây nhé.'); nbLoad(); return; }
+  const d = btn.dataset;
+  if (NB.items.some(x => x.q === d.q && x.f === d.f)) { toast('Câu này đã có trong sổ.'); return; }
+  NB.items.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), q: d.q, f: d.f, n: d.n || '', ty: d.ty || '', lb: d.lb || '', my: '', t: Date.now() });
+  nbSave(); btn.textContent = '✔ Đã lưu vào sổ'; btn.disabled = true; toast('Đã lưu vào Sổ chỉnh sửa. Bạn có thể ghi chú thêm trong mục Sổ chỉnh sửa.');
+}
+function nbDel(id) {
+  if (!NB.items || !confirm('Xóa mục này khỏi sổ?')) return;
+  NB.items = NB.items.filter(x => x.id !== id); nbSave(); render();
+}
+window.notesView = function () {
+  nbLoad();
+  const L = NB.items;
+  const body = !L ? '<p class="muted">Đang tải…</p>' : !L.length ? '<div class="card"><p>Sổ đang trống. Khi xem nhận xét bài Writing hoặc Speaking, bấm <b>📒 Lưu vào sổ</b> ở từng lỗi để lưu lại đây và ghi chú cho riêng bạn.</p></div>' :
+    L.map(x => `<div class="card" style="margin-bottom:10px;padding:14px 18px">
+      <div class="row"><span class="chip sky">${esc(x.ty || 'lỗi')}</span><span class="muted small">${esc(x.lb || '')}${x.t ? ' · ' + new Date(x.t).toLocaleDateString('vi-VN') : ''}</span><span class="sp"></span><button class="btn ghost sm" data-ie="nbdel" data-id="${esc(x.id)}">Xóa</button></div>
+      <p style="margin:8px 0"><del>${esc(x.q)}</del> → <ins>${esc(x.f)}</ins></p>
+      ${x.n ? `<div class="muted small" style="margin-bottom:8px">${esc(x.n)}</div>` : ''}
+      <label class="small muted" for="nb-${esc(x.id)}">Ghi chú của bạn</label>
+      <textarea id="nb-${esc(x.id)}" class="txt" rows="2" data-nbn="${esc(x.id)}" placeholder="Viết ghi chú để nhớ lỗi này…">${esc(x.my || '')}</textarea>
+    </div>`).join('');
+  return `<div class="wrap"><div class="sechead"><h2>📒 Sổ chỉnh sửa của tôi</h2>${L ? `<span class="chip">${L.length} mục</span>` : ''}</div><p class="muted">Lưu lại những chỗ thầy/cô sửa trong bài Writing và Speaking, rồi ghi chú để ôn lại.</p>${body}</div>`;
+};
+document.addEventListener('input', e => {
+  const t = e.target; if (!t.dataset || t.dataset.nbn == null || !NB.items) return;
+  const x = NB.items.find(z => z.id === t.dataset.nbn); if (x) { x.my = t.value.slice(0, 1000); nbSave(); }
+});

@@ -11,6 +11,7 @@ const TZ = process.env.TZ_NAME || "Asia/Ho_Chi_Minh";
 const store = (name) => getStore({ name, consistency: "strong" });
 const DB = { users: () => store("users"), progress: () => store("progress"), attendance: () => store("attendance"), config: () => store("config"), recmeta: () => store("recmeta"), recfiles: () => store("recfiles"), parent: () => store("parent"), reports: () => store("reports"), vocab: () => store("vocab") };
 const MAX_AUDIO = 4 * 1024 * 1024, MAX_RECS = 150;
+const cleanNotes = (a) => (Array.isArray(a) ? a : []).slice(0, 300).map((x) => ({ id: String((x && x.id) || "").slice(0, 40), q: String((x && x.q) || "").slice(0, 300), f: String((x && x.f) || "").slice(0, 300), n: String((x && x.n) || "").slice(0, 400), my: String((x && x.my) || "").slice(0, 1000), ty: String((x && x.ty) || "").slice(0, 20), lb: String((x && x.lb) || "").slice(0, 80), t: Number(x && x.t) || 0 })).filter((x) => x.id && (x.q || x.f));
 const RUBRIC_KEYS = ["pron", "vocab", "answer"], RUBRIC_LV = ["A", "B", "C", "D"];
 const isEx = (v) => typeof v === "string" && /^[a-z0-9-]{3,40}$/.test(v);
 const isIdx = (v) => /^\d{1,3}$/.test(String(v));
@@ -367,6 +368,17 @@ async function route(req) {
     await DB.vocab().setJSON(user.username, { words, at: Date.now() });
     return J(200, { ok: true, n: words.length });
   }
+  if (a === "notes" && m === "GET") {
+    if (staff) return J(200, { items: [] });
+    const v = (await DB.vocab().get(user.username + "~notes", { type: "json" })) || { items: [] };
+    return J(200, { items: cleanNotes(v.items) });
+  }
+  if (a === "notes" && m === "PUT") {
+    if (staff) return fail(403, "Chỉ học viên có sổ chỉnh sửa.");
+    const items = cleanNotes(body.items);
+    await DB.vocab().setJSON(user.username + "~notes", { items, at: Date.now() });
+    return J(200, { ok: true, n: items.length });
+  }
   if (a === "notif" && b === "seen" && m === "PUT") {
     user.nseen = Date.now();
     await DB.users().setJSON(user.username, user);
@@ -539,7 +551,7 @@ async function route(req) {
 
   /* IELTS AI feedback (student) */
   if (a === "ai" && b === "submit" && m === "POST") {
-    if (staff) return fail(403, "Chỉ học viên mới nộp bài để AI chấm.");
+    if (staff) return fail(403, "Chỉ học viên mới nộp bài.");
     const kind = body.kind === "sp" ? "sp" : body.kind === "wr" ? "wr" : "";
     const exId = str(body.exId, 40), idx = Number(body.idx);
     if (!kind || !isEx(exId) || !isIdx(idx)) return fail(400, "Bài không hợp lệ.");
@@ -552,11 +564,11 @@ async function route(req) {
     const now = Date.now(), day = today();
     for (const k of Object.keys(doc)) if (k !== "_day" && now - (doc[k].t || 0) > AI_KEEP_MS) delete doc[k];
     const d0 = doc._day && doc._day.date === day ? doc._day : { date: day, n: 0 };
-    if (d0.n >= MAX_PER_DAY) return fail(429, "Hôm nay bạn đã dùng hết " + MAX_PER_DAY + " lượt chấm AI. Hãy quay lại vào ngày mai nhé.");
+    if (d0.n >= MAX_PER_DAY) return fail(429, "Hôm nay bạn đã dùng hết " + MAX_PER_DAY + " lượt nộp bài chấm. Hãy quay lại vào ngày mai nhé.");
     const key = exId + ":" + idx;
     if (doc[key] && doc[key].status === "pending" && now - doc[key].t < 5 * 60000) return fail(409, "Bài này đang được chấm, vui lòng đợi.");
     d0.n++; doc._day = d0;
-    doc[key] = { kind, status: "pending", t: now, text, wc, prompt: str(body.prompt, 1500), task: Number(body.task) === 1 ? 1 : 2, minWords: Math.min(400, Math.max(0, Number(body.minWords) || 0)), part: str(body.part, 20), secs: Math.min(600, Math.max(0, Number(body.secs) || 0)), seen: true, fb: null };
+    doc[key] = { kind, status: "pending", t: now, text, wc, prompt: str(body.prompt, 1500), task: Number(body.task) === 1 ? 1 : 2, minWords: Math.min(400, Math.max(0, Number(body.minWords) || 0)), part: str(body.part, 20), secs: Math.min(600, Math.max(0, Number(body.secs) || 0)), asr: (Array.isArray(body.asr) ? body.asr : []).slice(0, 40).map((x) => [String((x && x[0]) || "").slice(0, 200), Math.min(100, Math.max(0, Number(x && x[1]) || 0))]), seen: true, fb: null };
     await store.setJSON(user.username, doc);
     let ok = false;
     try {
@@ -920,6 +932,7 @@ async function route(req) {
       await DB.progress().delete(b);
       try { await DB.reports().delete(b); } catch {}
       try { await DB.vocab().delete(b); } catch {}
+      try { await DB.vocab().delete(b + "~notes"); } catch {}
       try { await EW.delete(b); } catch {}
       try { await CH.delete(b); } catch {}
       if (u.ptoken) { try { await DB.parent().delete(u.ptoken); } catch {} }

@@ -34,7 +34,7 @@ const RUBRIC_S = `IELTS Speaking band descriptors (public, summarised). Score ea
 FC Fluency & Coherence: speaks at length without noticeable effort, few self-corrections, logical sequencing, discourse markers. Band 5: usually keeps going but relies on repetition/slow speech; Band 6: willing to speak at length, coherence sometimes lost; Band 7: speaks at length without effort.
 LR Lexical Resource: range and flexibility of vocabulary, paraphrase, idiomatic language. Band 5: manages to talk about familiar topics, limited flexibility; Band 6: wide enough to discuss topics at length; Band 7: some less common items.
 GRA Grammatical Range & Accuracy: range of structures and accuracy. Band 5: basic forms fairly well, subordinate structures limited; Band 6: mix of short and complex forms, errors frequent but rarely impede; Band 7: range of complex structures with some flexibility.
-PR Pronunciation: you only have a text transcript from automatic speech recognition, so you CANNOT hear the student. Estimate PR cautiously from clarity of the transcript (words recognised correctly suggest intelligibility) and say clearly that it is an estimate; keep PR within 1 band of the average of the other three criteria unless the transcript is very poor.`;
+PR Pronunciation: you CANNOT hear the student. You get the automatic speech recognition (ASR) transcript AND the ASR confidence (0-100) of each spoken segment. Use them as evidence of intelligibility: low-confidence segments, words that look mis-recognised (a word replaced by a similar-sounding one, missing final -s/-ed, th/d, l/n, ch/sh confusions typical for Vietnamese speakers) point to pronunciation problems. Estimate PR from this evidence, say clearly it is an estimate from recognition accuracy and the teacher will listen to the recording; keep PR within 1.5 bands of the average of the other three criteria. Do NOT blame the student for every recognition mistake, but DO use likely mispronounced words to give concrete advice.`;
 
 export function buildPrompt(kind, d) {
   if (kind === "wr") {
@@ -46,7 +46,7 @@ export function buildPrompt(kind, d) {
   }
   return {
     system: `You are a careful, encouraging IELTS Speaking examiner for Vietnamese learners at about band 3.0-5.5 (IELTS Level 1 course). Always reply with ONE JSON object only, no markdown, no extra text. Write explanations in Vietnamese; keep quoted English exactly as in the transcript.\n\n${RUBRIC_S}`,
-    user: `Speaking ${d.part || "Part 2"}. The student spoke for about ${d.secs || "?"} seconds (${d.wc} words transcribed by automatic speech recognition, which can contain recognition mistakes - do not penalise obvious recognition errors).\nQUESTION / TASK CARD:\n${d.prompt}\n\nTRANSCRIPT:\n"""\n${d.text}\n"""\n\nReturn JSON with exactly these keys:\n{\n "bands": {"FC": number, "LR": number, "GRA": number, "PR": number},\n "comments": {"FC": "2-3 câu tiếng Việt", "LR": "...", "GRA": "...", "PR": "... (nói rõ đây chỉ là ước lượng từ bản chữ, giáo viên sẽ nghe lại)"},\n "corrections": [ {"quote": "EXACT substring of the transcript, 1-12 words", "fix": "better wording", "type": "grammar|vocab|fluency|style", "note": "giải thích ngắn bằng tiếng Việt"} ],\n "summary": "3-4 câu nhận xét tổng quát bằng tiếng Việt",\n "improved": "a model answer at roughly band 6.5 that reuses the student's ideas (about the same length)",\n "tips": ["3 lời khuyên ngắn bằng tiếng Việt"]\n}\nUp to 15 corrections, in order. Every quote must exist verbatim in the transcript.`,
+    user: `Speaking ${d.part || "Part 2"}. The student spoke for about ${d.secs || "?"} seconds (${d.wc} words transcribed by automatic speech recognition, which can contain recognition mistakes; low-confidence or odd words may signal pronunciation problems, see below).\nQUESTION / TASK CARD:\n${d.prompt}\n\nTRANSCRIPT:\n"""\n${d.text}\n"""\n${Array.isArray(d.asr) && d.asr.length ? "\nASR SEGMENTS (text | confidence 0-100):\n" + d.asr.map((x) => "- " + x[0] + " | " + x[1]).join("\n") + "\n" : ""}\nReturn JSON with exactly these keys:\n{\n "bands": {"FC": number, "LR": number, "GRA": number, "PR": number},\n "comments": {"FC": "2-3 câu tiếng Việt", "LR": "...", "GRA": "...", "PR": "... (nói rõ đây chỉ là ước lượng từ bản chữ, giáo viên sẽ nghe lại)"},\n "corrections": [ {"quote": "EXACT substring of the transcript, 1-12 words", "fix": "better wording", "type": "grammar|vocab|fluency|style", "note": "giải thích ngắn bằng tiếng Việt"} ],\n "pron": [ {"word": "word from the transcript likely mispronounced", "ipa": "/IPA/", "tip": "mẹo phát âm ngắn bằng tiếng Việt (âm cuối, trọng âm, âm th...)"} ] (3-8 items, only words really in the transcript),\n "summary": "3-4 câu nhận xét tổng quát bằng tiếng Việt",\n "improved": "a model answer at roughly band 6.5 that reuses the student's ideas (about the same length)",\n "tips": ["3 lời khuyên ngắn bằng tiếng Việt"]\n}\nUp to 15 corrections, in order. Every quote must exist verbatim in the transcript.`,
   };
 }
 
@@ -69,6 +69,7 @@ export function cleanFb(kind, raw, text) {
     fb.corrections.push({ quote: q, fix: String(c.fix || "").slice(0, 200), type: String(c.type || "grammar").slice(0, 12), note: String(c.note || "").slice(0, 300) });
     if (fb.corrections.length >= 30) break;
   }
+  if (kind === "sp") fb.pron = (Array.isArray(raw && raw.pron) ? raw.pron : []).slice(0, 8).map((w) => ({ word: String((w && w.word) || "").slice(0, 40), ipa: String((w && w.ipa) || "").slice(0, 40), tip: String((w && w.tip) || "").slice(0, 200) })).filter((w) => w.word);
   fb.summary = String((raw && raw.summary) || "").slice(0, 1200);
   fb.improved = String((raw && raw.improved) || "").slice(0, 4000);
   fb.tips = (Array.isArray(raw && raw.tips) ? raw.tips : []).slice(0, 5).map((t) => String(t).slice(0, 300));
@@ -96,7 +97,9 @@ export function parseJson(txt) {
         if (c === '"') {
           // dấu " nằm giữa chuỗi (không theo sau bởi , } ] :) -> coi là ký tự thường
           let k = i + 1; while (k < t.length && /\s/.test(t[k])) k++;
-          if (k < t.length && !/[,}\]:]/.test(t[k])) { out += '\\"'; continue; }
+          let ok = k >= t.length || /[}\]:]/.test(t[k]);
+          if (!ok && t[k] === ",") { let m = k + 1; while (m < t.length && /\s/.test(t[m])) m++; ok = m >= t.length || /["{\[\]}\-0-9tfn]/.test(t[m]); }
+          if (!ok) { out += '\\"'; continue; }
           inStr = false; out += c; continue;
         }
         out += c; continue;
@@ -122,17 +125,22 @@ export async function callClaude(kind, d) {
   throw lastErr;
 }
 
-async function callClaudeOnce(kind, d, key, model, system, user) {
+async function callClaudeOnce(kind, d, key, model, system, user, noTools = false) {
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-    body: JSON.stringify({ model, max_tokens: 4000, system, messages: [{ role: "user", content: user }] }),
+    body: JSON.stringify({ model, max_tokens: 4000, system, messages: [{ role: "user", content: user }],
+      ...(noTools ? {} : { tools: [{ name: "submit_feedback", description: "Nộp kết quả chấm bài theo đúng cấu trúc JSON đã mô tả trong yêu cầu.", input_schema: { type: "object", additionalProperties: true } }],
+      tool_choice: { type: "tool", name: "submit_feedback" } }) }),
   });
   if (!r.ok) {
     let m = ""; try { m = (await r.json()).error.message; } catch {}
+    if (r.status === 400 && !noTools && /tool/i.test(m)) return callClaudeOnce(kind, d, key, model, system, user, true);
     throw new Error("API " + r.status + (m ? ": " + m : ""));
   }
   const j = await r.json();
+  const tu = (j.content || []).find((c) => c.type === "tool_use" && c.input && typeof c.input === "object");
+  if (tu && Object.keys(tu.input).length) return { fb: cleanFb(kind, tu.input, d.text), model, usage: j.usage || null };
   const txt = (j.content || []).map((c) => c.text || "").join("");
   return { fb: cleanFb(kind, parseJson(txt), d.text), model, usage: j.usage || null };
 }

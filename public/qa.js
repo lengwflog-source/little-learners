@@ -49,12 +49,12 @@ function qaOpen(){
   p=document.createElement('div');p.id='qap';p.className='qap';p.setAttribute('role','dialog');p.setAttribute('aria-label','Hỏi đáp với Baby Dragon');
   p.innerHTML=`<div class="qah"><span class="qadg">${typeof bdSVG==='function'?bdSVG('wave').replace('viewBox="0 0 220 226"','viewBox="40 8 140 120"'):'🐲'}</span><div><b>Q&amp;A · Baby Dragon</b><small>Trợ lý của Mr. Phi Long</small></div><span class="sp"></span><button type="button" class="qax" data-qa="close" aria-label="Đóng">✕</button></div>
   <div class="qal" id="qal" aria-live="polite"></div>
-  ${qaIelts()?`<div class="qamode" role="tablist"><button type="button" class="on" data-qa="mode" data-m="txt">💬 Hỏi chữ</button><button type="button" data-qa="mode" data-m="voice">🎤 Luyện nói</button></div>
-  <div class="qavo" id="qavo" hidden><textarea id="qavq" rows="2" maxlength="300" placeholder="Nhập câu hỏi speaking bạn muốn luyện. Ví dụ: Describe a place you like to visit."></textarea>
+  ${qaIelts()?`<div class="qamode" role="tablist"><button type="button" class="on" data-qa="mode" data-m="txt">💬 Hỏi chữ</button><button type="button" data-qa="mode" data-m="voice">🎤 Luyện nói với Baby Dragon</button></div>
+  <div class="qavo" id="qavo" hidden><div class="qavq" id="qavq" aria-live="polite" style="padding:10px 12px;border-radius:12px;background:var(--bg,#f1f5e9);font-weight:700"></div><button type="button" class="btn ghost sm" data-qa="qnext">🎲 Đổi câu hỏi khác</button>
   <div class="qavr"><button type="button" class="btn ghost" id="qavm" data-qa="mic">🎤 Bắt đầu nói</button><span class="qavt" id="qavt"></span></div>
   <div class="qavx" id="qavx" aria-live="polite"></div>
   <button type="button" class="btn" id="qavs" data-qa="vsend" disabled>Gửi chấm điểm</button>
-  <small class="muted">Chỉ gửi bản chữ nhận dạng được, không lưu file ghi âm. Mỗi ngày tối đa ${QV.lim} lượt. Dùng Chrome (Android) hoặc Safari (iPhone).</small></div>`:''}
+  <small class="muted">Bạn chỉ cần nói, không gõ chữ. Baby Dragon nghe và nhận xét cả phát âm. Mỗi ngày tối đa ${QV.lim} lượt. Dùng Chrome (Android) hoặc Safari (iPhone).</small></div>`:''}
   <form class="qaf" id="qaf"><textarea id="qaq" rows="2" maxlength="500" placeholder="Bạn muốn hỏi gì? Ví dụ: Khi nào dùng thì hiện tại hoàn thành?"></textarea><button type="submit" class="btn" id="qas">Gửi</button></form>
   <div class="qan">Tin nhắn trong Q&amp;A sẽ tự xóa sau 48 giờ.</div>`;
   document.body.appendChild(p);
@@ -114,8 +114,10 @@ function qaSpHtml(t){
   const f=(t.sp&&t.sp.fb)||{},b=f.bands||{};
   const bd=['FC','LR','GRA','PR'].map(k=>`<span class="qbd"><b>${b[k]!=null?b[k]:'–'}</b><small>${k}</small></span>`).join('');
   const cr=(f.corrections||[]).map(c=>`<li>“${esc(c.quote)}” → <b>${esc(c.fix)}</b><br><small>${esc(c.note||'')}</small></li>`).join('');
-  return `<div class="qam bot"><div class="qab"><b class="qaw">Giám khảo AI</b><div class="qbands"><span class="qbo"><b>${f.overall!=null?f.overall:'–'}</b><small>Band</small></span>${bd}</div>${qaFmt(f.summary||'')}${cr?`<ul class="qcr">${cr}</ul>`:''}${f.model?`<details><summary>Bài mẫu tham khảo</summary>${qaFmt(f.model)}</details>`:''}<small class="muted">PR chỉ là ước lượng từ bản chữ nhận dạng. Thầy sẽ xem kết quả và có thể nhận xét thêm.</small><details><summary>Lời bạn đã nói</summary>${esc(t.sp.text||'')}</details></div></div>`;
+  return `<div class="qam bot"><div class="qab"><b class="qaw">Baby Dragon</b><div class="qbands"><span class="qbo"><b>${f.overall!=null?f.overall:'–'}</b><small>Band</small></span>${bd}</div>${qaFmt(f.summary||'')}${cr?`<ul class="qcr">${cr}</ul>`:''}${f.model?`<details><summary>Bài mẫu tham khảo</summary>${qaFmt(f.model)}</details>`:''}<small class="muted">PR chỉ là ước lượng từ bản chữ nhận dạng. Thầy sẽ xem kết quả và có thể nhận xét thêm.</small><details><summary>Lời bạn đã nói</summary>${esc(t.sp.text||'')}</details></div></div>`;
 }
+const QVQ=['Describe a place you like to visit.','Describe a person you admire.','Describe your favourite food.','Describe a happy day in your life.','Describe a book or film you enjoyed.','Describe your hometown.','Describe a friend you have known for a long time.','Describe a hobby you enjoy.','Describe a gift you received.','Describe a trip you took.','What do you do in your free time?','Tell me about your family.','What kind of weather do you like? Why?','Do you prefer to study alone or with others? Why?','Describe your daily routine.','Describe a teacher who helped you.','Describe a special meal you had.','What is your favourite season and why?','Describe a time you were very busy.','Describe a useful website or app.'];
+function qvNext(){const q=QVQ[Math.floor(Math.random()*QVQ.length)];QV.q=q;const e=document.getElementById('qavq');if(e)e.textContent=q;QV.text='';QV.interim='';qvSet()}
 function qvSet(){
   const x=document.getElementById('qavx'),b=document.getElementById('qavs'),m=document.getElementById('qavm'),t=document.getElementById('qavt');
   if(!x)return;
@@ -143,18 +145,18 @@ function qvStart(){
   clearInterval(QV.tm);QV.tm=setInterval(qvSet,1000);qvSet();
 }
 async function qvSend(){
-  const qe=document.getElementById('qavq');const q=qe?qe.value.trim():'';
-  if(q.length<5){toast('Hãy nhập câu hỏi speaking bạn muốn luyện.');qe&&qe.focus();return}
+  const q=QV.q||'';
+  if(q.length<5){toast('Bấm “Đổi câu hỏi khác” để chọn câu hỏi nhé.');return}
   if(QV.busy)return;QV.busy=true;qvSet();
-  const x=document.getElementById('qavx');x&&(x.textContent='⏳ Giám khảo AI đang chấm…');
-  try{const r=await API.call('POST','qa/speak',{q,text:QV.text,secs:QV.secs});QA.th.push(r.thread);QV.text='';QV.interim='';qe.value='';
+  const x=document.getElementById('qavx');x&&(x.textContent='⏳ Baby Dragon đang nghe và chấm…');
+  try{const r=await API.call('POST','qa/speak',{q,text:QV.text,secs:QV.secs});QA.th.push(r.thread);QV.text='';QV.interim='';
     toast('Đã chấm xong ✔ Còn '+r.left+' lượt hôm nay.');qaPaint(true);const L=document.getElementById('qal');L&&(L.scrollTop=L.scrollHeight)}
   catch(e){toast(e.message||'Chưa chấm được, bạn thử lại nhé.')}
   QV.busy=false;qvSet();
 }
 function qvMode(m){
   const v=document.getElementById('qavo'),f=document.getElementById('qaf');if(!v||!f)return;
-  if(m!=='voice')qvStop();
+  if(m!=='voice')qvStop();else if(!QV.q)qvNext();
   v.hidden=m!=='voice';f.hidden=m==='voice';
   document.querySelectorAll('.qamode button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
 }
@@ -216,6 +218,7 @@ document.addEventListener('click',e=>{
   if(t.dataset.qf){QT.f=t.dataset.qf;qaTPaint();return}
   const a=t.dataset.qa;
   if(a==='mode'){qvMode(t.dataset.m);return}
+  if(a==='qnext'){qvNext();return}
   if(a==='mic'){qvStart();return}
   if(a==='vsend'){qvSend();return}
   if(a==='close'){qaClose();return}

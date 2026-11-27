@@ -13,7 +13,7 @@ export default async (req) => {
   const e = doc[key];
   if (!e || e.status !== "pending") return new Response("skip", { status: 200 });
   try {
-    const { fb, model } = await callClaude(e.kind, { task: e.task, minWords: e.minWords, part: e.part, prompt: e.prompt, text: e.text, wc: e.wc, secs: e.secs });
+    const { fb, model } = await callClaude(e.kind, { task: e.task, minWords: e.minWords, part: e.part, prompt: e.prompt, text: e.text, wc: e.wc, secs: e.secs, asr: e.asr });
     const cur = (await store.get(who, { type: "json" })) || {};
     if (cur[key] && cur[key].t === e.t) {
       cur[key] = { ...cur[key], status: "done", fb, ai: JSON.parse(JSON.stringify(fb)), model, doneAt: Date.now(), err: "" };
@@ -23,7 +23,7 @@ export default async (req) => {
     const cur = (await store.get(who, { type: "json" })) || {};
     if (cur[key] && cur[key].t === e.t) {
       cur[key].status = "error";
-      cur[key].err = err.message === "NO_KEY" ? "Chưa cài khóa AI (ANTHROPIC_API_KEY) trên Netlify." : "AI chưa chấm được: " + String(err.message).slice(0, 160);
+      cur[key].err = err.message === "NO_KEY" ? "Bài chưa được chấm, thầy/cô sẽ xử lý. Bạn chưa cần làm gì thêm." : "Bài chưa chấm được, bạn bấm Thử nộp lại sau ít phút nhé. (" + String(err.message).slice(0, 80) + ")";
       await store.setJSON(who, cur);
     }
   }

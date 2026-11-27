@@ -444,7 +444,7 @@ const hdr=()=>{const r=route(),I=(h,t,on)=>`<a href="#${h}" class="${on?'on':''}
   const TI=[['t-home','Tổng quan',r==='t-home'],['t-students','Học sinh',r.startsWith('t-student')],['t-attendance','Điểm danh',r==='t-attendance'],['t-assign','Giao bài',r==='t-assign'],['t-voice','Bản thu âm',r==='t-voice'],['t-chat','Chat'+(typeof chNavBadge==='function'?chNavBadge():''),r==='t-chat'],['t-qa','Giải đáp'+(typeof qaNavBadge==='function'?qaNavBadge():''),r==='t-qa']].concat(S.isTA?[]:[['t-ai','Chấm IELTS',r==='t-ai'],['t-ew','Extra Writing',r==='t-ew'],['t-ta','Trợ giảng',r==='t-ta']]).concat([['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')]]);
   const cur=TI.find(x=>x[2]);
   const navT=`<details class="gdd" id="ndd"><summary aria-label="Menu chính, đang ở ${cur?cur[1].replace(/<[^>]+>/g,''):'Menu'}">☰ ${cur?cur[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${TI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
-  const SI=[['home','Trang chủ',r==='home'],['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')],['flash','Flashcard',r==='flash'],['progress','Tiến độ',r==='progress']].concat(bankOK()?[['vocab','Kho từ vựng',r==='vocab']]:[]).concat([['voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice']]);
+  const SI=[['home','Trang chủ',r==='home'],['lessons','Bài học',r==='lessons'||r.startsWith('lesson-')||r.startsWith('ex-')],['flash','Flashcard',r==='flash'],['progress','Tiến độ',r==='progress']].concat(bankOK()?[['vocab','Kho từ vựng',r==='vocab']]:[]).concat((!S.isT&&S.user&&typeof notesView==='function')?[['notes','Sổ chỉnh sửa',r==='notes']]:[]).concat([['voice','Bản thu'+(unseen()?` <span class="badge">${unseen()}</span>`:''),r==='voice']]);
   const curS=SI.find(x=>x[2]);
   const navM=S.isT?'':`<details class="gdd navm" id="nmm"><summary aria-label="Menu chính, đang ở ${curS?curS[1].replace(/<[^>]+>/g,''):'Menu'}">☰ ${curS?curS[1]:'Menu'} <span class="car">▾</span></summary><div class="gmenu nmenu" role="menu">${SI.map(x=>`<a class="gitem nitem ${x[2]?'on':''}" role="menuitem" href="#${x[0]}">${x[1]}</a>`).join('')}</div></details>`;
   const nav=S.isT?navT:SI.map(x=>I(x[0],x[1],x[2])).join('');
@@ -477,6 +477,7 @@ function render(){
     else if(r==='ew-me'&&!S.isT)body=ewHome();
     else if(r==='t-ta'&&S.isT&&!S.isTA)body=taView();
     else if(r==='voice'&&!S.isT)body=voiceView();
+    else if(r==='notes'&&!S.isT&&typeof notesView==='function')body=notesView();
     else if(r==='vocab'&&bankOK()&&typeof vocabView==='function')body=vocabView();
     else if(r==='flash'&&!S.isT&&typeof flashView==='function')body=flashView();
     else body=S.isT?teacherHome():homeView();
