@@ -662,13 +662,24 @@ async function route(req) {
     if (!str(body.title, 120)) return fail(400, "Bạn nhớ gõ tiêu đề bài viết nhé.");
     const doc = (await EW.get(user.username, { type: "json" })) || {};
     const key = exId + ":" + idx, old = doc[key];
-    doc[key] = { text, wc, title: str(body.title, 120), t: Date.now(), n: ((old && old.n) || 0) + 1 };
+    const IMG = store("ewimg");
+    const imgOk = typeof body.img === "string" && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(body.img) && body.img.length <= 450000;
+    doc[key] = { text, wc, title: str(body.title, 120), t: Date.now(), n: ((old && old.n) || 0) + 1, draft: { status: "pending", at: Date.now() } };
+    if (imgOk) { doc[key].img = 1; await IMG.set(user.username + "|" + key, body.img); }
+    else if (body.keepImg && old && old.img) doc[key].img = 1;
     await EW.setJSON(user.username, doc);
-    return J(200, { key, entry: doc[key] });
+    try {
+      const r = await fetch(new URL(req.url).origin + "/.netlify/functions/ew-draft-background", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ who: user.username, key, sig: await jobSig(user.username + "|ew|" + key) }) });
+      if (!(r.ok || r.status === 202)) throw new Error("x");
+    } catch { doc[key].draft = { status: "error", at: Date.now(), err: "Không gọi được máy chủ chấm nháp." }; await EW.setJSON(user.username, doc); }
+    const mine = { ...doc[key] }; delete mine.draft;
+    return J(200, { key, entry: mine });
   }
   if (a === "ew" && b === "mine" && m === "GET") {
     if (staff) return J(200, { ew: {} });
-    return J(200, { ew: (await EW.get(user.username, { type: "json" })) || {} });
+    const mineDoc = (await EW.get(user.username, { type: "json" })) || {};
+    for (const e of Object.values(mineDoc)) if (e && typeof e === "object") delete e.draft;
+    return J(200, { ew: mineDoc });
   }
   if (a === "ew" && b === "seen" && m === "PUT") {
     if (staff) return J(200, { ok: true });
@@ -882,6 +893,13 @@ async function route(req) {
     return ok ? J(200, { ok: true }) : fail(502, "Không gọi được máy chủ chấm bài.");
   }
 
+  if (a === "ew" && b === "img" && m === "GET") {
+    const [, , who, exId, idx] = parts;
+    if (!isUser(who) || !isEx(exId) || !isIdx(idx)) return fail(400, "Yêu cầu không hợp lệ.");
+    if (staff ? !(await studentOf(who)) : who !== user.username) return fail(403, "Bạn không có quyền xem hình này.");
+    const img = await store("ewimg").get(who + "|" + exId + ":" + Number(idx));
+    return J(200, { img: img || "" });
+  }
   if (a === "ew" && b === "list" && m === "GET") {
     const { blobs } = await EW.list();
     const items = [];

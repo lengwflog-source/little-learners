@@ -125,11 +125,28 @@ export async function callClaude(kind, d) {
   throw lastErr;
 }
 
+function userContent(d, user) {
+  const m = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/.exec(String((d && d.img) || ""));
+  if (!m) return user;
+  return [{ type: "image", source: { type: "base64", media_type: m[1], data: m[2] } }, { type: "text", text: user + "\n\nThe chart/diagram/map the student is describing is attached as an image. Check the student's description against the image: data accuracy, key features, overview, comparisons." }];
+}
+
+/* Bản nháp nhận xét cho Extra Writing: giáo viên sẽ xem, sửa rồi mới gửi cho học viên */
+export function ewDraftFromFb(fb) {
+  const lines = [];
+  const names = { TR: "Task Response / Achievement", TA: "Task Achievement", CC: "Coherence & Cohesion", LR: "Lexical Resource", GRA: "Grammar" };
+  for (const k of Object.keys(fb.bands || {})) lines.push(`${names[k] || k}: ${fb.bands[k]} – ${fb.comments[k] || ""}`.trim());
+  if (fb.summary) lines.push("", fb.summary);
+  if ((fb.corrections || []).length) { lines.push("", "Các lỗi cần sửa:"); for (const c of fb.corrections.slice(0, 15)) lines.push(`• ${c.quote} → ${c.fix}${c.note ? " (" + c.note + ")" : ""}`); }
+  if ((fb.tips || []).length) { lines.push("", "Lời khuyên:"); for (const t of fb.tips) lines.push("• " + t); }
+  return { score: String(fb.overall), comment: lines.join("\n").slice(0, 3900), fixed: String(fb.improved || "").slice(0, 5900) };
+}
+
 async function callClaudeOnce(kind, d, key, model, system, user, noTools = false) {
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-    body: JSON.stringify({ model, max_tokens: 4000, system, messages: [{ role: "user", content: user }],
+    body: JSON.stringify({ model, max_tokens: 4000, system, messages: [{ role: "user", content: userContent(d, user) }],
       ...(noTools ? {} : { tools: [{ name: "submit_feedback", description: "Nộp kết quả chấm bài theo đúng cấu trúc JSON đã mô tả trong yêu cầu.", input_schema: { type: "object", additionalProperties: true } }],
       tool_choice: { type: "tool", name: "submit_feedback" } }) }),
   });
