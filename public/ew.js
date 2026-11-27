@@ -48,15 +48,26 @@ function ewSync() {
   }
   if (ch) saveProf();
 }
+function ewMarked(e) {
+  const cs = e.gradedAt && e.corr && e.corr.length ? e.corr : [];
+  if (!cs.length || typeof markedText !== 'function') return `<div class="fbtext">${esc(e.text).replace(/\n/g, '<br>')}</div>`;
+  return `<div class="fbtext">${markedText(e.text || '', cs).html}</div><p class="muted small" style="margin:4px 0 0">Chỗ được tô màu là chỗ thầy sửa. Rê chuột hoặc xem danh sách số bên dưới.</p>`;
+}
+function ewCorrList(e) {
+  const cs = e.gradedAt && e.corr && e.corr.length ? e.corr : [];
+  if (!cs.length || typeof markedText !== 'function') return '';
+  const pl = markedText(e.text || '', cs).placed;
+  return `<h4 style="margin-top:10px">Các chỗ thầy sửa</h4>` + pl.map((c, n) => `<div style="display:flex;gap:8px;padding:8px 0;border-top:1px solid var(--line)"><b style="min-width:22px;color:var(--primary-deep)">${n + 1}</b><div><div><del style="color:var(--bad)">${esc(c.quote)}</del> → <b style="color:var(--primary-deep)">${esc(c.fix)}</b></div>${c.note ? `<div class="muted small">${esc(c.note)}</div>` : ''}</div></div>`).join('');
+}
 function ewItem(it, i) {
   const k = ewK(i), e = S.ew[k], min = it.minWords || 150;
   const head = `<div class="wrprompt"><div class="row"><span class="chip sky">Extra Writing</span><span class="muted small">Nên viết từ ${min} từ · thầy chấm trực tiếp</span></div><p><b>Bạn tự chọn đề tài:</b> gõ tiêu đề và nội dung bài viết bên dưới.</p>${it.hint ? `<p class="muted small">${esc(it.hint)}</p>` : ''}</div>`;
   if (e && !X['ewredo' + k]) {
     const graded = !!e.gradedAt;
     const box = graded
-      ? `<div class="card" style="margin-top:12px;border-color:var(--ok,#2e7d5b)"><div class="row"><span class="chip good">Thầy đã chấm</span>${e.score ? `<b style="font-size:1.6em">${esc(e.score)}</b>` : ''}<span class="sp"></span><span class="muted small">${fmtT(e.gradedAt)}</span></div>${e.comment ? `<h4>Nhận xét của thầy</h4><p>${esc(e.comment).replace(/\n/g, '<br>')}</p>` : ''}${e.fixed ? `<details open style="margin-top:8px"><summary><b>Bài đã sửa</b></summary><div class="fbtext" style="margin-top:6px">${esc(e.fixed).replace(/\n/g, '<br>')}</div></details>` : ''}</div>`
+      ? `<div class="card" style="margin-top:12px;border-color:var(--ok,#2e7d5b)"><div class="row"><span class="chip good">Thầy đã chấm</span>${e.score ? `<b style="font-size:1.6em">${esc(e.score)}</b>` : ''}<span class="sp"></span><span class="muted small">${fmtT(e.gradedAt)}</span></div>${e.comment ? `<h4>Nhận xét của thầy</h4><p>${esc(e.comment).replace(/\n/g, '<br>')}</p>` : ''}${ewCorrList(e)}${e.fixed ? `<details style="margin-top:8px"><summary><b>Xem cả bài đã sửa</b></summary><div class="fbtext" style="margin-top:6px">${esc(e.fixed).replace(/\n/g, '<br>')}</div></details>` : ''}</div>`
       : `<div class="card" style="margin-top:12px"><span class="chip warn">Đã nộp</span> <span class="muted small">${fmtT(e.t)} · ${e.wc} từ. Đang chờ thầy chấm.</span></div>`;
-    return head + `<h4 style="margin-top:12px">Bài bạn đã nộp${e.title ? ': ' + esc(e.title) : ''}</h4>${e.img ? ewImgTag(S.user.username, k) : ''}<div class="fbtext">${esc(e.text).replace(/\n/g, '<br>')}</div>` + box +
+    return head + `<h4 style="margin-top:12px">Bài bạn đã nộp${e.title ? ': ' + esc(e.title) : ''}</h4>${e.img ? ewImgTag(S.user.username, k) : ''}${ewMarked(e)}` + box +
       `<div class="row" style="margin-top:10px"><button class="btn ghost sm" data-ew="redo" data-ix="${i}">${graded ? 'Viết lại và nộp bản mới' : 'Sửa và nộp lại'}</button></div>`;
   }
   const txt = X.ans[i] != null && typeof X.ans[i] === 'string' ? X.ans[i] : (e && e.text) || '';
@@ -111,14 +122,16 @@ function ewTeacher() {
   <div class="row" style="margin-block:12px"><div class="seg">${[['todo', 'Chưa chấm (' + todo + ')'], ['done', 'Đã chấm'], ['all', 'Tất cả']].map(([v, n]) => `<button class="${f === v ? 'on' : ''}" data-ew="f" data-v="${v}">${n}</button>`).join('')}</div><span class="sp"></span><button class="btn ghost sm" data-ew="reload">↻ Tải lại</button></div>
   ${!S.ewLoaded ? '<div class="sk"></div>' : it.length ? it.map(ewCard).join('') : '<div class="card"><p class="muted">Chưa có bài nào.</p></div>'}</div>`;
 }
+function ewCorrs(x) { const g = x.gradedAt && x.gradedAt >= x.t; return (g ? x.corr : (x.draft && x.draft.status === 'done' ? x.draft.corr : null)) || x.corr || []; }
 function ewCard(x) {
   const id = ewId(x), open = S.ewOpen === id, ex = x.key.split(':')[0], graded = x.gradedAt && x.gradedAt >= x.t;
   return `<div class="card vcard"><div class="row"><div><b>${esc(x.name)}</b> <span class="muted small">${esc(x.cls || '')}</span><div><b>${x.title ? esc(x.title) : '(không có tiêu đề)'}</b></div><div class="muted small">${ex === 'ie-extra-writing' ? 'Extra Writing (tự do)' : esc(exTitleOf(ex))}</div><div class="muted small">${fmtT(x.t)} · ${x.wc || 0} từ${x.n > 1 ? ' · nộp lần ' + x.n : ''}</div></div><span class="sp"></span>${graded ? `<span class="chip good">Đã chấm${x.score ? ' · ' + esc(x.score) : ''}</span>` : '<span class="chip warn">Chưa chấm</span>'}<button class="btn sm" data-ew="open" data-id="${esc(id)}">${open ? 'Đóng' : (graded ? 'Xem / sửa' : 'Chấm bài')}</button></div>
   ${open ? `<div class="aied" data-ewed="${esc(id)}" style="margin-top:12px"><div class="grid g2" style="align-items:start">
-   <div><h4>Tiêu đề: ${esc(x.title || '')}</h4>${x.img ? ewImgTag(x.user, x.key) : ''}<h4>Bài làm của học viên</h4><div class="fbtext">${esc(x.text).replace(/\n/g, '<br>')}</div></div>
+   <div><h4>Tiêu đề: ${esc(x.title || '')}</h4>${x.img ? ewImgTag(x.user, x.key) : ''}<h4>Bài làm của học viên</h4><div class="fbtext">${(() => { const cs = ewCorrs(x); return cs.length && typeof markedText === 'function' ? markedText(x.text || '', cs).html : esc(x.text).replace(/\n/g, '<br>'); })()}</div></div>
    <div>${(() => { const d = x.draft, g = x.gradedAt && x.gradedAt >= x.t; if (g || !d) return ''; return d.status === 'pending' ? '<div class="banner">⏳ AI đang soạn bản nháp… bấm “Tải lại” sau ít phút.</div>' : d.status === 'done' ? '<div class="banner">🤖 Bản nháp do AI soạn. Học viên chưa thấy gì. Bạn sửa rồi bấm “Lưu và gửi cho học viên”.</div>' : '<div class="banner err">AI chưa soạn được nháp: ' + esc(d.err || '') + '</div>'; })()}
    <h4>Điểm (ví dụ 6.5)</h4><input class="sel-in bandin" data-ews value="${esc(x.score || ((x.draft && x.draft.status === 'done' && !(x.gradedAt && x.gradedAt >= x.t)) ? x.draft.score : '') || '')}" maxlength="12" placeholder="6.5">
    <h4>Nhận xét</h4><textarea class="txt" rows="10" data-ewc>${esc(x.comment || ((x.draft && x.draft.status === 'done' && !(x.gradedAt && x.gradedAt >= x.t)) ? x.draft.comment : '') || '')}</textarea>
+   <h4>Các lỗi đã chữa (học viên thấy tô màu từng chỗ)</h4>${(() => { const cs = ewCorrs(x); return cs.length ? cs.map((c, n) => `<div class="corr" data-ewcr data-q="${esc(c.quote)}" data-ty="${esc(c.type || 'grammar')}"><del>${esc(c.quote)}</del><input class="sel-in" data-ewfx value="${esc(c.fix)}" aria-label="Sửa thành"><input class="sel-in" data-ewno value="${esc(c.note || '')}" aria-label="Giải thích"><label class="small"><input type="checkbox" data-ewdel> Xóa</label></div>`).join('') : '<p class="muted small">Chưa có.</p>'; })()}
    <h4>Bài đã sửa / bài mẫu (không bắt buộc)</h4><textarea class="txt" rows="9" data-ewx>${esc(x.fixed || ((x.draft && x.draft.status === 'done' && !(x.gradedAt && x.gradedAt >= x.t)) ? x.draft.fixed : '') || x.text || '')}</textarea>
    <div class="row" style="margin-top:14px"><button class="btn" data-ew="save" data-id="${esc(id)}">Lưu và gửi cho học viên</button></div></div></div></div>` : ''}</div>`;
 }
@@ -127,8 +140,9 @@ async function ewSave(id, btn) {
   const [who, ex, ix] = id.split('|'), x = S.ewl.find(y => ewId(y) === id); if (!x) return;
   btn.disabled = true;
   const fixed = root.querySelector('[data-ewx]').value;
+  const corr = []; root.querySelectorAll('[data-ewcr]').forEach(r => { if (r.querySelector('[data-ewdel]').checked) return; corr.push({ quote: r.dataset.q, type: r.dataset.ty, fix: r.querySelector('[data-ewfx]').value, note: r.querySelector('[data-ewno]').value }); });
   try {
-    const r = await API.call('PUT', 'ew/grade/' + encodeURIComponent(who) + '/' + ex + '/' + ix, { score: root.querySelector('[data-ews]').value, comment: root.querySelector('[data-ewc]').value, fixed: fixed.trim() === String(x.text).trim() ? '' : fixed });
+    const r = await API.call('PUT', 'ew/grade/' + encodeURIComponent(who) + '/' + ex + '/' + ix, { score: root.querySelector('[data-ews]').value, comment: root.querySelector('[data-ewc]').value, fixed: fixed.trim() === String(x.text).trim() ? '' : fixed, corr });
     Object.assign(x, r.entry); toast('Đã lưu. Học viên sẽ thấy nhận xét của bạn.'); render();
   } catch (e) { toast(e.message); btn.disabled = false; }
 }
@@ -162,7 +176,7 @@ function ewHome() {
 function ewMineCard(x) {
   const e = x.e, graded = e.gradedAt && e.gradedAt >= e.t, open = S.ewmOpen === x.k;
   return `<div class="card vcard"><div class="row"><div><b>${esc(e.title || '(không có tiêu đề)')}</b><div class="muted small">${fmtT(e.t)} · ${e.wc || 0} từ</div></div><span class="sp"></span>${graded ? `<span class="chip good">Đã chấm${e.score ? ' · ' + esc(e.score) : ''}</span>` : '<span class="chip warn">Chờ thầy chấm</span>'}<button class="btn sm" data-ew="mopen" data-id="${esc(x.k)}">${open ? 'Đóng' : 'Xem'}</button></div>
-  ${open ? `<div style="margin-top:10px">${e.img ? ewImgTag(S.user.username, x.k) : ''}<div class="fbtext">${esc(e.text).replace(/\n/g, '<br>')}</div>${graded ? `<div class="card" style="margin-top:10px"><div class="row"><span class="chip good">Thầy đã chấm</span>${e.score ? `<b style="font-size:1.6em">${esc(e.score)}</b>` : ''}<span class="sp"></span><span class="muted small">${fmtT(e.gradedAt)}</span></div>${e.comment ? `<h4>Nhận xét của thầy</h4><p>${esc(e.comment).replace(/\n/g, '<br>')}</p>` : ''}${e.fixed ? `<details open><summary><b>Bài đã sửa</b></summary><div class="fbtext" style="margin-top:6px">${esc(e.fixed).replace(/\n/g, '<br>')}</div></details>` : ''}</div>` : ''}</div>` : ''}</div>`;
+  ${open ? `<div style="margin-top:10px">${e.img ? ewImgTag(S.user.username, x.k) : ''}${ewMarked(e)}${graded ? `<div class="card" style="margin-top:10px"><div class="row"><span class="chip good">Thầy đã chấm</span>${e.score ? `<b style="font-size:1.6em">${esc(e.score)}</b>` : ''}<span class="sp"></span><span class="muted small">${fmtT(e.gradedAt)}</span></div>${e.comment ? `<h4>Nhận xét của thầy</h4><p>${esc(e.comment).replace(/\n/g, '<br>')}</p>` : ''}${ewCorrList(e)}${e.fixed ? `<details><summary><b>Xem cả bài đã sửa</b></summary><div class="fbtext" style="margin-top:6px">${esc(e.fixed).replace(/\n/g, '<br>')}</div></details>` : ''}</div>` : ''}</div>` : ''}</div>`;
 }
 async function ewMSubmit() {
   const t = (document.querySelector('[data-ewmt]') || {}).value || '', x = (document.querySelector('[data-ewmx]') || {}).value || '';

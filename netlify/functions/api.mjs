@@ -919,6 +919,7 @@ async function route(req) {
     const doc = await EW.get(who, { type: "json" }), key = exId + ":" + Number(idx), e = doc && doc[key];
     if (!e) return fail(404, "Không tìm thấy bài.");
     e.score = str(body.score, 12); e.comment = str(body.comment, 4000); e.fixed = str(body.fixed, 6000);
+    e.corr = (Array.isArray(body.corr) ? body.corr : []).slice(0, 25).map((c) => ({ quote: str(c && c.quote, 200), type: str(c && c.type, 12) || "grammar", fix: str(c && c.fix, 200), note: str(c && c.note, 300) })).filter((c) => c.quote && typeof e.text === "string" && e.text.includes(c.quote));
     e.gradedAt = Date.now(); e.gradedBy = user.username; e.seen = false;
     await EW.setJSON(who, doc);
     return J(200, { ok: true, entry: e });

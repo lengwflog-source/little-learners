@@ -137,9 +137,8 @@ export function ewDraftFromFb(fb) {
   const names = { TR: "Task Response / Achievement", TA: "Task Achievement", CC: "Coherence & Cohesion", LR: "Lexical Resource", GRA: "Grammar" };
   for (const k of Object.keys(fb.bands || {})) lines.push(`${names[k] || k}: ${fb.bands[k]} – ${fb.comments[k] || ""}`.trim());
   if (fb.summary) lines.push("", fb.summary);
-  if ((fb.corrections || []).length) { lines.push("", "Các lỗi cần sửa:"); for (const c of fb.corrections.slice(0, 15)) lines.push(`• ${c.quote} → ${c.fix}${c.note ? " (" + c.note + ")" : ""}`); }
   if ((fb.tips || []).length) { lines.push("", "Lời khuyên:"); for (const t of fb.tips) lines.push("• " + t); }
-  return { score: String(fb.overall), comment: lines.join("\n").slice(0, 3900), fixed: String(fb.improved || "").slice(0, 5900) };
+  return { score: String(fb.overall), comment: lines.join("\n").slice(0, 3900), fixed: String(fb.improved || "").slice(0, 5900), corr: (fb.corrections || []).slice(0, 20).map((c) => ({ quote: String(c.quote).slice(0, 200), type: String(c.type || "grammar").slice(0, 12), fix: String(c.fix || "").slice(0, 200), note: String(c.note || "").slice(0, 300) })) };
 }
 
 async function callClaudeOnce(kind, d, key, model, system, user, noTools = false) {

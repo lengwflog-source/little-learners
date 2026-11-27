@@ -79,6 +79,7 @@ function markedText(text, cors) {
   pl.forEach((x, n) => { h += nl(text.slice(pos, x.s)) + `<mark class="cm t-${esc(x.c.type)}" title="${esc(x.c.fix + (x.c.note ? ' — ' + x.c.note : ''))}">${esc(x.c.quote)}<sup>${n + 1}</sup></mark>`; pos = x.e; });
   return { html: h + nl(text.slice(pos)), placed: pl.map(x => x.c) };
 }
+window.markedText = markedText;
 function fbHtml(e) {
   const fb = e.fb; if (!fb) return '';
   const kind = e.kind, crit = CRIT[kind].map(([k, n]) => [k, kind === 'wr' && k === 'TR' && e.task === 1 ? 'TASK ACHIEVEMENT' : n]);
