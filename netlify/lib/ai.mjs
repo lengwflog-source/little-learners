@@ -80,7 +80,33 @@ export function parseJson(txt) {
   s = s.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "");
   const a = s.indexOf("{"), b = s.lastIndexOf("}");
   if (a < 0 || b < a) throw new Error("AI không trả về JSON");
-  return JSON.parse(s.slice(a, b + 1));
+  const j = s.slice(a, b + 1);
+  try { return JSON.parse(j); } catch (e1) {
+    // sửa lỗi thường gặp: xuống dòng/tab thật trong chuỗi, dấu phẩy thừa
+    let t = j.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, " ");
+    let out = "", inStr = false, esc = false;
+    for (let i = 0; i < t.length; i++) {
+      const c = t[i];
+      if (inStr) {
+        if (esc) { out += c; esc = false; continue; }
+        if (c === "\\") { out += c; esc = true; continue; }
+        if (c === "\n") { out += "\\n"; continue; }
+        if (c === "\r") continue;
+        if (c === "\t") { out += " "; continue; }
+        if (c === '"') {
+          // dấu " nằm giữa chuỗi (không theo sau bởi , } ] :) -> coi là ký tự thường
+          let k = i + 1; while (k < t.length && /\s/.test(t[k])) k++;
+          if (k < t.length && !/[,}\]:]/.test(t[k])) { out += '\\"'; continue; }
+          inStr = false; out += c; continue;
+        }
+        out += c; continue;
+      }
+      if (c === '"') inStr = true;
+      out += c;
+    }
+    out = out.replace(/,\s*([}\]])/g, "$1");
+    try { return JSON.parse(out); } catch (e2) { throw e1; }
+  }
 }
 
 export async function callClaude(kind, d) {
@@ -88,6 +114,15 @@ export async function callClaude(kind, d) {
   if (!key) throw new Error("NO_KEY");
   const { system, user } = buildPrompt(kind, d);
   const model = process.env.AI_MODEL || "claude-haiku-5-5";
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try { return await callClaudeOnce(kind, d, key, model, system, attempt ? user + "\n\nLƯU Ý: chỉ trả về MỘT đối tượng JSON hợp lệ. Mọi dấu \" bên trong chuỗi phải viết thành \\\". Không xuống dòng trong chuỗi, không giải thích bên ngoài JSON." : user); }
+    catch (e) { lastErr = e; if (!/JSON|Expected|Unexpected|position/i.test(String(e.message))) throw e; }
+  }
+  throw lastErr;
+}
+
+async function callClaudeOnce(kind, d, key, model, system, user) {
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
